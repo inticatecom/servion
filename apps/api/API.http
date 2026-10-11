@@ -1,0 +1,6 @@
+POST http://localhost:5270/api/servers/create
+Content-Type: application/json
+
+{
+  "name": "test-server"
+}

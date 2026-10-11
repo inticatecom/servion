@@ -15,8 +15,16 @@ public sealed class ServerController(ServerService serverService) : ControllerBa
     }
 
     [HttpPost("create")]
-    public IActionResult Create([FromBody] ServerDto.Create request)
+    public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
+        await serverService.CreateServer(request.Name);
         return Ok();
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetServer(Guid id)
+    {
+        var server = await serverService.GetServer(id);
+        return server is null ? NotFound() : Ok(server);
     }
 }

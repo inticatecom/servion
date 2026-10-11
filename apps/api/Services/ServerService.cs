@@ -14,10 +14,24 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         return await database.Servers.ToListAsync();
     }
 
+    public async Task<ServerModel?> GetServer(Guid id)
+    {
+        return await database.Servers.FindAsync(id);
+    }
+
     public async Task CreateServer(string name)
     {
+        const string image = "nginx:stable-trixie-perl";
+        var imageParts = image.Split(":", 2);
+
+        await docker.Images.CreateImageAsync(new ImagesCreateParameters
+        {
+            FromImage = imageParts[0],
+            Tag = imageParts.Length > 1 ? imageParts[1] : "latest"
+        }, null, new Progress<JSONMessage>(), CancellationToken.None);
+
         var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters
-            { Name = name, Image = "nginx:latest" });
+            { Name = name, Image = image });
 
         database.Add(new ServerModel { Name = name, ContainerId = container.ID });
         await database.SaveChangesAsync();
