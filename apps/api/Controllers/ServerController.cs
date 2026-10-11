@@ -9,9 +9,9 @@ namespace API.Controllers;
 public sealed class ServerController(ServerService serverService) : ControllerBase
 {
     [HttpGet("list")]
-    public IActionResult List()
+    public async Task<IActionResult> List()
     {
-        return Ok(serverService.GetServer("abc"));
+        return Ok(await serverService.ListServers());
     }
 
     [HttpPost("create")]
