@@ -1,0 +1,16 @@
+// Resources
+import "dotenv/config";
+import { defineConfig } from "drizzle-kit";
+import { environment } from "@servion/config";
+
+/* Define the configuration for the ORM. */
+const configuration = defineConfig({
+  dbCredentials: {
+    url: environment.DATABASE_URL
+  },
+  dialect: "postgresql",
+  out: "./drizzle",
+  schema: "./src/schema.ts"
+});
+
+export default configuration;
