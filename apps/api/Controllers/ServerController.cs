@@ -1,3 +1,4 @@
+using API.DTO;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,5 +12,11 @@ public sealed class ServerController(ServerService serverService) : ControllerBa
     public IActionResult List()
     {
         return Ok(serverService.GetServer("abc"));
+    }
+
+    [HttpPost("create")]
+    public IActionResult Create([FromBody] ServerDto.Create request)
+    {
+        return Ok();
     }
 }
