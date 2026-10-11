@@ -1,4 +1,5 @@
 using API.Services;
+using Docker.DotNet;
 using DotNetEnv;
 
 namespace API;
@@ -15,6 +16,17 @@ public static class Program
 
         // Configure Services
         builder.Services.AddControllers();
+
+
+        var dockerPath = Environment.GetEnvironmentVariable("DOCKER_PATH");
+        if (dockerPath is null)
+        {
+            throw new Exception("Docker path was not provided.");
+        }
+
+        // Make Docker client accessible as a service.
+        builder.Services.AddSingleton(_ => new DockerClientConfiguration(new Uri(dockerPath)).CreateClient());
+
         builder.Services.AddScoped<ServerService>();
 
         // Setup Authorization

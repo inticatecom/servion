@@ -1,8 +1,10 @@
+using Docker.DotNet;
+
 namespace API.Services;
 
 using Models;
 
-public class ServerService
+public sealed class ServerService(DockerClient docker)
 {
     public Server GetServer(string id)
     {
