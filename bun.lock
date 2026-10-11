@@ -22,12 +22,6 @@
         "typescript": "^7.0.2",
       },
     },
-    "apps/my-app": {
-      "name": "@servion/my-app",
-      "dependencies": {
-        "@servion/utility": "workspace:*",
-      },
-    },
     "apps/web": {
       "name": "@servion/web",
       "dependencies": {
@@ -382,8 +376,6 @@
     "@servion/config": ["@servion/config@workspace:packages/config"],
 
     "@servion/database": ["@servion/database@workspace:packages/database"],
-
-    "@servion/my-app": ["@servion/my-app@workspace:apps/my-app"],
 
     "@servion/utility": ["@servion/utility@workspace:packages/utility"],
 

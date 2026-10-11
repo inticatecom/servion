@@ -1,6 +1,8 @@
+using API.Contexts;
 using API.Services;
 using Docker.DotNet;
 using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
 
 namespace API;
 
@@ -16,16 +18,14 @@ public static class Program
 
         // Configure Services
         builder.Services.AddControllers();
-
-
-        var dockerPath = Environment.GetEnvironmentVariable("DOCKER_PATH");
-        if (dockerPath is null)
-        {
-            throw new Exception("Docker path was not provided.");
-        }
+        builder.Services.AddDbContext<DatabaseContext>(options =>
+            options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL") ??
+                              throw new Exception("DATABASE_URL not configured.")));
 
         // Make Docker client accessible as a service.
-        builder.Services.AddSingleton(_ => new DockerClientConfiguration(new Uri(dockerPath)).CreateClient());
+        builder.Services.AddSingleton(_ =>
+            new DockerClientConfiguration(new Uri(Environment.GetEnvironmentVariable("DOCKER_PATH") ??
+                                                  throw new Exception("DOCKER_PATH not configured."))).CreateClient());
 
         builder.Services.AddScoped<ServerService>();
 
