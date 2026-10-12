@@ -1,6 +1,5 @@
 using API.DTO;
 using API.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -27,12 +26,26 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     /// Creates a new server with the provided information.
     /// </summary>
     /// <param name="request">The request body.</param>
+    /// <exception cref="Exception">If the operation fails internally, respond with 500.</exception>
     /// <returns>The request result.</returns>
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
-        await servers.CreateServer(request.Name);
-        return Created();
+        try
+        {
+            var server = await servers.CreateServer(request.Name);
+
+            if (request.ShouldStart)
+            {
+                await servers.SetServerState(server.Id, ServerState.Online);
+            }
+
+            return Created();
+        }
+        catch
+        {
+            return StatusCode(500, "Internal server error.");
+        }
     }
 
     /// <summary>

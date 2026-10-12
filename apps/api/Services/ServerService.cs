@@ -47,7 +47,8 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
     /// Creates a new server with the provided information.
     /// </summary>
     /// <param name="name">The name to set for the new server.</param>
-    public async Task CreateServer(string name)
+    /// <returns>The created server.</returns>
+    public async Task<ServerModel> CreateServer(string name)
     {
         const string image = "nginx:stable-trixie-perl";
         var imageParts = image.Split(":", 2);
@@ -61,8 +62,12 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters
             { Name = name, Image = image });
 
-        database.Add(new ServerModel { OwnerId = Guid.NewGuid(), Name = name, ContainerId = container.ID });
+        var server = new ServerModel { OwnerId = Guid.NewGuid(), Name = name, ContainerId = container.ID };
+        database.Add(server);
+
         await database.SaveChangesAsync();
+
+        return server;
     }
 
     /// <summary>
