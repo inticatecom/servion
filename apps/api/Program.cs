@@ -19,29 +19,8 @@ public static class Program
         // Load Environment Variables
         Env.Load("../../.env");
 
-        // Construct Builder
-        var builder = WebApplication.CreateBuilder(args);
-
-        // Configure Services
-        builder.Services.AddControllers();
-        builder.Services.AddDbContext<DatabaseContext>(options =>
-            options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL") ??
-                              throw new Exception("DATABASE_URL not configured.")));
-
-        // Make Docker client accessible as a service.
-        builder.Services.AddSingleton(_ =>
-            new DockerClientConfiguration(new Uri(Environment.GetEnvironmentVariable("DOCKER_PATH") ??
-                                                  throw new Exception("DOCKER_PATH not configured."))).CreateClient());
-
-        builder.Services.AddScoped<ServerService>();
-
-        // Setup Authorization
-        builder.Services.AddAuthorization();
-
-        // Setup OpenAPI
-        builder.Services.AddOpenApi();
-
         // Construct Application
+        var builder = CreateBuilder();
         var app = builder.Build();
 
         // Register Controllers
@@ -59,5 +38,39 @@ public static class Program
 
         // Start Application
         app.Run();
+    }
+
+    /// <summary>
+    /// Constructs the website application builder.
+    /// </summary>
+    /// <exception cref="Exception">An error if environment variable assets aren't present.</exception>
+    /// <returns>The website application builder.</returns>
+    private static WebApplicationBuilder CreateBuilder()
+    {
+        var builder = WebApplication.CreateBuilder();
+
+        // Configure Services
+        builder.Services.AddControllers();
+
+        // Make database accessible as a service.
+        builder.Services.AddDbContext<DatabaseContext>(options =>
+            options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL") ??
+                              throw new Exception("DATABASE_URL not configured.")));
+
+        // Make Docker client accessible as a service.
+        builder.Services.AddSingleton(_ =>
+            new DockerClientConfiguration(new Uri(Environment.GetEnvironmentVariable("DOCKER_PATH") ??
+                                                  throw new Exception("DOCKER_PATH not configured."))).CreateClient());
+
+        // Add server service as a service.
+        builder.Services.AddScoped<ServerService>();
+
+        // Setup Authorization
+        builder.Services.AddAuthorization();
+
+        // Setup OpenAPI
+        builder.Services.AddOpenApi();
+
+        return builder;
     }
 }
