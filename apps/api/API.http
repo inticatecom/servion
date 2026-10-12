@@ -1,4 +1,4 @@
-POST http://localhost:5270/api/servers/create
+POST http://localhost:5270/api/servers
 Content-Type: application/json
 
 {
