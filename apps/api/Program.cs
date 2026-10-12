@@ -6,8 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API;
 
+/// <summary>
+/// The main entrypoint of the program.
+/// </summary>
 public static class Program
 {
+    /// <summary>
+    /// The method that is called when the program starts.
+    /// </summary>
     public static void Main(string[] args)
     {
         // Load Environment Variables

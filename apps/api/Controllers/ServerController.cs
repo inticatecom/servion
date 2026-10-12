@@ -5,16 +5,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+/// <summary>
+/// Routes relating to servers.
+/// </summary>
+/// <param name="servers">The server service for interacting with servers.</param>
 [ApiController]
 [Route("api/servers")]
 public sealed class ServerController(ServerService servers) : ControllerBase
 {
+    /// <summary>
+    /// Lists all servers regardless of their owners.
+    /// </summary>
+    /// <returns>The list of servers.</returns>
     [HttpGet("list")]
     public async Task<IActionResult> List()
     {
         return Ok(await servers.ListServers());
     }
 
+    /// <summary>
+    /// Creates a new server with the provided information.
+    /// </summary>
+    /// <param name="request">The request body.</param>
+    /// <returns>The request result.</returns>
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
@@ -22,6 +35,11 @@ public sealed class ServerController(ServerService servers) : ControllerBase
         return Created();
     }
 
+    /// <summary>
+    /// Gets a server by the provided ID.
+    /// </summary>
+    /// <param name="id">The ID of the server.</param>
+    /// <returns>The request result.</returns>
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get(Guid id)
     {
@@ -29,6 +47,12 @@ public sealed class ServerController(ServerService servers) : ControllerBase
         return server is null ? NotFound() : Ok(server);
     }
 
+    /// <summary>
+    /// Updates the state for the provided server.
+    /// </summary>
+    /// <param name="id">The ID of the server.</param>
+    /// <param name="request">The request body.</param>
+    /// <returns>The request result.</returns>
     [HttpPut("{id:guid}/action")]
     public async Task<IActionResult> SetState(Guid id, [FromBody] ServerDto.SetState request)
     {

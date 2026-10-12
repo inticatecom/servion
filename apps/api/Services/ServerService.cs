@@ -7,6 +7,9 @@ namespace API.Services;
 
 using Models;
 
+/// <summary>
+/// Represents the state for a server.
+/// </summary>
 public enum ServerState
 {
     Offline = 0,
@@ -14,18 +17,36 @@ public enum ServerState
     Restarting = 2
 }
 
+/// <summary>
+/// A service for managing servers.
+/// </summary>
+/// <param name="docker">The Docker client SDK.</param>
+/// <param name="database">The database SDK.</param>
 public sealed class ServerService(DockerClient docker, DatabaseContext database)
 {
+    /// <summary>
+    /// Lists all existing servers regardless of the owner.
+    /// </summary>
+    /// <returns>The list of servers.</returns>
     public async Task<List<ServerModel>> ListServers()
     {
         return await database.Servers.ToListAsync();
     }
 
+    /// <summary>
+    /// Gets a specific server's information based on its identifier.
+    /// </summary>
+    /// <param name="id">The identifier of the server.</param>
+    /// <returns>The found server.</returns>
     public async Task<ServerModel?> GetServer(Guid id)
     {
         return await database.Servers.FindAsync(id);
     }
 
+    /// <summary>
+    /// Creates a new server with the provided information.
+    /// </summary>
+    /// <param name="name">The name to set for the new server.</param>
     public async Task CreateServer(string name)
     {
         const string image = "nginx:stable-trixie-perl";
@@ -44,6 +65,12 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         await database.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Changes the current state of the provided server.
+    /// </summary>
+    /// <param name="id">The identifier of the server.</param>
+    /// <param name="state">The state to set for the server.</param>
+    /// <exception cref="Exception">Errors if the server can't be found by the provided identifier.</exception>
     public async Task SetServerState(Guid id, ServerState state)
     {
         var server = await database.Servers.FindAsync(id);
