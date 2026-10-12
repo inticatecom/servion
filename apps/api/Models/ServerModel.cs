@@ -4,10 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 [Index(nameof(Name), IsUnique = true)]
-public class ServerModel
+public class ServerModel : IdentityModel
 {
-    [Key] public Guid Id { get; init; } = Guid.NewGuid();
+    [StringLength(30, MinimumLength = 3)] public required string Name { get; set; }
 
-    [MaxLength(30)] public required string Name { get; set; }
-    public required string ContainerId { get; set; }
+    [MaxLength(64)] public required string ContainerId { get; set; }
 }
