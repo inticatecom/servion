@@ -10,15 +10,16 @@ public abstract class IdentityModel
     /// <summary>
     /// The ID of the model.
     /// </summary>
-    [Key] public Guid Id = Guid.NewGuid();
+    [Key]
+    public Guid Id { get; init; } = Guid.NewGuid();
 
     /// <summary>
     /// The last time the model was updated at.
     /// </summary>
-    public DateTime UpdatedAt = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// The time the model was created at.
     /// </summary>
-    public DateTime CreatedAt = DateTime.UtcNow;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 }
