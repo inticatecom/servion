@@ -7,6 +7,13 @@ namespace API.Services;
 
 using Models;
 
+public enum ServerState
+{
+    Offline = 0,
+    Online = 1,
+    Restarting = 2
+}
+
 public sealed class ServerService(DockerClient docker, DatabaseContext database)
 {
     public async Task<List<ServerModel>> ListServers()
@@ -35,5 +42,30 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
 
         database.Add(new ServerModel { Name = name, ContainerId = container.ID });
         await database.SaveChangesAsync();
+    }
+
+    public async Task SetServerState(Guid id, ServerState state)
+    {
+        var server = await database.Servers.FindAsync(id);
+        if (server is null)
+        {
+            throw new Exception("Server does not exist.");
+        }
+
+        switch (state)
+        {
+            case ServerState.Online:
+            {
+                await docker.Containers.StartContainerAsync(server.ContainerId, new ContainerStartParameters { },
+                    CancellationToken.None);
+                break;
+            }
+            case ServerState.Offline:
+            {
+                await docker.Containers.StopContainerAsync(server.ContainerId, new ContainerStopParameters { },
+                    CancellationToken.None);
+                break;
+            }
+        }
     }
 }
