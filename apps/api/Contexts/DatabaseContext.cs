@@ -12,4 +12,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     public DbSet<ServerModel> Servers { get; set; }
 
     public DbSet<UserModel> Users { get; set; }
+
+    public DbSet<EnvironmentModel> Environments { get; set; }
 }

@@ -48,15 +48,21 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
     /// </summary>
     /// <param name="name">The name to set for the new server.</param>
     /// <returns>The created server.</returns>
-    public async Task<ServerModel> CreateServer(string name)
+    public async Task<ServerModel> CreateServer(string name, Guid environmentId, string imageKey)
     {
-        const string image = "nginx:stable-trixie-perl";
+        var environment = await database.Environments.FindAsync(environmentId);
+        if (environment is null)
+        {
+            throw new Exception("Invalid environment ID.");
+        }
+
+        var image = environment.Images[imageKey];
         var imageParts = image.Split(":", 2);
 
         await docker.Images.CreateImageAsync(new ImagesCreateParameters
         {
             FromImage = imageParts[0],
-            Tag = imageParts.Length > 1 ? imageParts[1] : "latest"
+            Tag = imageParts.Length > 1 ? imageParts[1] : ""
         }, null, new Progress<JSONMessage>(), CancellationToken.None);
 
         var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters

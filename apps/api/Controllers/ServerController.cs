@@ -33,7 +33,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     {
         try
         {
-            var server = await servers.CreateServer(request.Name);
+            var server = await servers.CreateServer(request.Name, Guid.NewGuid(), "Vanilla");
 
             if (request.ShouldStart)
             {
