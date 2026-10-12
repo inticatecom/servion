@@ -62,7 +62,8 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters
             { Name = name, Image = image });
 
-        var server = new ServerModel { OwnerId = Guid.NewGuid(), Name = name, ContainerId = container.ID };
+        var server = new ServerModel
+            { OwnerId = Guid.NewGuid(), EnvironmentId = Guid.NewGuid(), Name = name, ContainerId = container.ID };
         database.Add(server);
 
         await database.SaveChangesAsync();

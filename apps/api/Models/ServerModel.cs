@@ -19,6 +19,10 @@ public class ServerModel : IdentityModel
     /// </summary>
     public required Guid OwnerId { get; set; }
 
+    public EnvironmentModel Environment { get; set; } = null!;
+
+    public required Guid EnvironmentId { get; set; }
+
     /// <summary>
     /// The name of the server.
     /// </summary>
