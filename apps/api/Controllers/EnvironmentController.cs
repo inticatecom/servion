@@ -29,7 +29,27 @@ public class EnvironmentController(EnvironmentService environments, ILogger<Envi
         {
             if (exception is EnvironmentException environmentException)
             {
-                return StatusCode(environmentException.Code);
+                return StatusCode(environmentException.Code, environmentException.Message);
+            }
+
+            logger.LogError(exception, exception.Message);
+            return StatusCode(500, "Internal server error.");
+        }
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromBody] EnvironmentDto.Delete request)
+    {
+        try
+        {
+            await environments.DeleteEnvironment(request.Id);
+            return Ok();
+        }
+        catch (Exception exception)
+        {
+            if (exception is EnvironmentException environmentException)
+            {
+                return StatusCode(environmentException.Code, environmentException.Message);
             }
 
             logger.LogError(exception, exception.Message);
