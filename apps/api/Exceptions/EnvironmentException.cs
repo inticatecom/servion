@@ -1,3 +1,6 @@
 namespace API.Exceptions;
 
-public class EnvironmentException(string message) : Exception(message);
+public class EnvironmentException(int code, string message) : Exception(message)
+{
+    public int Code { get; } = code;
+};

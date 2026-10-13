@@ -62,8 +62,10 @@ public static class Program
             new DockerClientConfiguration(new Uri(Environment.GetEnvironmentVariable("DOCKER_PATH") ??
                                                   throw new Exception("DOCKER_PATH not configured."))).CreateClient());
 
-        // Add server service as a service.
+        // Load Services
         builder.Services.AddScoped<ServerService>();
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<EnvironmentService>();
 
         // Setup Authorization
         builder.Services.AddAuthorization();

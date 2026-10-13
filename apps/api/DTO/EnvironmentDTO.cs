@@ -1,8 +1,9 @@
+using System.ComponentModel.DataAnnotations;
 using API.Models;
 
 namespace API.DTO;
 
-public class EnvironmentDto
+public static class EnvironmentDto
 {
-    public record Create(EnvironmentModel Data);
+    public record Create([Required] EnvironmentModel Data);
 }

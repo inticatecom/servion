@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 
 namespace API.Models;
@@ -12,17 +13,16 @@ public class EnvironmentModel : IdentityModel
 
     public required string Version { get; init; }
 
-    public required EnvironmentAuthor Author { get; init; }
+    [Column(TypeName = "jsonb")] public required EnvironmentAuthor Author { get; init; }
 
-    public required Dictionary<string, string> Images { get; init; }
+    [Column(TypeName = "jsonb")] public required Dictionary<string, string> Images { get; init; }
 
     public required List<string> Files { get; init; }
 
-    public required EnvironmentStartup Startup { get; init; }
+    [Column(TypeName = "jsonb")] public required EnvironmentStartup Startup { get; init; }
 
-    public required Dictionary<string, EnvironmentParameter> Parameters { get; init; }
-
-    public required Dictionary<string, JsonElement> Variables { get; init; }
+    [Column(TypeName = "jsonb")] public required Dictionary<string, EnvironmentParameter> Parameters { get; init; }
+    [Column(TypeName = "jsonb")] public required Dictionary<string, JsonElement> Variables { get; init; }
 }
 
 public record EnvironmentAuthor(
@@ -32,7 +32,7 @@ public record EnvironmentAuthor(
     string Url
 );
 
-public record EnvironmentStartup(string Install, string Command);
+public record EnvironmentStartup(string Install, string Initialize);
 
 public enum EnvironmentParameterType
 {
@@ -43,11 +43,11 @@ public enum EnvironmentParameterType
 
 public record EnvironmentParameter(
     string Name,
-    EnvironmentStartup Type,
-    bool Required,
+    EnvironmentParameterType Type,
+    bool? Required,
     string Placeholder,
-    string DefaultValue,
-    List<EnvironmentParameterValue> Value
+    string? DefaultValue,
+    List<EnvironmentParameterValue>? Values
 );
 
 public record EnvironmentParameterValue(string Name, string Value);
