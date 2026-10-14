@@ -18,8 +18,8 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     /// Lists all servers regardless of their owners.
     /// </summary>
     /// <returns>The list of servers.</returns>
-    [HttpGet("list")]
-    public async Task<IActionResult> List()
+    [HttpGet]
+    public async Task<IActionResult> ListAll()
     {
         return Ok(await servers.ListServers());
     }
@@ -62,7 +62,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     /// <param name="id">The ID of the server.</param>
     /// <returns>The request result.</returns>
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> Get(Guid id)
+    public async Task<IActionResult> GetOne(Guid id)
     {
         var server = await servers.GetServer(id);
         return server is null ? NotFound() : Ok(server);

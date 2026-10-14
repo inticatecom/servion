@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace API.Models;
 
 using System.ComponentModel.DataAnnotations;
@@ -35,7 +37,7 @@ public class ServerModel : IdentityModel
     [MaxLength(64)]
     public required string ContainerId { get; set; }
 
-    public required Dictionary<string, ServerVariable> Variables { get; set; }
+    [Column(TypeName = "jsonb")] public required Dictionary<string, ServerVariable> Variables { get; set; }
 }
 
 public record ServerVariable(string Name, string Value);
