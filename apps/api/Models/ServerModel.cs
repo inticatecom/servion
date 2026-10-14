@@ -32,7 +32,7 @@ public class ServerModel : IdentityModel
     public required string Name { get; set; }
 
     /// <summary>
-    /// The Docker container ID binded to the server.
+    /// The Docker container ID bound to the server.
     /// </summary>
     [MaxLength(64)]
     public required string ContainerId { get; set; }
