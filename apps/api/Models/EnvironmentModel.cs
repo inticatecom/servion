@@ -26,9 +26,9 @@ public class EnvironmentModel : IdentityModel
 }
 
 public record EnvironmentAuthor(
-    [property: StringLength(30, MinimumLength = 3)]
+    [StringLength(30, MinimumLength = 3)]
     string Name,
-    [property: StringLength(30, MinimumLength = 3)]
+    [StringLength(30, MinimumLength = 3)]
     string Url
 );
 
@@ -38,14 +38,15 @@ public enum EnvironmentParameterType
 {
     String,
     Number,
-    Boolean
+    Boolean,
+    Dropdown
 }
 
 public record EnvironmentParameter(
     string Name,
     EnvironmentParameterType Type,
     bool? Required,
-    string Placeholder,
+    string? Placeholder,
     string? DefaultValue,
     List<EnvironmentParameterValue>? Values
 );

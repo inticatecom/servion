@@ -3,6 +3,7 @@ using API.Services;
 using Docker.DotNet;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace API;
 
@@ -55,7 +56,9 @@ public static class Program
         // Make database accessible as a service.
         builder.Services.AddDbContext<DatabaseContext>(options =>
             options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL") ??
-                              throw new Exception("DATABASE_URL not configured.")));
+                              throw new Exception("DATABASE_URL not configured."),
+                npgsql => npgsql.ConfigureDataSource(datasource => datasource.EnableDynamicJson())
+            ));
 
         // Make Docker client accessible as a service.
         builder.Services.AddSingleton(_ =>
@@ -66,6 +69,15 @@ public static class Program
         builder.Services.AddScoped<ServerService>();
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<EnvironmentService>();
+
+        // Configure JSON Parsing
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter()
+                );
+            });
 
         // Setup Authorization
         builder.Services.AddAuthorization();
