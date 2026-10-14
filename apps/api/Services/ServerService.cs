@@ -17,6 +17,14 @@ public enum ServerState
     Restarting = 2
 }
 
+public record ServerCreateParameters
+{
+    public string Name { get; init; } = "";
+    public Guid EnvironmentId { get; init; }
+    public string ImageKey { get; init; } = "";
+    public Dictionary<string, ServerVariable> Variables { get; init; } = new();
+}
+
 /// <summary>
 /// A service for managing servers.
 /// </summary>
@@ -46,17 +54,19 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
     /// <summary>
     /// Creates a new server with the provided information.
     /// </summary>
-    /// <param name="name">The name to set for the new server.</param>
+    /// <param name="options">The name to set for the new server.</param>
     /// <returns>The created server.</returns>
-    public async Task<ServerModel> CreateServer(string name, Guid environmentId, string imageKey)
+    public async Task<ServerModel> CreateServer(ServerCreateParameters options)
     {
-        var environment = await database.Environments.FindAsync(environmentId);
+        var environment = await database.Environments.FindAsync(options.EnvironmentId);
         if (environment is null)
         {
             throw new Exception("Invalid environment ID.");
         }
 
-        var image = environment.Images[imageKey];
+        // TODO: Ensure provided variables match schema of environment parameters.
+
+        var image = environment.Images[options.ImageKey];
         var imageParts = image.Split(":", 2);
 
         await docker.Images.CreateImageAsync(new ImagesCreateParameters
@@ -66,10 +76,10 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         }, null, new Progress<JSONMessage>(), CancellationToken.None);
 
         var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters
-            { Name = name, Image = image });
+            { Name = options.Name, Image = image });
 
         var server = new ServerModel
-            { OwnerId = Guid.NewGuid(), EnvironmentId = Guid.NewGuid(), Name = name, ContainerId = container.ID };
+            { OwnerId = Guid.NewGuid(), EnvironmentId = Guid.NewGuid(), Name = options.Name, ContainerId = container.ID, Variables = options.Variables };
         database.Add(server);
 
         await database.SaveChangesAsync();
@@ -95,6 +105,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         {
             case ServerState.Online:
             {
+                var environmentVariables = server.Variables.Select(variable => $"{variable.Value.Name}={variable.Value.Value}").ToList();
                 await docker.Containers.StartContainerAsync(server.ContainerId, new ContainerStartParameters { },
                     CancellationToken.None);
                 break;

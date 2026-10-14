@@ -34,4 +34,8 @@ public class ServerModel : IdentityModel
     /// </summary>
     [MaxLength(64)]
     public required string ContainerId { get; set; }
+
+    public required Dictionary<string, ServerVariable> Variables { get; set; }
 }
+
+public record ServerVariable(string Name, string Value);

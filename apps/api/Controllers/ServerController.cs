@@ -1,4 +1,5 @@
 using API.DTO;
+using API.Models;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +34,14 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     {
         try
         {
-            var server = await servers.CreateServer(request.Name, Guid.NewGuid(), "Vanilla");
+            // request.Name, Guid.NewGuid(), "Vanilla"
+            var server = await servers.CreateServer(new ServerCreateParameters
+            {
+                Name = request.Name,
+                EnvironmentId = Guid.NewGuid(),
+                ImageKey = "Vanilla",
+                Variables = request.Variables
+            });
 
             if (request.ShouldStart)
             {

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using API.Models;
 
 namespace API.DTO;
 
@@ -12,7 +13,7 @@ public static class ServerDto
     /// </summary>
     /// <param name="Name">The name of the server.</param>
     /// <param name="ShouldStart">Whether the server should be automatically started once created or not.</param>
-    public record Create([Required] string Name, [Required] bool ShouldStart);
+    public record Create([Required] string Name, [Required] Dictionary<string, ServerVariable> Variables, [Required] bool ShouldStart);
 
     /// <summary>
     /// Sets the state for a server.
