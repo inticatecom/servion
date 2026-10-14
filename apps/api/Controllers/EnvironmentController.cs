@@ -1,60 +1,41 @@
 using API.DTO;
 using API.Exceptions;
 using API.Services;
+using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/environments")]
-public sealed class EnvironmentController(EnvironmentService environments, ILogger<EnvironmentService> logger)
+public sealed class EnvironmentController(EnvironmentService environments, ExceptionUtility exceptions)
     : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> List()
     {
-        return Ok(await environments.ListEnvironments());
+        return await exceptions.HandleHttpException<EnvironmentException>(async () =>
+            Ok(await environments.ListEnvironments())
+        );
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] EnvironmentDto.Create request)
     {
-        var environment = request.Data;
-
-        try
+        return await exceptions.HandleHttpException<EnvironmentException>(async () =>
         {
-            await environments.CreateEnvironment(environment);
+            await environments.CreateEnvironment(request.Data);
             return Created();
-        }
-        catch (Exception exception)
-        {
-            if (exception is EnvironmentException environmentException)
-            {
-                return StatusCode(environmentException.Code, environmentException.Message);
-            }
-
-            logger.LogError(exception, exception.Message);
-            return StatusCode(500, "Internal server error.");
-        }
+        });
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] EnvironmentDto.Delete request)
     {
-        try
+        return await exceptions.HandleHttpException<EnvironmentException>(async () =>
         {
             await environments.DeleteEnvironment(request.Id);
             return Ok();
-        }
-        catch (Exception exception)
-        {
-            if (exception is EnvironmentException environmentException)
-            {
-                return StatusCode(environmentException.Code, environmentException.Message);
-            }
-
-            logger.LogError(exception, exception.Message);
-            return StatusCode(500, "Internal server error.");
-        }
+        });
     }
 }

@@ -28,7 +28,6 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     /// Creates a new server with the provided information.
     /// </summary>
     /// <param name="request">The request body.</param>
-    /// <exception cref="Exception">If the operation fails internally, respond with 500.</exception>
     /// <returns>The request result.</returns>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
