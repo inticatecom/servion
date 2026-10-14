@@ -76,7 +76,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         }, null, new Progress<JSONMessage>(), CancellationToken.None);
 
         var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters
-            { Name = options.Name, Image = image });
+            { Name = options.Name, Image = image, Env = [.. options.Variables.Select(variable => $"{variable.Value.Name}={variable.Value.Value}")] });
 
         var server = new ServerModel
             { OwnerId = Guid.NewGuid(), EnvironmentId = Guid.NewGuid(), Name = options.Name, ContainerId = container.ID, Variables = options.Variables };
@@ -105,7 +105,6 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         {
             case ServerState.Online:
             {
-                var environmentVariables = server.Variables.Select(variable => $"{variable.Value.Name}={variable.Value.Value}").ToList();
                 await docker.Containers.StartContainerAsync(server.ContainerId, new ContainerStartParameters { },
                     CancellationToken.None);
                 break;
