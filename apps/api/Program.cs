@@ -15,7 +15,7 @@ public static class Program
     /// <summary>
     /// The method that is called when the program starts.
     /// </summary>
-    public static void Main(string[] args)
+    public static void Main()
     {
         // Load Environment Variables
         Env.Load("../../.env");
@@ -55,15 +55,23 @@ public static class Program
 
         // Make database accessible as a service.
         builder.Services.AddDbContext<DatabaseContext>(options =>
-            options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL") ??
-                              throw new Exception("DATABASE_URL not configured."),
-                npgsql => npgsql.ConfigureDataSource(datasource => datasource.EnableDynamicJson())
-            ));
+            options.UseNpgsql(
+                Environment.GetEnvironmentVariable("DATABASE_URL") ??
+                throw new Exception("DATABASE_URL not configured."),
+                npgsql => npgsql.ConfigureDataSource(datasource => datasource.EnableDynamicJson()
+                )
+            )
+        );
 
         // Make Docker client accessible as a service.
         builder.Services.AddSingleton(_ =>
-            new DockerClientConfiguration(new Uri(Environment.GetEnvironmentVariable("DOCKER_PATH") ??
-                                                  throw new Exception("DOCKER_PATH not configured."))).CreateClient());
+            new DockerClientConfiguration(
+                new Uri(
+                    Environment.GetEnvironmentVariable("DOCKER_PATH") ??
+                    throw new Exception("DOCKER_PATH not configured.")
+                )
+            ).CreateClient()
+        );
 
         // Load Services
         builder.Services.AddScoped<ServerService>();

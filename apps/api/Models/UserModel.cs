@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Models;
 
 /// <summary>
 /// The structure of how users are stored in our persistent database.
 /// </summary>
+[Index(nameof(Username), IsUnique = true)]
 public class UserModel : IdentityModel
 {
     /// <summary>

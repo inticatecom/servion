@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
-
-namespace API.Models;
-
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+
+namespace API.Models;
 
 /// <summary>
 /// The structure of how a server is stored in our persistent database.
@@ -21,8 +20,14 @@ public class ServerModel : IdentityModel
     /// </summary>
     public required Guid OwnerId { get; set; }
 
+    /// <summary>
+    /// The environment in-use by the server.
+    /// </summary>
     public EnvironmentModel Environment { get; set; } = null!;
 
+    /// <summary>
+    /// The ID of the environment in-use by the server.
+    /// </summary>
     public required Guid EnvironmentId { get; set; }
 
     /// <summary>
@@ -37,7 +42,16 @@ public class ServerModel : IdentityModel
     [MaxLength(64)]
     public required string ContainerId { get; set; }
 
-    [Column(TypeName = "jsonb")] public required Dictionary<string, ServerVariable> Variables { get; set; }
+    /// <summary>
+    /// The configured variables for the server.
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public required Dictionary<string, ServerVariable> Variables { get; set; }
 }
 
-public record ServerVariable(string Name, string Value);
+/// <summary>
+/// A configured variable for a server.
+/// </summary>
+/// <param name="Name">The name of the variable.</param>
+/// <param name="Value">The value of the variable.</param>
+public record ServerVariable([StringLength(30, MinimumLength = 1)] string Name, [MinLength(1)] string Value);
