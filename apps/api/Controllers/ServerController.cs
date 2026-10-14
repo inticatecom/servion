@@ -40,8 +40,9 @@ public sealed class ServerController(ServerService servers) : ControllerBase
                 var server = await servers.CreateServer(new ServerCreateParameters
                 {
                     Name = request.Name,
-                    EnvironmentId = Guid.NewGuid(),
-                    ImageKey = "Vanilla",
+                    OwnerId = request.OwnerId,
+                    EnvironmentId = request.EnvironmentId,
+                    ImageKey = request.Image,
                     Variables = request.Variables
                 });
 
@@ -52,6 +53,22 @@ public sealed class ServerController(ServerService servers) : ControllerBase
                 }
 
                 return Created();
+            }
+        );
+    }
+
+    /// <summary>
+    /// Deletes a server and it's data.
+    /// </summary>
+    /// <param name="request">The data to include for the request.</param>
+    /// <returns>The request result.</returns>
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromBody] ServerDto.Delete request)
+    {
+        return await ExceptionUtility.HandleHttpException<ServerException>(async () =>
+            {
+                await servers.DeleteServer(request.Id, false);
+                return Ok();
             }
         );
     }

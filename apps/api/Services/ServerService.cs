@@ -20,10 +20,11 @@ public enum ServerState
 
 public record ServerCreateParameters
 {
-    public string Name { get; init; } = "";
-    public Guid EnvironmentId { get; init; }
-    public string ImageKey { get; init; } = "";
-    public Dictionary<string, ServerVariable> Variables { get; init; } = new();
+    public required string Name { get; init; } = "";
+    public required Guid OwnerId { get; init; }
+    public required Guid EnvironmentId { get; init; }
+    public required string ImageKey { get; init; } = "";
+    public required Dictionary<string, ServerVariable> Variables { get; init; } = new();
 }
 
 /// <summary>
@@ -55,7 +56,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
     /// <summary>
     /// Creates a new server with the provided information.
     /// </summary>
-    /// <param name="options">The name to set for the new server.</param>
+    /// <param name="options">The options to apply to the newly created server.</param>
     /// <returns>The created server.</returns>
     public async Task<ServerModel> CreateServer(ServerCreateParameters options)
     {
@@ -84,7 +85,10 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
 
         var server = new ServerModel
         {
-            OwnerId = Guid.NewGuid(), EnvironmentId = Guid.NewGuid(), Name = options.Name, ContainerId = container.ID,
+            OwnerId = options.OwnerId,
+            EnvironmentId = options.EnvironmentId,
+            Name = options.Name,
+            ContainerId = container.ID,
             Variables = options.Variables
         };
         database.Add(server);
@@ -92,6 +96,40 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         await database.SaveChangesAsync();
 
         return server;
+    }
+
+    /// <summary>
+    /// Deletes a server and it's data.
+    /// </summary>
+    /// <param name="id">The ID of the server to delete.</param>
+    /// <param name="forcefully">Whether the operation should be carried out forcefully.</param>
+    /// <exception cref="ServerException">Errors if any of the tasks fail to complete.</exception>
+    public async Task DeleteServer(Guid id, bool? forcefully)
+    {
+        var server = await database.Servers.FindAsync(id) ?? throw new ServerException(404, "Server not found.");
+
+        try
+        {
+            await docker.Containers.RemoveContainerAsync(
+                server.ContainerId,
+                new ContainerRemoveParameters { Force = forcefully },
+                CancellationToken.None
+            );
+        }
+        catch
+        {
+            throw new ServerException(500, "Failed to remove Docker container.");
+        }
+
+        try
+        {
+            database.Servers.Remove(server);
+            await database.SaveChangesAsync();
+        }
+        catch
+        {
+            throw new ServerException(500, "Failed to delete server from database.");
+        }
     }
 
     /// <summary>
