@@ -1,4 +1,5 @@
 using API.Contexts;
+using API.Exceptions;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.EntityFrameworkCore;
@@ -61,7 +62,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         var environment = await database.Environments.FindAsync(options.EnvironmentId);
         if (environment is null)
         {
-            throw new Exception("Invalid environment ID.");
+            throw new ServerException(400, "Invalid environment ID.");
         }
 
         // TODO: Ensure provided variables match schema of environment parameters.
@@ -76,10 +77,16 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         }, null, new Progress<JSONMessage>(), CancellationToken.None);
 
         var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters
-            { Name = options.Name, Image = image, Env = [.. options.Variables.Select(variable => $"{variable.Value.Name}={variable.Value.Value}")] });
+        {
+            Name = options.Name, Image = image,
+            Env = [.. options.Variables.Select(variable => $"{variable.Value.Name}={variable.Value.Value}")]
+        });
 
         var server = new ServerModel
-            { OwnerId = Guid.NewGuid(), EnvironmentId = Guid.NewGuid(), Name = options.Name, ContainerId = container.ID, Variables = options.Variables };
+        {
+            OwnerId = Guid.NewGuid(), EnvironmentId = Guid.NewGuid(), Name = options.Name, ContainerId = container.ID,
+            Variables = options.Variables
+        };
         database.Add(server);
 
         await database.SaveChangesAsync();
@@ -98,7 +105,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         var server = await database.Servers.FindAsync(id);
         if (server is null)
         {
-            throw new Exception("Server does not exist.");
+            throw new ServerException(404, "Server does not exist.");
         }
 
         switch (state)

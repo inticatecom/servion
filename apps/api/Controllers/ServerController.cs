@@ -1,6 +1,7 @@
 using API.DTO;
-using API.Models;
+using API.Exceptions;
 using API.Services;
+using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -32,28 +33,27 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
-        try
-        {
-            // request.Name, Guid.NewGuid(), "Vanilla"
-            var server = await servers.CreateServer(new ServerCreateParameters
+        // TODO: Use this in other controllers & routes.
+        return await ExceptionUtility.HandleHttpException<ServerException>(async () =>
             {
-                Name = request.Name,
-                EnvironmentId = Guid.NewGuid(),
-                ImageKey = "Vanilla",
-                Variables = request.Variables
-            });
+                // Create the new server.
+                var server = await servers.CreateServer(new ServerCreateParameters
+                {
+                    Name = request.Name,
+                    EnvironmentId = Guid.NewGuid(),
+                    ImageKey = "Vanilla",
+                    Variables = request.Variables
+                });
 
-            if (request.ShouldStart)
-            {
-                await servers.SetServerState(server.Id, ServerState.Online);
+                // If the request wants the server to startup, start it.
+                if (request.ShouldStart)
+                {
+                    await servers.SetServerState(server.Id, ServerState.Online);
+                }
+
+                return Created();
             }
-
-            return Created();
-        }
-        catch
-        {
-            return StatusCode(500, "Internal server error.");
-        }
+        );
     }
 
     /// <summary>
