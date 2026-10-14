@@ -12,7 +12,7 @@ namespace API.Controllers;
 /// <param name="servers">The server service for interacting with servers.</param>
 [ApiController]
 [Route("api/servers")]
-public sealed class ServerController(ServerService servers) : ControllerBase
+public sealed class ServerController(ServerService servers, ExceptionUtility exceptions) : ControllerBase
 {
     /// <summary>
     /// Lists all servers regardless of their owners.
@@ -21,7 +21,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> ListAll()
     {
-        return Ok(await servers.ListServers());
+        return await exceptions.HandleHttpException<ServerException>(async () => Ok(await servers.ListServers()));
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
         // TODO: Use this in other controllers & routes.
-        return await ExceptionUtility.HandleHttpException<ServerException>(async () =>
+        return await exceptions.HandleHttpException<ServerException>(async () =>
             {
                 // Create the new server.
                 var server = await servers.CreateServer(new ServerCreateParameters
@@ -65,7 +65,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] ServerDto.Delete request)
     {
-        return await ExceptionUtility.HandleHttpException<ServerException>(async () =>
+        return await exceptions.HandleHttpException<ServerException>(async () =>
             {
                 await servers.DeleteServer(request.Id, false);
                 return Ok();
@@ -81,8 +81,11 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetOne(Guid id)
     {
-        var server = await servers.GetServer(id);
-        return server is null ? NotFound() : Ok(server);
+        return await exceptions.HandleHttpException<ServerException>(async () =>
+        {
+            var server = await servers.GetServer(id);
+            return server is null ? NotFound() : Ok(server);
+        });
     }
 
     /// <summary>
@@ -94,16 +97,12 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     [HttpPut("{id:guid}/action")]
     public async Task<IActionResult> SetState(Guid id, [FromBody] ServerDto.SetState request)
     {
-        var state = (ServerState)request.State;
-
-        try
+        return await exceptions.HandleHttpException<ServerException>(async () =>
         {
+            var state = (ServerState)request.State;
+
             await servers.SetServerState(id, state);
             return NoContent();
-        }
-        catch
-        {
-            return StatusCode(500, "Internal server error.");
-        }
+        });
     }
 }

@@ -4,6 +4,7 @@ using Docker.DotNet;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using API.Utilities;
 
 namespace API;
 
@@ -72,6 +73,9 @@ public static class Program
                 )
             ).CreateClient()
         );
+
+        // Make exception utility accessible as a service.
+        builder.Services.AddSingleton<ExceptionUtility>();
 
         // Load Services
         builder.Services.AddScoped<ServerService>();

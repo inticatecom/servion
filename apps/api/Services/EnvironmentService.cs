@@ -9,7 +9,7 @@ namespace API.Services;
 /// A service for interacting with the environments loaded into the system.
 /// </summary>
 /// <param name="database">The database SDK.</param>
-public class EnvironmentService(DatabaseContext database)
+public sealed class EnvironmentService(DatabaseContext database)
 {
     /// <summary>
     /// Safely creates a new environment in the database.

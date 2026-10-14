@@ -7,7 +7,8 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/environments")]
-public class EnvironmentController(EnvironmentService environments, ILogger<EnvironmentService> logger) : ControllerBase
+public sealed class EnvironmentController(EnvironmentService environments, ILogger<EnvironmentService> logger)
+    : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> List()
