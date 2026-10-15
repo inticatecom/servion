@@ -1,3 +1,4 @@
+using System.Globalization;
 using API.Contexts;
 using API.Exceptions;
 using API.Models;
@@ -35,6 +36,11 @@ public sealed class EnvironmentService(DatabaseContext database)
         }
     }
 
+    public async Task<EnvironmentModel> GetEnvironmentById(Guid id)
+    {
+        return await database.Environments.FindAsync(id) ?? throw new EnvironmentException(404, "Could not find the environment with the provided ID.");
+    }
+
     /// <summary>
     /// Deletes an environment from the database.
     /// </summary>
@@ -64,6 +70,60 @@ public sealed class EnvironmentService(DatabaseContext database)
         }
     }
 
+    public async Task<EnvironmentParametersValidationResult> EnsureServerMeetsEnvironmentParameters(Dictionary<string, ServerVariable> variables, Guid environmentId)
+    {
+        var errors = new List<string>();
+        var parameters = (await GetEnvironmentById(environmentId)).Parameters;
+
+        if (variables.Select(param => param.Value.Name).Distinct().Count() != variables.Count)
+        {
+            errors.Add("Includes duplicate variables.");
+        }
+
+        foreach (var (_, parameter) in parameters)
+        {
+            if (parameter.Required == true && variables.All(value => value.Value.Name != parameter.Name))
+            {
+                errors.Add($"Required variable '{parameter.Name} is missing.");
+            }
+        }
+
+        // Validate data-types.
+        foreach (var (_, variable) in variables)
+        {
+            if (!parameters.TryGetValue(variable.Name, out var parameter))
+            {
+                errors.Add("");
+                continue;
+            }
+
+            var validDataType = parameter.Type switch
+            {
+                EnvironmentParameterType.String => true,
+
+                EnvironmentParameterType.Boolean =>
+                    bool.TryParse(variable.Value, out _),
+
+                EnvironmentParameterType.Number =>
+                    double.TryParse(
+                        variable.Value,
+                        NumberStyles.Float,
+                        CultureInfo.InvariantCulture,
+                        out _
+                    ),
+
+                _ => false
+            };
+
+            if (!validDataType)
+            {
+                errors.Add($"Variable '{variable.Name}' must be of type '{parameter.Type}'.");
+            }
+        }
+
+        return new EnvironmentParametersValidationResult(errors.Count < 1, errors);
+    }
+
     /// <summary>
     /// Lists all environments in the database regardless of the server.
     /// </summary>
@@ -73,3 +133,5 @@ public sealed class EnvironmentService(DatabaseContext database)
         return await database.Environments.ToListAsync();
     }
 }
+
+public record EnvironmentParametersValidationResult(bool Success, List<string> Errors);

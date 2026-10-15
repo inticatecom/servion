@@ -2,6 +2,7 @@ using API.Contexts;
 using API.Exceptions;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
@@ -32,7 +33,8 @@ public record ServerCreateParameters
 /// </summary>
 /// <param name="docker">The Docker client SDK.</param>
 /// <param name="database">The database SDK.</param>
-public sealed class ServerService(DockerClient docker, DatabaseContext database)
+[UsedImplicitly]
+public sealed class ServerService(DockerClient docker, DatabaseContext database, EnvironmentService environments)
 {
     /// <summary>
     /// Lists all existing servers regardless of the owner.
@@ -67,6 +69,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database)
         }
 
         // TODO: Ensure provided variables match schema of environment parameters.
+        var result = await environments.EnsureServerMeetsEnvironmentParameters(options.Variables, environment.Id);
 
         var image = environment.Images[options.ImageKey];
         var imageParts = image.Split(":", 2);
