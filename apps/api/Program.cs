@@ -21,6 +21,9 @@ public static class Program
         // Load Environment Variables
         Env.Load("../../.env");
 
+        // Load Environment Variable Utility
+        EnvironmentVariableUtility.Initialize();
+
         // Construct Application
         var builder = CreateBuilder();
         var app = builder.Build();
