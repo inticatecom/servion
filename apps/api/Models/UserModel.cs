@@ -31,4 +31,11 @@ public class UserModel : IdentityModel
     /// The servers the user owns.
     /// </summary>
     public ICollection<ServerModel> Servers { get; set; } = new List<ServerModel>();
+
+    /// <summary>
+    /// An authorization code used to perform critical actions by the owner on the account.
+    /// </summary>
+    public UserAuthorizationCode? AuthorizationCode { get; set; }
 }
+
+public record UserAuthorizationCode([MaxLength(512)] string Code, DateTime GeneratedAt);

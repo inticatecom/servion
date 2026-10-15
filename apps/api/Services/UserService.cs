@@ -1,6 +1,8 @@
 using API.Contexts;
+using API.Exceptions;
 using API.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
@@ -53,5 +55,30 @@ public sealed class UserService(DatabaseContext database)
         var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
 
         return result != PasswordVerificationResult.Failed;
+    }
+
+    public async Task<bool> ValidateAuthorizationCode(Guid userId, string code)
+    {
+        var user = await database.Users.Where(user => user.Id == userId).Include(user => user.AuthorizationCode)
+            .FirstAsync() ?? throw new UserException(404, "User not found.");
+
+        if (user.AuthorizationCode is null)
+        {
+            return false;
+        }
+
+        return DateTime.UtcNow - user.AuthorizationCode.GeneratedAt >= TimeSpan.FromMinutes(15);
+    }
+
+    public async Task<string> RegenerateAuthorizationCode(Guid userId)
+    {
+        var user = await database.Users.Where(user => user.Id == userId).Include(user => user.AuthorizationCode)
+            .FirstAsync() ?? throw new UserException(404, "User not found.");
+        var code = Random.Shared.Next(100000, 999999).ToString();
+
+        user.AuthorizationCode = new UserAuthorizationCode(code, DateTime.UtcNow);
+        await database.SaveChangesAsync();
+
+        return code;
     }
 }
