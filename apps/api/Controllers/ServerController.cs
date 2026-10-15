@@ -32,8 +32,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
-        // TODO: Use this in other controllers & routes.
-        return await exceptions.HandleHttpException<ServerException>(async () =>
+        return await exceptions.HandleHttpException<ServerException, ServerDto.Create>(request, async () =>
             {
                 // Create the new server.
                 var server = await servers.CreateServer(new ServerCreateParameters

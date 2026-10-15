@@ -4,7 +4,10 @@ using Docker.DotNet;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using API.DTO;
 using API.Utilities;
+using API.Validators;
+using FluentValidation;
 
 namespace API;
 
@@ -60,19 +63,19 @@ public static class Program
         // Make database accessible as a service.
         builder.Services.AddDbContext<DatabaseContext>(options =>
             options.UseNpgsql(
-                Environment.GetEnvironmentVariable("DATABASE_URL") ??
-                throw new Exception("DATABASE_URL not configured."),
-                npgsql => npgsql.ConfigureDataSource(datasource => datasource.EnableDynamicJson()
-                )
+                EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariableKey.DatabaseUrl),
+                npgsql => npgsql.ConfigureDataSource(datasource => datasource.EnableDynamicJson())
             )
         );
+
+        // Register Validators
+        builder.Services.AddScoped<IValidator<ServerDto.Create>, ServerCreateValidator>();
 
         // Make Docker client accessible as a service.
         builder.Services.AddSingleton(_ =>
             new DockerClientConfiguration(
                 new Uri(
-                    Environment.GetEnvironmentVariable("DOCKER_PATH") ??
-                    throw new Exception("DOCKER_PATH not configured.")
+                    EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariableKey.DockerPath)
                 )
             ).CreateClient()
         );
