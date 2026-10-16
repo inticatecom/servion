@@ -70,6 +70,7 @@ public static class Program
 
         // Register Validators
         builder.Services.AddScoped<IValidator<ServerDto.Create>, ServerCreateValidator>();
+        builder.Services.AddScoped<IValidator<ServerDto.SetState>, ServerSetStateValidator>();
 
         // Make Docker client accessible as a service.
         builder.Services.AddSingleton(_ =>

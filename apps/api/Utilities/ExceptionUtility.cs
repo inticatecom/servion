@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Utilities;
 
-public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, ServiceProvider services)
+public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, IServiceProvider services)
 {
     /// <summary>
     /// Handles public/private error results for API controller routes.

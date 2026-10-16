@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Models;
@@ -35,6 +36,7 @@ public class UserModel : IdentityModel
     /// <summary>
     /// An authorization code used to perform critical actions by the owner on the account.
     /// </summary>
+    [Column(TypeName = "jsonb")]
     public UserAuthorizationCode? AuthorizationCode { get; set; }
 }
 
