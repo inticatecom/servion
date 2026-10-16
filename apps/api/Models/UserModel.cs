@@ -38,6 +38,18 @@ public class UserModel : IdentityModel
     /// </summary>
     [Column(TypeName = "jsonb")]
     public UserAuthorizationCode? AuthorizationCode { get; set; }
+
+    /// <summary>
+    /// The user's role, used for permission based operations.
+    /// </summary>
+    public UserRole Role { get; set; } = UserRole.Client;
+}
+
+public enum UserRole
+{
+    Client,
+    Admin,
+    SuperAdmin
 }
 
 public record UserAuthorizationCode([MaxLength(512)] string Code, DateTime GeneratedAt);
