@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace API.DTO;
 
 /// <summary>
@@ -11,5 +13,5 @@ public static class UserDto
     /// <param name="Username">The username.</param>
     /// <param name="Email">The email address.</param>
     /// <param name="Password">The password (will be hashed when stored).</param>
-    public record Create(string Username, string Email, string Password);
+    public record Create([Required] string Username, [Required] string Email, [Required] string Password);
 }

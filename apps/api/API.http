@@ -1,6 +1,15 @@
-POST http://localhost:5270/api/servers/create
+### Create Server
+POST http://localhost:5270/api/servers
 Content-Type: application/json
 
 {
   "name": "test-server"
+}
+
+### Create Environment
+POST http://localhost:5270/api/environments
+Content-Type: application/json
+
+{
+  "test": "hi"
 }

@@ -3,39 +3,32 @@ using API.Services;
 using Docker.DotNet;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using API.DTO;
+using API.Utilities;
+using API.Validators;
+using FluentValidation;
 
 namespace API;
 
+/// <summary>
+/// The main entrypoint of the program.
+/// </summary>
 public static class Program
 {
-    public static void Main(string[] args)
+    /// <summary>
+    /// The method that is called when the program starts.
+    /// </summary>
+    public static void Main()
     {
         // Load Environment Variables
         Env.Load("../../.env");
 
-        // Construct Builder
-        var builder = WebApplication.CreateBuilder(args);
-
-        // Configure Services
-        builder.Services.AddControllers();
-        builder.Services.AddDbContext<DatabaseContext>(options =>
-            options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL") ??
-                              throw new Exception("DATABASE_URL not configured.")));
-
-        // Make Docker client accessible as a service.
-        builder.Services.AddSingleton(_ =>
-            new DockerClientConfiguration(new Uri(Environment.GetEnvironmentVariable("DOCKER_PATH") ??
-                                                  throw new Exception("DOCKER_PATH not configured."))).CreateClient());
-
-        builder.Services.AddScoped<ServerService>();
-
-        // Setup Authorization
-        builder.Services.AddAuthorization();
-
-        // Setup OpenAPI
-        builder.Services.AddOpenApi();
+        // Load Environment Variable Utility
+        EnvironmentVariableUtility.Initialize();
 
         // Construct Application
+        var builder = CreateBuilder();
         var app = builder.Build();
 
         // Register Controllers
@@ -53,5 +46,64 @@ public static class Program
 
         // Start Application
         app.Run();
+    }
+
+    /// <summary>
+    /// Constructs the website application builder.
+    /// </summary>
+    /// <exception cref="Exception">An error if environment variable assets aren't present.</exception>
+    /// <returns>The website application builder.</returns>
+    private static WebApplicationBuilder CreateBuilder()
+    {
+        var builder = WebApplication.CreateBuilder();
+
+        // Configure Services
+        builder.Services.AddControllers();
+
+        // Make database accessible as a service.
+        builder.Services.AddDbContext<DatabaseContext>(options =>
+            options.UseNpgsql(
+                EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariableKey.DatabaseUrl),
+                npgsql => npgsql.ConfigureDataSource(datasource => datasource.EnableDynamicJson())
+            )
+        );
+
+        // Register Validators
+        builder.Services.AddScoped<IValidator<ServerDto.Create>, ServerCreateValidator>();
+        builder.Services.AddScoped<IValidator<ServerDto.SetState>, ServerSetStateValidator>();
+
+        // Make Docker client accessible as a service.
+        builder.Services.AddSingleton(_ =>
+            new DockerClientConfiguration(
+                new Uri(
+                    EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariableKey.DockerPath)
+                )
+            ).CreateClient()
+        );
+
+        // Make exception utility accessible as a service.
+        builder.Services.AddSingleton<ExceptionUtility>();
+
+        // Load Services
+        builder.Services.AddScoped<ServerService>();
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<EnvironmentService>();
+
+        // Configure JSON Parsing
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter()
+                );
+            });
+
+        // Setup Authorization
+        builder.Services.AddAuthorization();
+
+        // Setup OpenAPI
+        builder.Services.AddOpenApi();
+
+        return builder;
     }
 }
