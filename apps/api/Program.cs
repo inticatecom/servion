@@ -89,6 +89,10 @@ public static class Program
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<EnvironmentService>();
 
+        builder.WebHost.ConfigureKestrel(options =>
+            options.ListenLocalhost(
+                EnvironmentVariableUtility.GetEnvironmentVariable<int>(EnvironmentVariableKey.ServerPort)));
+
         // Configure JSON Parsing
         builder.Services.AddControllers()
             .AddJsonOptions(options =>

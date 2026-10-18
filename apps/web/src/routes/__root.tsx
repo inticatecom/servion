@@ -1,33 +1,36 @@
 /// <reference types="vite/client" />
 // Resources
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { JSX } from "react";
+import type { RouterContext } from "@/lib/query-client";
 import appCss from "@/styles/app.css?url";
 import { seo } from "@/utility/seo";
 import type { Children } from "@servion/utility";
 
 // Components
+import { Toaster } from "@/components/ui/primitives/sonner";
 import DefaultCatchBoundary from "@/components/default-catch-boundary";
 import NotFound from "@/components/not-found";
 
 // oxlint-disable-next-line react/only-export-components
 /** The root document to render content inside. */
 const RootDocument = ({ children }: Children): JSX.Element => (
-  <html>
+  <html className={"dark antialiased"}>
     <head>
       <HeadContent />
     </head>
     <body>
       {children}
       <TanStackRouterDevtools position={"bottom-right"} />
+      <Toaster position={"bottom-center"} closeButton />
       <Scripts />
     </body>
   </html>
 );
 
-/** The root route of teh application. */
-export const Route = createRootRoute({
+/** The root route of the application. */
+export const Route = createRootRouteWithContext<RouterContext>()({
   errorComponent: DefaultCatchBoundary,
   head: () => ({
     links: [
@@ -35,37 +38,37 @@ export const Route = createRootRoute({
       {
         href: "/apple-touch-icon.png",
         rel: "apple-touch-icon",
-        sizes: "180x180",
+        sizes: "180x180"
       },
       {
         href: "/favicon-32x32.png",
         rel: "icon",
         sizes: "32x32",
-        type: "image/png",
+        type: "image/png"
       },
       {
         href: "/favicon-16x16.png",
         rel: "icon",
         sizes: "16x16",
-        type: "image/png",
+        type: "image/png"
       },
       { color: "#fffff", href: "/site.webmanifest", rel: "manifest" },
-      { href: "/favicon.ico", rel: "icon" },
+      { href: "/favicon.ico", rel: "icon" }
     ],
     meta: [
       {
-        charSet: "utf8",
+        charSet: "utf8"
       },
       {
         content: "width=device-width, initial-scale=1",
-        name: "viewport",
+        name: "viewport"
       },
       ...seo({
-        description: `A simple monorepo template built on the Bun ecosystem.`,
-        title: "Bun Monorepo",
-      }),
-    ],
+        description: `Manage your game servers with Servion.`,
+        title: "Servion"
+      })
+    ]
   }),
   notFoundComponent: () => <NotFound />,
-  shellComponent: RootDocument,
+  shellComponent: RootDocument
 });

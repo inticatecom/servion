@@ -4,7 +4,7 @@ import { defineConfig } from "oxlint";
 
 const configuration = defineConfig({
   extends: [baseConfig],
-  ignorePatterns: ["routeTree.gen.ts"],
+  ignorePatterns: ["routeTree.gen.ts", "**/generated/**"],
   rules: {
     "eslint/no-console": "off",
     "eslint/no-void": "off",

@@ -1,6 +1,6 @@
 // Resources
 import { defineConfig } from "vite";
-import appConfiguration from "@servion/config";
+import appConfiguration, { environment } from "@servion/config";
 
 // Plugins
 import { nitro } from "nitro/vite";
@@ -13,17 +13,21 @@ const configuration = defineConfig({
   plugins: [
     tailwindcss(),
     tanstackStart({
-      srcDirectory: "src",
+      srcDirectory: "src"
     }),
     viteReact(),
-    nitro(),
+    nitro({
+      routeRules: {
+        "/api/**": { proxy: `http://localhost:${environment.SERVER_PORT}/api/**` }
+      }
+    })
   ],
   resolve: {
-    tsconfigPaths: true,
+    tsconfigPaths: true
   },
   server: {
-    port: appConfiguration.webPort,
-  },
+    port: appConfiguration.webPort
+  }
 });
 
 export default configuration;

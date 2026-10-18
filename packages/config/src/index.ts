@@ -20,8 +20,16 @@ export const environment = createEnv({
 
   server: {
     DATABASE_URL: z.string(),
-    FORCE_COLOR: z.number().optional().default(1),
-    NODE_ENV: z.enum(["production", "development"]).optional().default("development")
+    DOCKER_PATH: z.string(),
+    FORCE_COLOR: z.coerce.number().optional().default(1),
+    NODE_ENV: z.enum(["production", "development"]).optional().default("development"),
+    SERVER_PORT: z.coerce.number(),
+    SMTP_FROM_ADDRESS: z.email(),
+    SMTP_FROM_NAME: z.string(),
+    SMTP_HOST: z.string(),
+    SMTP_PASSWORD: z.string(),
+    SMTP_PORT: z.string(),
+    SMTP_USER: z.string()
   }
 });
 

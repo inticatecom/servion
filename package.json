@@ -15,6 +15,8 @@
   "scripts": {
     "web:start": "bun --env-file=.env run --filter '@servion/web' start",
     "web:dev": "bun --env-file=.env run --filter '@servion/web' dev",
+    "orval:generate": "bun --env-file=.env run --filter '@servion/web' orval",
+    "orval:watch": "bun --env-file=.env run --filter '@servion/web' orval --watch",
     "db:push": "bun --env-file=.env run --filter '@servion/database' push",
     "db:generate": "bun --env-file=.env run --filter '@servion/database' generate",
     "db:migrate": "bun --env-file=.env run --filter '@servion/database' migrate",

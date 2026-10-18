@@ -13,6 +13,7 @@ public enum EnvironmentVariableKey
 {
     DockerPath,
     DatabaseUrl,
+    ServerPort,
 
     SmtpHost,
     SmtpPort,
@@ -31,6 +32,7 @@ public static class EnvironmentVariableUtility
         // Base Settings
         [EnvironmentVariableKey.DockerPath] = EnvironmentVariableDataType.String,
         [EnvironmentVariableKey.DatabaseUrl] = EnvironmentVariableDataType.String,
+        [EnvironmentVariableKey.ServerPort] = EnvironmentVariableDataType.Int,
 
         // SMTP Connection
         [EnvironmentVariableKey.SmtpHost] = EnvironmentVariableDataType.String,
