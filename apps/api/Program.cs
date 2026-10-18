@@ -5,9 +5,11 @@ using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using API.DTO;
+using API.Models;
 using API.Utilities;
 using API.Validators;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 
 namespace API;
 
@@ -101,6 +103,9 @@ public static class Program
                     new JsonStringEnumConverter()
                 );
             });
+
+        builder.Services.AddIdentityApiEndpoints<UserModel>().AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<DatabaseContext>();
 
         // Setup Authorization
         builder.Services.AddAuthorization();

@@ -1,7 +1,9 @@
 using API.DTO;
 using API.Exceptions;
+using API.Models;
 using API.Services;
 using API.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -19,6 +21,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     /// </summary>
     /// <returns>The list of servers.</returns>
     [HttpGet]
+    [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.SuperAdmin)}")]
     public async Task<IActionResult> ListAll()
     {
         return await exceptions.HandleHttpException<ServerException>(async () => Ok(await servers.ListServers()));

@@ -1,5 +1,7 @@
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace API.Contexts;
 
@@ -7,7 +9,9 @@ namespace API.Contexts;
 /// The database context made for accessing & interacting with the database in controllers & services.
 /// </summary>
 /// <param name="options">Options for the context.</param>
-public sealed class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
+public sealed class DatabaseContext(
+    DbContextOptions<DatabaseContext> options
+) : IdentityDbContext<UserModel, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<ServerModel> Servers { get; set; }
 
@@ -21,7 +25,8 @@ public sealed class DatabaseContext(DbContextOptions<DatabaseContext> options) :
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = new CancellationToken())
     {
         UpdateTimestamps();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
