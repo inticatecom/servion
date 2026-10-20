@@ -4,6 +4,10 @@ import { redirect } from "@tanstack/react-router";
 import { isUser } from "@/lib/auth.ts";
 import { environment } from "@servion/config";
 
+/**
+ * Forward the incoming cookie to the API to verify authentication.
+ * Redirect unauthorized requests to login and pass a recognized user to downstream context.
+ */
 const authenticatedMiddleware = createMiddleware().server(async ({ next, request }) => {
   const response = await fetch(`http://localhost:${environment.SERVER_PORT}/api/users`, {
     cache: "no-store",

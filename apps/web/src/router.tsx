@@ -8,6 +8,7 @@ import { routeTree } from "./routeTree.gen";
 import DefaultCatchBoundary from "./components/default-catch-boundary";
 import NotFound from "./components/not-found";
 
+/** Create the application router with its own query cache and server-rendering integration. */
 // oxlint-disable-next-line typescript/explicit-module-boundary-types typescript/explicit-function-return-type
 export const getRouter = () => {
   const queryClient = createQueryClient();

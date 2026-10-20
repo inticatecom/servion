@@ -9,9 +9,19 @@ export interface User {
   email: string;
 }
 
+/**
+ * Check that a response is an object containing a user ID; other fields are not validated.
+ * @param data - The response value to inspect.
+ * @returns Whether the value is a non-null object containing an ID property.
+ */
 export const isUser = (data: unknown): data is User =>
   typeof data === "object" && data !== null && "id" in data;
 
+/**
+ * Fetch the current user using the browser's authentication cookie.
+ * Throws for HTTP failures other than unauthorized responses.
+ * @returns The current user, or undefined for unauthorized or unrecognized responses.
+ */
 export const getCurrentUser = async (): Promise<Possible<User>> => {
   const response = await fetch(`${clientEnvironment.PUBLIC_SERVER_URL}/api/users`, {
     credentials: "include",

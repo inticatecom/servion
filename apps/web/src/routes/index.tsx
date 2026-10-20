@@ -204,7 +204,7 @@ const Home = (): JSX.Element => {
   );
 };
 
-/** The route for the file. */
+/** Authenticate visitors before loading the dashboard and expose their user in route context. */
 export const Route = createFileRoute("/")({
   beforeLoad: async () => ({ user: await requireUser() }),
   component: Home,

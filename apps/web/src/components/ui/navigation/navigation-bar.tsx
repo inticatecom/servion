@@ -5,7 +5,7 @@ import type { NavigationMenuItem } from "@/components/ui/navigation/navigation-m
 // Components
 import AccountMenu from "@/components/ui/navigation/account-menu";
 
-/** Placeholder account destinations until authentication is connected. */
+/** Placeholder account destinations until profile, security, and sign-out actions are connected. */
 const accountItems: NavigationMenuItem[] = [
   { href: "#profile", label: "My profile" },
   { href: "#security", label: "Account security" },
