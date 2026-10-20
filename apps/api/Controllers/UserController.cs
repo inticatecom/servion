@@ -16,6 +16,20 @@ public sealed class UserController(UserService users, UserManager<UserModel> use
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] UserDto.Create request)
     {
+        var user = await users.CreateUserAsync(request.Username, request.Email, request.Password);
+        return Ok(user.Id);
+    }
+
+    [HttpPut]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login([FromBody] UserDto.Authenticate request)
+    {
+        var success = await users.AuthenticateUserAsync(request.Email, request.Password);
+        if (!success)
+        {
+            return Unauthorized();
+        }
+
         return Ok();
     }
 

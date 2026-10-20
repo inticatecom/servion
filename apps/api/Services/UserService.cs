@@ -22,7 +22,7 @@ public sealed class UserService(
     /// <summary>
     /// Creates a new user with the provided information.
     /// </summary>
-    public async Task CreateUserAsync(string username, string email, string password)
+    public async Task<UserModel> CreateUserAsync(string username, string email, string password)
     {
         var user = new UserModel
         {
@@ -49,6 +49,8 @@ public sealed class UserService(
                 "Failed to assign default user role."
             );
         }
+
+        return user;
     }
 
     public async Task<bool> AuthenticateUserAsync(string email, string password)
