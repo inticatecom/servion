@@ -14,4 +14,6 @@ public static class UserDto
     /// <param name="Email">The email address.</param>
     /// <param name="Password">The password (will be hashed when stored).</param>
     public record Create([Required] string Username, [Required] string Email, [Required] string Password);
+
+    public record Authenticate([Required] string Email, [Required] string Password);
 }

@@ -5,6 +5,7 @@ using API.Exceptions;
 using API.Models;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
@@ -14,12 +15,14 @@ namespace API.Services;
 [UsedImplicitly]
 public sealed class UserService(
     DatabaseContext database,
-    UserManager<UserModel> userManager)
+    UserManager<UserModel> userManager,
+    SignInManager<UserModel> signInManager
+)
 {
     /// <summary>
     /// Creates a new user with the provided information.
     /// </summary>
-    public async Task CreateUser(string username, string email, string password)
+    public async Task CreateUserAsync(string username, string email, string password)
     {
         var user = new UserModel
         {
@@ -40,16 +43,32 @@ public sealed class UserService(
 
         var roleResult = await userManager.AddToRoleAsync(user, nameof(UserRole.Client));
         if (!roleResult.Succeeded)
+        {
             throw new UserException(
                 500,
                 "Failed to assign default user role."
             );
+        }
+    }
+
+    public async Task<bool> AuthenticateUserAsync(string email, string password)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user is null)
+        {
+            return false;
+        }
+
+        signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
+        var result = await signInManager.PasswordSignInAsync(user, password, true, true);
+
+        return result.Succeeded;
     }
 
     /// <summary>
     /// Validates a user's password.
     /// </summary>
-    public async Task<bool> ValidatePassword(Guid id, string password)
+    public async Task<bool> ValidatePasswordAsync(Guid id, string password)
     {
         var user = await userManager.FindByIdAsync(id.ToString());
         if (user is null)
@@ -61,7 +80,7 @@ public sealed class UserService(
     /// <summary>
     /// Validates an authorization code.
     /// </summary>
-    public async Task<bool> ValidateAuthorizationCode(Guid userId, string code)
+    public async Task<bool> ValidateAuthorizationCodeAsync(Guid userId, string code)
     {
         var user = await database.Users.FindAsync(userId);
 
@@ -94,7 +113,7 @@ public sealed class UserService(
     /// <summary>
     /// Generates a new authorization code.
     /// </summary>
-    public async Task<string> RegenerateAuthorizationCode(Guid userId)
+    public async Task<string> RegenerateAuthorizationCodeAsync(Guid userId)
     {
         var user = await database.Users.FindAsync(userId) ?? throw new UserException(404, "User not found.");
         var code = RandomNumberGenerator.GetInt32(100000, 1000000).ToString("D6");
