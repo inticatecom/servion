@@ -1,17 +1,18 @@
 // Resources
-import { type JSX, useEffect, useState } from "react";
+import { type JSX, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { requireUser } from "@/lib/user";
+import { toast } from "sonner";
 
 // Components
-import { toast } from "sonner";
 import { Input } from "@/components/ui/primitives/input";
 import { Button } from "@/components/ui/primitives/button";
 import NavigationBar, { type NavigationLink } from "@/components/ui/navigation/navigation-bar";
-import { Search, Server } from "lucide-react";
 import ServerDetails from "@/components/ui/server/server-details";
 import ServerCard, { type GameServer } from "@/components/ui/server/server-card";
-import { useGetApiServers } from "@/generated/api";
-import { requireUser } from "@/lib/user.ts";
+
+// Icons
+import { Search, Server } from "lucide-react";
 
 /** Placeholder destinations for the dashboard navigation. */
 const navigationLinks: NavigationLink[] = [
@@ -93,19 +94,17 @@ const handleCopy = async (server: GameServer): Promise<void> => {
 
 /** The server ownership dashboard mounted at the root. */
 const Home = (): JSX.Element => {
+  // States
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All servers");
   const [selected, setSelected] = useState<GameServer>();
+
+  // Constants
   const visible = servers.filter(
     (server) =>
       (filter === "All servers" || server.status === filter) &&
       `${server.name} ${server.game} ${server.region}`.toLowerCase().includes(query.toLowerCase()),
   );
-  const { data } = useGetApiServers();
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <main className={"mx-auto min-h-screen max-w-5xl px-5 py-6 sm:px-8 sm:py-8"}>
