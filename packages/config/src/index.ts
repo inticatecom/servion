@@ -8,16 +8,24 @@ const configuration = {
   webPort: 3000
 } as const;
 
-/** The repository's environment variables. */
-export const environment = createEnv({
-  client: {},
+/** Public environment variables available to the frontend. */
+export const clientEnvironment = createEnv({
+  client: {
+    PUBLIC_SERVER_URL: z.string()
+  },
 
   clientPrefix: "PUBLIC_",
 
   emptyStringAsUndefined: true,
 
-  runtimeEnv: process.env,
+  runtimeEnv: import.meta.env ?? (typeof process === "undefined" ? {} : process.env)
+});
 
+/** The repository's server environment variables. */
+export const environment = createEnv({
+  emptyStringAsUndefined: true,
+
+  runtimeEnv: process.env,
   server: {
     DATABASE_URL: z.string(),
     DOCKER_PATH: z.string(),

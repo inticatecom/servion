@@ -11,6 +11,7 @@ import { Search, Server } from "lucide-react";
 import ServerDetails from "@/components/ui/server/server-details";
 import ServerCard, { type GameServer } from "@/components/ui/server/server-card";
 import { useGetApiServers } from "@/generated/api";
+import { requireUser } from "@/lib/user.ts";
 
 /** Placeholder destinations for the dashboard navigation. */
 const navigationLinks: NavigationLink[] = [
@@ -204,4 +205,7 @@ const Home = (): JSX.Element => {
 };
 
 /** The route for the file. */
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  beforeLoad: async () => ({ user: await requireUser() }),
+  component: Home,
+});
