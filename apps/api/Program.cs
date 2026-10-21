@@ -90,6 +90,7 @@ public static class Program
         builder.Services.AddScoped<ServerService>();
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<EnvironmentService>();
+        builder.Services.AddScoped<HealthService>();
 
         builder.WebHost.ConfigureKestrel(options =>
             options.ListenLocalhost(
