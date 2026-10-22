@@ -7,16 +7,17 @@ namespace API.Jobs;
 [UsedImplicitly]
 public class HealthJob(HealthService health) : IJob
 {
-    private readonly Dictionary<string, Func<Task<bool>>> _checks = new()
+    private readonly Dictionary<string, Func<CancellationToken, Task<bool>>> _checks = new()
     {
         ["database"] = health.CheckDatabaseHealth
     };
 
-    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken)
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         foreach (var (name, check) in _checks)
         {
-            HealthService.CurrentHealth[name] = await check();
+            cancellationToken.ThrowIfCancellationRequested();
+            HealthService.CurrentHealth[name] = await check(cancellationToken);
         }
     }
 }

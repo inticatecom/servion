@@ -9,11 +9,15 @@ public sealed class HealthService(DatabaseContext database, ILogger<HealthServic
 {
     public static readonly ConcurrentDictionary<string, bool> CurrentHealth = new();
 
-    public async Task<bool> CheckDatabaseHealth()
+    public async Task<bool> CheckDatabaseHealth(CancellationToken cancellationToken = default)
     {
         try
         {
-            return await database.Database.CanConnectAsync();
+            return await database.Database.CanConnectAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch
         {
