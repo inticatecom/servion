@@ -5,11 +5,13 @@ using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using API.DTO;
+using API.Jobs;
 using API.Models;
 using API.Utilities;
 using API.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Quartz;
 
 namespace API;
 
@@ -108,6 +110,9 @@ public static class Program
         builder.Services.AddIdentityApiEndpoints<UserModel>().AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<DatabaseContext>();
 
+        // Initialize job schedules.
+        SetupJobs(builder);
+
         // Setup Authorization
         builder.Services.AddAuthorization();
 
@@ -115,5 +120,18 @@ public static class Program
         builder.Services.AddOpenApi();
 
         return builder;
+    }
+
+    private static void SetupJobs(WebApplicationBuilder builder)
+    {
+        builder.Services.AddQuartz(options =>
+        {
+            var jobKey = new JobKey("CleanupJob");
+
+            options.AddJob<CleanupJob>(job => job.WithIdentity(jobKey));
+            options.AddTrigger(trigger => trigger.ForJob(jobKey).WithIdentity("CleanupJobTrigger").WithCronSchedule("0 0/15 * * * ?"));
+        });
+
+        builder.Services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
     }
 }
