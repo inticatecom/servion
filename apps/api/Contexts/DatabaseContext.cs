@@ -19,14 +19,18 @@ public sealed class DatabaseContext(
 
     public DbSet<EnvironmentModel> Environments { get; set; }
 
+    public DbSet<ContainerModel> Containers { get; set; }
+
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         UpdateTimestamps();
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
-        CancellationToken cancellationToken = new CancellationToken())
+    public override Task<int> SaveChangesAsync(
+        bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = default
+    )
     {
         UpdateTimestamps();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
