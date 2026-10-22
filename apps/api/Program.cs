@@ -126,10 +126,17 @@ public static class Program
     {
         builder.Services.AddQuartz(options =>
         {
-            var jobKey = new JobKey("CleanupJob");
+            var cleanupJobKey = new JobKey("CleanupJob");
+            options.AddJob<CleanupJob>(job => job.WithIdentity(cleanupJobKey));
+            options.AddTrigger(trigger =>
+                trigger.ForJob(cleanupJobKey).WithIdentity("CleanupJobTrigger").WithCronSchedule("0 0/15 * * * ?"));
 
-            options.AddJob<CleanupJob>(job => job.WithIdentity(jobKey));
-            options.AddTrigger(trigger => trigger.ForJob(jobKey).WithIdentity("CleanupJobTrigger").WithCronSchedule("0 0/15 * * * ?"));
+            var healthJobKey = new JobKey("HealthJob");
+            options.AddJob<HealthJob>(job => job.WithIdentity(healthJobKey));
+            options.AddTrigger(trigger =>
+                trigger.ForJob(healthJobKey).WithIdentity("HealthJobTrigger").StartNow()
+                    .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromSeconds(30)).RepeatForever())
+            );
         });
 
         builder.Services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });

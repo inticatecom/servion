@@ -5,30 +5,21 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/health")]
-public class HealthController(HealthService health) : ControllerBase
+public class HealthController : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Check()
     {
-        Dictionary<string, Func<Task<bool>>> checks = new()
-        {
-            ["database"] = health.CheckDatabaseHealth
-        };
-        Dictionary<string, bool> results = new();
+        var currentHealth = HealthService.CurrentHealth;
+        var healthy = currentHealth.All(pair => pair.Value != false);
 
-        foreach (var (name, check) in checks)
-        {
-            results[name] = await check();
-        }
-
-        var healthy = results.All(pair => pair.Value != false);
         if (healthy)
         {
-            return Ok(results);
+            return Ok(currentHealth);
         }
         else
         {
-            return new ObjectResult(results)
+            return new ObjectResult(currentHealth)
             {
                 StatusCode = 503
             };
