@@ -129,12 +129,20 @@ public static class Program
             var cleanupJobKey = new JobKey("CleanupJob");
             options.AddJob<CleanupJob>(job => job.WithIdentity(cleanupJobKey));
             options.AddTrigger(trigger =>
-                trigger.ForJob(cleanupJobKey).WithIdentity("CleanupJobTrigger").WithCronSchedule("0 0/15 * * * ?"));
+                trigger
+                    .ForJob(cleanupJobKey)
+                    .WithIdentity("CleanupJobTrigger")
+                    // TODO: Make time san configurable from environment options.
+                    .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromMinutes(15)).RepeatForever())
+            );
 
             var healthJobKey = new JobKey("HealthJob");
             options.AddJob<HealthJob>(job => job.WithIdentity(healthJobKey));
             options.AddTrigger(trigger =>
-                trigger.ForJob(healthJobKey).WithIdentity("HealthJobTrigger").StartNow()
+                trigger
+                    .ForJob(healthJobKey)
+                    .WithIdentity("HealthJobTrigger")
+                    .StartNow()
                     .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromSeconds(30)).RepeatForever())
             );
         });
