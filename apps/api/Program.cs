@@ -33,6 +33,36 @@ public static class Program
 
         // Construct Application
         var builder = CreateBuilder();
+        var app = CreateApplication(builder);
+
+        // Start Application
+        app.Run();
+    }
+
+    /// <summary>
+    /// Constructs the website application builder.
+    /// </summary>
+    /// <exception cref="Exception">An error if environment variable assets aren't present.</exception>
+    /// <returns>The website application builder.</returns>
+    private static WebApplicationBuilder CreateBuilder()
+    {
+        var builder = WebApplication.CreateBuilder();
+
+        // Ensure HTTP server starts on the configured port.
+        builder.WebHost.ConfigureKestrel(options =>
+            options.ListenLocalhost(
+                EnvironmentVariableUtility.GetEnvironmentVariable<int>(EnvironmentVariableKey.ServerPort)
+            )
+        );
+
+        SetupJobs(builder);
+        ConfigureServices(builder);
+
+        return builder;
+    }
+
+    private static WebApplication CreateApplication(WebApplicationBuilder builder)
+    {
         var app = builder.Build();
 
         // Register Controllers
@@ -48,19 +78,11 @@ public static class Program
         app.UseHttpsRedirection();
         app.UseAuthorization();
 
-        // Start Application
-        app.Run();
+        return app;
     }
 
-    /// <summary>
-    /// Constructs the website application builder.
-    /// </summary>
-    /// <exception cref="Exception">An error if environment variable assets aren't present.</exception>
-    /// <returns>The website application builder.</returns>
-    private static WebApplicationBuilder CreateBuilder()
+    private static void ConfigureServices(WebApplicationBuilder builder)
     {
-        var builder = WebApplication.CreateBuilder();
-
         // Configure Services
         builder.Services.AddControllers();
 
@@ -94,10 +116,6 @@ public static class Program
         builder.Services.AddScoped<EnvironmentService>();
         builder.Services.AddScoped<HealthService>();
 
-        builder.WebHost.ConfigureKestrel(options =>
-            options.ListenLocalhost(
-                EnvironmentVariableUtility.GetEnvironmentVariable<int>(EnvironmentVariableKey.ServerPort)));
-
         // Configure JSON Parsing
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
@@ -107,19 +125,13 @@ public static class Program
                 );
             });
 
-        builder.Services.AddIdentityApiEndpoints<UserModel>().AddRoles<IdentityRole<Guid>>()
+        builder.Services
+            .AddIdentityApiEndpoints<UserModel>()
+            .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<DatabaseContext>();
 
-        // Initialize job schedules.
-        SetupJobs(builder);
-
-        // Setup Authorization
         builder.Services.AddAuthorization();
-
-        // Setup OpenAPI
         builder.Services.AddOpenApi();
-
-        return builder;
     }
 
     private static void SetupJobs(WebApplicationBuilder builder)
