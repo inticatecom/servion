@@ -11,16 +11,26 @@ public sealed class CleanupJob(DatabaseContext database, DockerClient docker) : 
 {
     public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken)
     {
+        var dockerContainers = await docker.Containers.ListContainersAsync(null, cancellationToken);
         var containers = await database.Containers.AsNoTracking().Include(container => container.Server).ToListAsync(cancellationToken);
+
         foreach (var container in containers)
         {
             if (container.Server is null)
             {
-                continue;
+                // If the server no longer exists, remove the container.
+                await docker.Containers.RemoveContainerAsync(container.Id, null, cancellationToken);
+                database.Containers.Remove(container);
             }
-
-            await docker.Containers.RemoveContainerAsync(container.Id, null, cancellationToken);
-            database.Containers.Remove(container);
+            else
+            {
+                // If the container no longer exists, delete the server.
+                if (!dockerContainers.Any(item => item.ID == container.Id))
+                {
+                    database.Servers.Remove(container.Server);
+                    database.Containers.Remove(container);
+                }
+            }
         }
 
         await database.SaveChangesAsync(cancellationToken);
