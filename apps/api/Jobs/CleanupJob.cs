@@ -1,14 +1,28 @@
+using API.Contexts;
+using Docker.DotNet;
 using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 namespace API.Jobs;
 
 [UsedImplicitly]
-public sealed class CleanupJob(ILogger<CleanupJob> logger) : IJob
+public sealed class CleanupJob(DatabaseContext database, DockerClient docker) : IJob
 {
-    public ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken)
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken)
     {
-        logger.LogWarning("TODO: Implement cleanup logic here, log is just to demonstrate Cron functionality.");
-        return ValueTask.CompletedTask;
+        var containers = await database.Containers.AsNoTracking().Include(container => container.Server).ToListAsync(cancellationToken);
+        foreach (var container in containers)
+        {
+            if (container.Server is null)
+            {
+                continue;
+            }
+
+            await docker.Containers.RemoveContainerAsync(container.Id, null, cancellationToken);
+            database.Containers.Remove(container);
+        }
+
+        await database.SaveChangesAsync(cancellationToken);
     }
 }
