@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using API.Models;
+using API.Services;
 
 namespace API.DTO;
 
@@ -31,8 +32,8 @@ public static class ServerDto
     /// <summary>
     /// Sets the state for a server.
     /// </summary>
-    /// <param name="State">The enum index for a server state, 0 = off, 1 = on.</param>
-    public record SetState([Required] int State);
+    /// <param name="State">The state of the server.</param>
+    public record SetState([Required] ServerState State);
 
     /// <summary>
     /// The data required to delete a server.

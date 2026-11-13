@@ -5,11 +5,24 @@ using MimeKit;
 
 namespace API.Services;
 
+/// <summary>
+/// A service for sending out emails to clients.
+/// </summary>
 public sealed class EmailService
 {
+    /// <summary>
+    /// The from address to use.
+    /// </summary>
     private readonly string _smtpFromAddress =
         EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariable.SmtpFromAddress);
 
+    /// <summary>
+    /// Sends an email with the provided information to the client.
+    /// </summary>
+    ///
+    /// <param name="recipient">The recipient.</param>
+    /// <param name="subject">The subject.</param>
+    /// <param name="content">The content.</param>
     public async Task SendAsync(string recipient, string subject, string content)
     {
         var message = new MimeMessage();
