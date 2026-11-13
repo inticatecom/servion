@@ -51,7 +51,7 @@ public static class Program
         // Ensure HTTP server starts on the configured port.
         builder.WebHost.ConfigureKestrel(options =>
             options.ListenLocalhost(
-                EnvironmentVariableUtility.GetEnvironmentVariable<int>(EnvironmentVariableKey.ServerPort)
+                EnvironmentVariableUtility.GetEnvironmentVariable<int>(EnvironmentVariable.ServerPort)
             )
         );
 
@@ -89,7 +89,7 @@ public static class Program
         // Make database accessible as a service.
         builder.Services.AddDbContext<DatabaseContext>(options =>
             options.UseNpgsql(
-                EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariableKey.DatabaseUrl),
+                EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariable.DatabaseUrl),
                 npgsql => npgsql.ConfigureDataSource(datasource => datasource.EnableDynamicJson())
             )
         );
@@ -102,7 +102,7 @@ public static class Program
         builder.Services.AddSingleton(_ =>
             new DockerClientConfiguration(
                 new Uri(
-                    EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariableKey.DockerPath)
+                    EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariable.DockerPath)
                 )
             ).CreateClient()
         );
