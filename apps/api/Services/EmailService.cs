@@ -2,6 +2,7 @@ using API.Utilities;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
+using MailKit;
 
 namespace API.Services;
 
@@ -37,7 +38,7 @@ public sealed class EmailService
             Text = content
         };
 
-        using var client = new SmtpClient();
+        await using var client = new SmtpClient();
 
         await client.ConnectAsync(
             EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariable.SmtpHost),
