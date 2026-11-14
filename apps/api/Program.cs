@@ -1,27 +1,27 @@
-using API.Contexts;
-using API.Services;
-using Docker.DotNet;
-using DotNetEnv;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using API.Contexts;
 using API.DTO;
 using API.Jobs;
 using API.Models;
+using API.Services;
 using API.Utilities;
 using API.Validators;
+using Docker.DotNet;
+using DotNetEnv;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 namespace API;
 
 /// <summary>
-/// The main entrypoint of the program.
+///     The main entrypoint of the program.
 /// </summary>
 public static class Program
 {
     /// <summary>
-    /// The method that is called when the program starts.
+    ///     The method that is called when the program starts.
     /// </summary>
     public static void Main()
     {
@@ -40,7 +40,7 @@ public static class Program
     }
 
     /// <summary>
-    /// Constructs the website application builder.
+    ///     Constructs the website application builder.
     /// </summary>
     /// <exception cref="Exception">An error if environment variable assets aren't present.</exception>
     /// <returns>The website application builder.</returns>
@@ -69,10 +69,7 @@ public static class Program
         app.MapControllers();
 
         // Map OpenAPI in development mode.
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
+        if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
         // HTTP Server Settings
         app.UseHttpsRedirection();

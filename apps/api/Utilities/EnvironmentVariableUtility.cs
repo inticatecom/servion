@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 namespace API.Utilities;
 
 /// <summary>
-/// Data-types that are accepted as environment variables. Obviously environment variables are by
-/// default a string, but they will be parsed into their respective data-types if possible or a
-/// validation error will be thrown.
+///     Data-types that are accepted as environment variables. Obviously environment variables are by
+///     default a string, but they will be parsed into their respective data-types if possible or a
+///     validation error will be thrown.
 /// </summary>
 public enum EnvironmentVariableDataType
 {
@@ -15,7 +15,7 @@ public enum EnvironmentVariableDataType
 }
 
 /// <summary>
-/// An enumerator pointing towards a specific key in the environment.
+///     An enumerator pointing towards a specific key in the environment.
 /// </summary>
 public enum EnvironmentVariable
 {
@@ -34,12 +34,12 @@ public enum EnvironmentVariable
 }
 
 /// <summary>
-/// Utility functions for reading environment variables loaded into the system.
+///     Utility functions for reading environment variables loaded into the system.
 /// </summary>
 public static class EnvironmentVariableUtility
 {
     /// <summary>
-    /// The environment variables that are required by the system.
+    ///     The environment variables that are required by the system.
     /// </summary>
     private static readonly Dictionary<EnvironmentVariable, EnvironmentVariableDataType> RequiredVariables = new()
     {
@@ -66,9 +66,8 @@ public static class EnvironmentVariableUtility
     private static bool _initialized;
 
     /// <summary>
-    /// Initializes & validates all environment variables.
+    ///     Initializes & validates all environment variables.
     /// </summary>
-    ///
     /// <exception cref="InvalidOperationException">If the operation fails.</exception>
     /// <exception cref="FormatException">If the format is not met.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If the value does not meet the requirements.</exception>
@@ -85,11 +84,9 @@ public static class EnvironmentVariableUtility
             var value = Environment.GetEnvironmentVariable(variableName);
 
             if (string.IsNullOrWhiteSpace(value))
-            {
                 throw new InvalidOperationException(
                     $"Required environment variable '{variableName}' is missing."
                 );
-            }
 
             object parsed = type switch
             {
@@ -119,12 +116,10 @@ public static class EnvironmentVariableUtility
     }
 
     /// <summary>
-    /// Gets the value of the specified environment variable.
+    ///     Gets the value of the specified environment variable.
     /// </summary>
-    ///
     /// <param name="key">The environment variable key.</param>
     /// <typeparam name="T">The expected data-type of the returned value (e.g. string).</typeparam>
-    ///
     /// <returns>The value of the environment variable.</returns>
     public static T GetEnvironmentVariable<T>(EnvironmentVariable key)
     {

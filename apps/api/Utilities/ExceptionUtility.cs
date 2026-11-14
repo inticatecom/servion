@@ -8,7 +8,7 @@ namespace API.Utilities;
 public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, IServiceProvider services)
 {
     /// <summary>
-    /// Handles public/private error results for API controller routes.
+    ///     Handles public/private error results for API controller routes.
     /// </summary>
     /// <param name="callback">The callback to run.</param>
     /// <typeparam name="TException">The exception that will be publicly returned to the user.</typeparam>
@@ -24,21 +24,16 @@ public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, IServiceP
             var validation = await validator.ValidateAsync(request);
 
             if (!validation.IsValid)
-            {
                 return new ObjectResult(
                         new ValidationErrorResult([.. validation.Errors.Select(error => error.ErrorMessage)])
                     )
                     { StatusCode = 400 };
-            }
 
             return await callback();
         }
         catch (Exception exception)
         {
-            if (exception is TException baseException)
-            {
-                return new ObjectResult(baseException.Message) { StatusCode = baseException.Code };
-            }
+            if (exception is TException baseException) return new ObjectResult(baseException.Message) { StatusCode = baseException.Code };
 
             logger.LogError(exception, "Exception occurred: {EXCEPTION_MESSAGE}", exception.Message);
             return new ObjectResult("Internal server error.") { StatusCode = 500 };
@@ -46,7 +41,7 @@ public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, IServiceP
     }
 
     /// <summary>
-    /// Handles public/private error results for API controller routes.
+    ///     Handles public/private error results for API controller routes.
     /// </summary>
     /// <param name="callback">The callback to run.</param>
     /// <typeparam name="TException">The exception that will be publicly returned to the user.</typeparam>
@@ -61,10 +56,7 @@ public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, IServiceP
         }
         catch (Exception exception)
         {
-            if (exception is TException baseException)
-            {
-                return new ObjectResult(baseException.Message) { StatusCode = baseException.Code };
-            }
+            if (exception is TException baseException) return new ObjectResult(baseException.Message) { StatusCode = baseException.Code };
 
             logger.LogError(exception, "Exception occurred: {EXCEPTION_MESSAGE}", exception.Message);
             return new ObjectResult("Internal server error.") { StatusCode = 500 };

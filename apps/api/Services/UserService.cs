@@ -5,12 +5,11 @@ using API.Exceptions;
 using API.Models;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
 /// <summary>
-/// A service for managing users in the database.
+///     A service for managing users in the database.
 /// </summary>
 [UsedImplicitly]
 public sealed class UserService(
@@ -20,8 +19,12 @@ public sealed class UserService(
 )
 {
     /// <summary>
-    /// Creates a new user with the provided information.
+    ///     Creates a new user with the provided information.
     /// </summary>
+    /// <param name="username">The username for the user.</param>
+    /// <param name="email">The email for the user.</param>
+    /// <param name="password">The password to be hashed for the user.</param>
+    /// <returns>The newly created user.</returns>
     public async Task<UserModel> CreateUserAsync(string username, string email, string password)
     {
         var user = new UserModel
@@ -43,12 +46,10 @@ public sealed class UserService(
 
         var roleResult = await userManager.AddToRoleAsync(user, nameof(UserRole.Client));
         if (!roleResult.Succeeded)
-        {
             throw new UserException(
                 500,
                 "Failed to assign default user role."
             );
-        }
 
         return user;
     }
@@ -56,10 +57,7 @@ public sealed class UserService(
     public async Task<bool> AuthenticateUserAsync(string email, string password)
     {
         var user = await userManager.FindByEmailAsync(email);
-        if (user is null)
-        {
-            return false;
-        }
+        if (user is null) return false;
 
         signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
         var result = await signInManager.PasswordSignInAsync(user, password, true, true);
@@ -68,7 +66,7 @@ public sealed class UserService(
     }
 
     /// <summary>
-    /// Validates a user's password.
+    ///     Validates a user's password.
     /// </summary>
     public async Task<bool> ValidatePasswordAsync(Guid id, string password)
     {
@@ -80,7 +78,7 @@ public sealed class UserService(
     }
 
     /// <summary>
-    /// Validates an authorization code.
+    ///     Validates an authorization code.
     /// </summary>
     public async Task<bool> ValidateAuthorizationCodeAsync(Guid userId, string code)
     {
@@ -91,10 +89,7 @@ public sealed class UserService(
 
         var authorization = user.AuthorizationCode;
 
-        if (DateTime.UtcNow - authorization.GeneratedAt >= TimeSpan.FromMinutes(15))
-        {
-            return false;
-        }
+        if (DateTime.UtcNow - authorization.GeneratedAt >= TimeSpan.FromMinutes(15)) return false;
 
         var providedHash = SHA256.HashData(Encoding.UTF8.GetBytes(code));
 
@@ -113,7 +108,7 @@ public sealed class UserService(
     }
 
     /// <summary>
-    /// Generates a new authorization code.
+    ///     Generates a new authorization code.
     /// </summary>
     public async Task<string> RegenerateAuthorizationCodeAsync(Guid userId)
     {

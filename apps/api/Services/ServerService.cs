@@ -1,5 +1,6 @@
 using API.Contexts;
 using API.Exceptions;
+using API.Models;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using JetBrains.Annotations;
@@ -7,10 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
-using Models;
-
 /// <summary>
-/// Represents the state for a server.
+///     Represents the state for a server.
 /// </summary>
 public enum ServerState
 {
@@ -19,6 +18,9 @@ public enum ServerState
     Restarting = 2
 }
 
+/// <summary>
+///     The parameters required for creating a new server.
+/// </summary>
 public record ServerCreateParameters
 {
     public required string Name { get; init; } = "";
@@ -29,7 +31,7 @@ public record ServerCreateParameters
 }
 
 /// <summary>
-/// A service for managing servers.
+///     A service for managing servers.
 /// </summary>
 /// <param name="docker">The Docker client SDK.</param>
 /// <param name="database">The database SDK.</param>
@@ -37,7 +39,7 @@ public record ServerCreateParameters
 public sealed class ServerService(DockerClient docker, DatabaseContext database, EnvironmentService environments)
 {
     /// <summary>
-    /// Lists all existing servers regardless of the owner.
+    ///     Lists all existing servers regardless of the owner.
     /// </summary>
     /// <returns>The list of servers.</returns>
     public async Task<List<ServerModel>> ListServers()
@@ -46,7 +48,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     }
 
     /// <summary>
-    /// Gets a specific server's information based on its identifier.
+    ///     Gets a specific server's information based on its identifier.
     /// </summary>
     /// <param name="id">The identifier of the server.</param>
     /// <returns>The found server.</returns>
@@ -56,17 +58,14 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     }
 
     /// <summary>
-    /// Creates a new server with the provided information.
+    ///     Creates a new server with the provided information.
     /// </summary>
     /// <param name="options">The options to apply to the newly created server.</param>
     /// <returns>The created server.</returns>
     public async Task<ServerModel> CreateServer(ServerCreateParameters options)
     {
         var environment = await database.Environments.FindAsync(options.EnvironmentId);
-        if (environment is null)
-        {
-            throw new ServerException(400, "Invalid environment ID.");
-        }
+        if (environment is null) throw new ServerException(400, "Invalid environment ID.");
 
         // TODO: Ensure provided variables match schema of environment parameters.
         var result = await environments.EnsureServerMeetsEnvironmentParameters(options.Variables, environment.Id);
@@ -102,7 +101,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     }
 
     /// <summary>
-    /// Deletes a server and it's data.
+    ///     Deletes a server and it's data.
     /// </summary>
     /// <param name="id">The ID of the server to delete.</param>
     /// <param name="forcefully">Whether the operation should be carried out forcefully.</param>
@@ -136,7 +135,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     }
 
     /// <summary>
-    /// Changes the current state of the provided server.
+    ///     Changes the current state of the provided server.
     /// </summary>
     /// <param name="id">The identifier of the server.</param>
     /// <param name="state">The state to set for the server.</param>
@@ -144,22 +143,19 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     public async Task SetServerState(Guid id, ServerState state)
     {
         var server = await database.Servers.FindAsync(id);
-        if (server is null)
-        {
-            throw new ServerException(404, "Server does not exist.");
-        }
+        if (server is null) throw new ServerException(404, "Server does not exist.");
 
         switch (state)
         {
             case ServerState.Online:
             {
-                await docker.Containers.StartContainerAsync(server.ContainerId, new ContainerStartParameters { },
+                await docker.Containers.StartContainerAsync(server.ContainerId, new ContainerStartParameters(),
                     CancellationToken.None);
                 break;
             }
             case ServerState.Offline:
             {
-                await docker.Containers.StopContainerAsync(server.ContainerId, new ContainerStopParameters { },
+                await docker.Containers.StopContainerAsync(server.ContainerId, new ContainerStopParameters(),
                     CancellationToken.None);
                 break;
             }

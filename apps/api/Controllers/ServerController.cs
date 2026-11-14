@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 /// <summary>
-/// Routes relating to servers.
+///     Routes relating to servers.
 /// </summary>
 /// <param name="servers">The server service for interacting with servers.</param>
 [ApiController]
@@ -17,7 +17,7 @@ namespace API.Controllers;
 public sealed class ServerController(ServerService servers, ExceptionUtility exceptions) : ControllerBase
 {
     /// <summary>
-    /// Lists all servers regardless of their owners.
+    ///     Lists all servers regardless of their owners.
     /// </summary>
     /// <returns>The list of servers.</returns>
     [HttpGet]
@@ -28,7 +28,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     }
 
     /// <summary>
-    /// Creates a new server with the provided information.
+    ///     Creates a new server with the provided information.
     /// </summary>
     /// <param name="request">The request body.</param>
     /// <returns>The request result.</returns>
@@ -48,10 +48,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
                 });
 
                 // If the request wants the server to startup, start it.
-                if (request.ShouldStart)
-                {
-                    await servers.SetServerState(server.Id, ServerState.Online);
-                }
+                if (request.ShouldStart) await servers.SetServerState(server.Id, ServerState.Online);
 
                 return Created();
             }
@@ -59,7 +56,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     }
 
     /// <summary>
-    /// Deletes a server and it's data.
+    ///     Deletes a server and it's data.
     /// </summary>
     /// <param name="request">The data to include for the request.</param>
     /// <returns>The request result.</returns>
@@ -75,7 +72,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     }
 
     /// <summary>
-    /// Gets a server by the provided ID.
+    ///     Gets a server by the provided ID.
     /// </summary>
     /// <param name="id">The ID of the server.</param>
     /// <returns>The request result.</returns>
@@ -90,7 +87,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     }
 
     /// <summary>
-    /// Updates the state for the provided server.
+    ///     Updates the state for the provided server.
     /// </summary>
     /// <param name="id">The ID of the server.</param>
     /// <param name="request">The request body.</param>
@@ -100,7 +97,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     {
         return await exceptions.HandleHttpException<ServerException>(async () =>
         {
-            var state = (ServerState)request.State;
+            var state = request.State;
 
             await servers.SetServerState(id, state);
             return NoContent();

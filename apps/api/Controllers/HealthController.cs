@@ -11,18 +11,13 @@ public class HealthController : ControllerBase
     public async Task<IActionResult> Check()
     {
         var currentHealth = HealthService.CurrentHealth;
-        var healthy = currentHealth.All(pair => pair.Value != false);
+        var healthy = currentHealth.All(pair => pair.Value);
 
-        if (healthy)
+        if (healthy) return Ok(currentHealth);
+
+        return new ObjectResult(currentHealth)
         {
-            return Ok(currentHealth);
-        }
-        else
-        {
-            return new ObjectResult(currentHealth)
-            {
-                StatusCode = 503
-            };
-        }
+            StatusCode = 503
+        };
     }
 }

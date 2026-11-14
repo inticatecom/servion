@@ -1,12 +1,12 @@
 using API.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Contexts;
 
 /// <summary>
-/// The database context made for accessing & interacting with the database in controllers & services.
+///     The database context made for accessing & interacting with the database in controllers & services.
 /// </summary>
 /// <param name="options">Options for the context.</param>
 public sealed class DatabaseContext(
@@ -41,11 +41,7 @@ public sealed class DatabaseContext(
         var now = DateTime.UtcNow;
 
         foreach (var entry in ChangeTracker.Entries<IdentityModel>())
-        {
             if (entry.State == EntityState.Modified)
-            {
                 entry.Entity.UpdatedAt = now;
-            }
-        }
     }
 }

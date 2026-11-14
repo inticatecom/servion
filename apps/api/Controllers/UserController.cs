@@ -25,10 +25,7 @@ public sealed class UserController(UserService users, UserManager<UserModel> use
     public async Task<IActionResult> Login([FromBody] UserDto.Authenticate request)
     {
         var success = await users.AuthenticateUserAsync(request.Email, request.Password);
-        if (!success)
-        {
-            return Unauthorized();
-        }
+        if (!success) return Unauthorized();
 
         return Ok();
     }
@@ -37,10 +34,7 @@ public sealed class UserController(UserService users, UserManager<UserModel> use
     public async Task<IActionResult> Me()
     {
         var user = await userManager.GetUserAsync(User);
-        if (user is null)
-        {
-            return Unauthorized();
-        }
+        if (user is null) return Unauthorized();
 
         return Ok(new
         {

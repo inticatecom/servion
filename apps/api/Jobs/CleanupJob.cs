@@ -15,7 +15,6 @@ public sealed class CleanupJob(DatabaseContext database, DockerClient docker) : 
         var containers = await database.Containers.AsNoTracking().Include(container => container.Server).ToListAsync(cancellationToken);
 
         foreach (var container in containers)
-        {
             if (container.Server is null)
             {
                 // If the server no longer exists, remove the container.
@@ -31,7 +30,6 @@ public sealed class CleanupJob(DatabaseContext database, DockerClient docker) : 
                     database.Containers.Remove(container);
                 }
             }
-        }
 
         await database.SaveChangesAsync(cancellationToken);
     }
