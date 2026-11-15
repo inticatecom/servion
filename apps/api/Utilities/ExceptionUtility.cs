@@ -27,7 +27,7 @@ public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, IServiceP
                 return new ObjectResult(
                         new ValidationErrorResult([.. validation.Errors.Select(error => error.ErrorMessage)])
                     )
-                    { StatusCode = 400 };
+                { StatusCode = 400 };
 
             return await callback();
         }

@@ -83,7 +83,8 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
 
         var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters
         {
-            Name = options.Name, Image = image,
+            Name = options.Name,
+            Image = image,
             Env = [.. options.Variables.Select(variable => $"{variable.Value.Name}={variable.Value.Value}")]
         });
 
@@ -150,17 +151,17 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
         switch (state)
         {
             case ServerState.Online:
-            {
-                await docker.Containers.StartContainerAsync(server.ContainerId, new ContainerStartParameters(),
-                    CancellationToken.None);
-                break;
-            }
+                {
+                    await docker.Containers.StartContainerAsync(server.ContainerId, new ContainerStartParameters(),
+                        CancellationToken.None);
+                    break;
+                }
             case ServerState.Offline:
-            {
-                await docker.Containers.StopContainerAsync(server.ContainerId, new ContainerStopParameters(),
-                    CancellationToken.None);
-                break;
-            }
+                {
+                    await docker.Containers.StopContainerAsync(server.ContainerId, new ContainerStopParameters(),
+                        CancellationToken.None);
+                    break;
+                }
         }
     }
 }

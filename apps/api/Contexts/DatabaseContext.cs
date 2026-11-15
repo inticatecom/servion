@@ -13,13 +13,11 @@ public sealed class DatabaseContext(
     DbContextOptions<DatabaseContext> options
 ) : IdentityDbContext<UserModel, IdentityRole<Guid>, Guid>(options)
 {
-    public DbSet<ServerModel> Servers { get; set; }
+    public DbSet<ServerModel> Servers => Set<ServerModel>();
 
-    public DbSet<UserModel> Users { get; set; }
+    public DbSet<EnvironmentModel> Environments => Set<EnvironmentModel>();
 
-    public DbSet<EnvironmentModel> Environments { get; set; }
-
-    public DbSet<ContainerModel> Containers { get; set; }
+    public DbSet<ContainerModel> Containers => Set<ContainerModel>();
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
