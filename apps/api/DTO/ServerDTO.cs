@@ -13,14 +13,16 @@ public static class ServerDto
     ///     The data required from the client for creating a new server.
     /// </summary>
     /// <param name="OwnerId">The ID of the owner to assign the server to.</param>
+    /// <param name="BackendId">The ID fo the backend server to use.</param>
     /// <param name="EnvironmentId">The ID of the environment to use for the server.</param>
     /// <param name="Name">The name of the server.</param>
     /// <param name="Description">The description to set for the server.</param>
-    /// <param name="Image">The key of the image to use for the server..</param>
+    /// <param name="Image">The key of the image to use for the server.</param>
     /// <param name="Variables">The configured variables for the server.</param>
     /// <param name="ShouldStart">Whether the server should be automatically started once created or not.</param>
     public record Create(
         [Required] Guid OwnerId,
+        [Required] Guid BackendId,
         [Required] Guid EnvironmentId,
         [Required] string Name,
         [Required] string Description,

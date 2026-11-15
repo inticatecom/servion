@@ -1,5 +1,6 @@
 using API.Contexts;
 using Docker.DotNet;
+using Docker.DotNet.Models;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
@@ -11,7 +12,7 @@ public sealed class CleanupJob(DatabaseContext database, DockerClient docker) : 
 {
     public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken)
     {
-        var dockerContainers = await docker.Containers.ListContainersAsync(null, cancellationToken);
+        var dockerContainers = await docker.Containers.ListContainersAsync(new ContainersListParameters(), cancellationToken);
         var containers = await database.Containers.AsNoTracking().Include(container => container.Server).ToListAsync(cancellationToken);
 
         foreach (var container in containers)

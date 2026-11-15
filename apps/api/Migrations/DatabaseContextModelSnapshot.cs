@@ -25,6 +25,51 @@ namespace API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("API.Models.BackendModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Backends");
+                });
+
+            modelBuilder.Entity("API.Models.ContainerModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid?>("ServerId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("ServerId");
+
+                    b.ToTable("Containers");
+                });
+
             modelBuilder.Entity("API.Models.EnvironmentModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -90,6 +135,9 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("BackendInstanceId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ContainerId")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -117,6 +165,8 @@ namespace API.Migrations
                         .HasColumnType("jsonb");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BackendInstanceId");
 
                     b.HasIndex("EnvironmentId");
 
@@ -326,8 +376,23 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("API.Models.ContainerModel", b =>
+                {
+                    b.HasOne("API.Models.ServerModel", "Server")
+                        .WithMany()
+                        .HasForeignKey("ServerId");
+
+                    b.Navigation("Server");
+                });
+
             modelBuilder.Entity("API.Models.ServerModel", b =>
                 {
+                    b.HasOne("API.Models.BackendModel", "BackendInstance")
+                        .WithMany()
+                        .HasForeignKey("BackendInstanceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("API.Models.EnvironmentModel", "Environment")
                         .WithMany("Servers")
                         .HasForeignKey("EnvironmentId")
@@ -339,6 +404,8 @@ namespace API.Migrations
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BackendInstance");
 
                     b.Navigation("Environment");
 

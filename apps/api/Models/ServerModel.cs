@@ -20,6 +20,10 @@ public class ServerModel : IdentityModel
     /// </summary>
     public required Guid OwnerId { get; set; }
 
+    public BackendModel BackendInstance { get; init; } = null!;
+
+    public required Guid BackendInstanceId { get; init; }
+
     /// <summary>
     ///     The environment in-use by the server.
     /// </summary>

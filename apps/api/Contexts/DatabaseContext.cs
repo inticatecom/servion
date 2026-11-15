@@ -19,6 +19,8 @@ public sealed class DatabaseContext(
 
     public DbSet<ContainerModel> Containers => Set<ContainerModel>();
 
+    public DbSet<BackendModel> Backends => Set<BackendModel>();
+
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         UpdateTimestamps();
@@ -40,6 +42,8 @@ public sealed class DatabaseContext(
 
         foreach (var entry in ChangeTracker.Entries<IdentityModel>())
             if (entry.State == EntityState.Modified)
+            {
                 entry.Entity.UpdatedAt = now;
+            }
     }
 }

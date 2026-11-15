@@ -94,7 +94,8 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
             EnvironmentId = options.EnvironmentId,
             Name = options.Name,
             ContainerId = container.ID,
-            Variables = options.Variables
+            Variables = options.Variables,
+            BackendInstanceId = Guid.NewGuid() // TODO: Properly set this.
         };
         database.Add(server);
 

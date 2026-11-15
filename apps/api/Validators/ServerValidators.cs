@@ -1,6 +1,8 @@
+using API.Contexts;
 using API.DTO;
 using FluentValidation;
 using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Validators;
 
@@ -10,9 +12,12 @@ namespace API.Validators;
 [UsedImplicitly]
 public sealed class ServerCreateValidator : AbstractValidator<ServerDto.Create>
 {
-    public ServerCreateValidator()
+    public ServerCreateValidator(DatabaseContext database)
     {
         RuleFor(x => x.Name).NotEmpty().MinimumLength(3).MaximumLength(30).WithMessage("Invalid server name.");
+
+        RuleFor(x => x.BackendId).MustAsync(async (id, cancellationToken) => await database.Backends.AnyAsync(backend => backend.Id == id, cancellationToken))
+            .WithMessage("Invalid backend ID.");
     }
 }
 
