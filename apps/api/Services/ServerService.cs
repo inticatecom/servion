@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
+// TODO: Migrate server creation/storage to use backends instead of executing from Docker on host.
+
 /// <summary>
 ///     Represents the state for a server.
 /// </summary>
