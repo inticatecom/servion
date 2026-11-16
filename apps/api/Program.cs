@@ -12,6 +12,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
+using Scalar.AspNetCore;
 
 namespace API;
 
@@ -69,7 +70,13 @@ public static class Program
         app.MapControllers();
 
         // Map OpenAPI in development mode.
-        if (app.Environment.IsDevelopment()) app.MapOpenApi();
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.MapScalarApiReference("/docs", options =>
+                options.HideDarkModeToggle().ForceDarkMode().SortOperationsByMethod().HideDeveloperTools()
+            );
+        }
 
         // HTTP Server Settings
         app.UseHttpsRedirection();
