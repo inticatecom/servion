@@ -14,8 +14,12 @@ public class BackendModel : IdentityModel
     public required Uri Endpoint { get; init; }
 
     /// <summary>
-    ///     The location of the backend.
+    ///     The location for the backend.
     /// </summary>
-    [StringLength(30, MinimumLength = 1)]
-    public required string Location { get; init; }
+    public LocationModel Location = null!;
+
+    /// <summary>
+    ///     The ID of the location for the backend.
+    /// </summary>
+    public required Guid LocationId { get; set; }
 }

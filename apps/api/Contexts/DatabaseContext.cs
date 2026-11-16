@@ -21,6 +21,8 @@ public sealed class DatabaseContext(
 
     public DbSet<BackendModel> Backends => Set<BackendModel>();
 
+    public DbSet<LocationModel> Locations => Set<LocationModel>();
+
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         UpdateTimestamps();
