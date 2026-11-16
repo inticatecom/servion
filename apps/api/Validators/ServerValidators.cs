@@ -1,7 +1,6 @@
 using API.Contexts;
 using API.DTO;
 using FluentValidation;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Validators;
@@ -9,7 +8,6 @@ namespace API.Validators;
 /// <summary>
 ///     The validator for creating a server.
 /// </summary>
-[UsedImplicitly]
 public sealed class ServerCreateValidator : AbstractValidator<ServerDto.Create>
 {
     public ServerCreateValidator(DatabaseContext database)
@@ -24,7 +22,6 @@ public sealed class ServerCreateValidator : AbstractValidator<ServerDto.Create>
 /// <summary>
 ///     The validator for setting the state of a server.
 /// </summary>
-[UsedImplicitly]
 public sealed class ServerSetStateValidator : AbstractValidator<ServerDto.SetState>
 {
     public ServerSetStateValidator()
