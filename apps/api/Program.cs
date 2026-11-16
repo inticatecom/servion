@@ -75,6 +75,9 @@ public static class Program
         app.UseHttpsRedirection();
         app.UseAuthorization();
 
+        // Use Custom Exception Handler
+        app.UseExceptionHandler();
+
         return app;
     }
 
@@ -82,6 +85,10 @@ public static class Program
     {
         // Configure Services
         builder.Services.AddControllers();
+
+        // Attach Global Exception Handler
+        builder.Services.AddProblemDetails();
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
         // Make database accessible as a service.
         builder.Services.AddDbContext<DatabaseContext>(options =>
