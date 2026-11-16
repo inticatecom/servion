@@ -9,7 +9,7 @@ namespace API.Controllers;
 public class HealthController : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Check()
+    public IActionResult Check()
     {
         var currentHealth = HealthService.CurrentHealth;
         var healthy = currentHealth.All(pair => pair.Value);
