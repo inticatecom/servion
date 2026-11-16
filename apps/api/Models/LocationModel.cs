@@ -18,4 +18,6 @@ public class LocationModel : IdentityModel
     /// </summary>
     [StringLength(200, MinimumLength = 10)]
     public required string Description { get; set; }
+
+    public ICollection<BackendModel> Backends { get; set; } = [];
 }
