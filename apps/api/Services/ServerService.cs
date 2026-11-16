@@ -118,7 +118,10 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
         {
             await docker.Containers.RemoveContainerAsync(
                 server.ContainerId,
-                new ContainerRemoveParameters { Force = forcefully },
+                new ContainerRemoveParameters
+                {
+                    Force = forcefully
+                },
                 CancellationToken.None
             );
         }

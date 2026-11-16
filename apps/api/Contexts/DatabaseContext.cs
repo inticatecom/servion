@@ -44,8 +44,6 @@ public sealed class DatabaseContext(
 
         foreach (var entry in ChangeTracker.Entries<IdentityModel>())
             if (entry.State == EntityState.Modified)
-            {
                 entry.Entity.UpdatedAt = now;
-            }
     }
 }

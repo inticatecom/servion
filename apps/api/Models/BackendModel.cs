@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace API.Models;
 
 /// <summary>
@@ -9,14 +7,14 @@ namespace API.Models;
 public class BackendModel : IdentityModel
 {
     /// <summary>
-    ///     The root endpoint of the backend.
-    /// </summary>
-    public required Uri Endpoint { get; init; }
-
-    /// <summary>
     ///     The location for the backend.
     /// </summary>
     public LocationModel Location = null!;
+
+    /// <summary>
+    ///     The root endpoint of the backend.
+    /// </summary>
+    public required Uri Endpoint { get; init; }
 
     /// <summary>
     ///     The ID of the location for the backend.

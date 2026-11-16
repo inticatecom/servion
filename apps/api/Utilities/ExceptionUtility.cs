@@ -25,18 +25,27 @@ public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, IServiceP
 
             if (!validation.IsValid)
                 return new ObjectResult(
-                        new ValidationErrorResult([.. validation.Errors.Select(error => error.ErrorMessage)])
-                    )
-                { StatusCode = 400 };
+                    new ValidationErrorResult([.. validation.Errors.Select(error => error.ErrorMessage)])
+                )
+                {
+                    StatusCode = 400
+                };
 
             return await callback();
         }
         catch (Exception exception)
         {
-            if (exception is TException baseException) return new ObjectResult(baseException.Message) { StatusCode = baseException.Code };
+            if (exception is TException baseException)
+                return new ObjectResult(baseException.Message)
+                {
+                    StatusCode = baseException.Code
+                };
 
             logger.LogError(exception, "Exception occurred: {EXCEPTION_MESSAGE}", exception.Message);
-            return new ObjectResult("Internal server error.") { StatusCode = 500 };
+            return new ObjectResult("Internal server error.")
+            {
+                StatusCode = 500
+            };
         }
     }
 
@@ -56,10 +65,17 @@ public sealed class ExceptionUtility(ILogger<ExceptionUtility> logger, IServiceP
         }
         catch (Exception exception)
         {
-            if (exception is TException baseException) return new ObjectResult(baseException.Message) { StatusCode = baseException.Code };
+            if (exception is TException baseException)
+                return new ObjectResult(baseException.Message)
+                {
+                    StatusCode = baseException.Code
+                };
 
             logger.LogError(exception, "Exception occurred: {EXCEPTION_MESSAGE}", exception.Message);
-            return new ObjectResult("Internal server error.") { StatusCode = 500 };
+            return new ObjectResult("Internal server error.")
+            {
+                StatusCode = 500
+            };
         }
     }
 }
