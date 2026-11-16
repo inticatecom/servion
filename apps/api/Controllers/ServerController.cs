@@ -14,7 +14,7 @@ namespace API.Controllers;
 /// <param name="servers">The server service for interacting with servers.</param>
 [ApiController]
 [Route("api/servers")]
-public sealed class ServerController(ServerService servers, ExceptionUtility exceptions) : ControllerBase
+public sealed class ServerController(ServerService servers) : ControllerBase
 {
     /// <summary>
     ///     Lists all servers regardless of their owners.
@@ -24,7 +24,7 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.SuperAdmin)}")]
     public async Task<IActionResult> ListAll()
     {
-        return await exceptions.HandleHttpException<ServerException>(async () => Ok(await servers.ListServers()));
+        return Ok(await servers.ListServers());
     }
 
     /// <summary>
@@ -35,24 +35,20 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
-        return await exceptions.HandleHttpException<ServerException, ServerDto.Create>(request, async () =>
-            {
-                // Create the new server.
-                var server = await servers.CreateServer(new ServerCreateParameters
-                {
-                    Name = request.Name,
-                    OwnerId = request.OwnerId,
-                    EnvironmentId = request.EnvironmentId,
-                    ImageKey = request.Image,
-                    Variables = request.Variables
-                });
+        // Create the new server.
+        var server = await servers.CreateServer(new ServerCreateParameters
+        {
+            Name = request.Name,
+            OwnerId = request.OwnerId,
+            EnvironmentId = request.EnvironmentId,
+            ImageKey = request.Image,
+            Variables = request.Variables
+        });
 
-                // If the request wants the server to startup, start it.
-                if (request.ShouldStart) await servers.SetServerState(server.Id, ServerState.Online);
+        // If the request wants the server to startup, start it.
+        if (request.ShouldStart) await servers.SetServerState(server.Id, ServerState.Online);
 
-                return Created();
-            }
-        );
+        return Created();
     }
 
     /// <summary>
@@ -63,12 +59,8 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] ServerDto.Delete request)
     {
-        return await exceptions.HandleHttpException<ServerException>(async () =>
-            {
-                await servers.DeleteServer(request.Id, false);
-                return Ok();
-            }
-        );
+        await servers.DeleteServer(request.Id, false);
+        return Ok();
     }
 
     /// <summary>
@@ -79,11 +71,8 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetOne(Guid id)
     {
-        return await exceptions.HandleHttpException<ServerException>(async () =>
-        {
-            var server = await servers.GetServer(id);
-            return server is null ? NotFound() : Ok(server);
-        });
+        var server = await servers.GetServer(id);
+        return server is null ? NotFound() : Ok(server);
     }
 
     /// <summary>
@@ -95,12 +84,9 @@ public sealed class ServerController(ServerService servers, ExceptionUtility exc
     [HttpPut("{id:guid}/action")]
     public async Task<IActionResult> SetState(Guid id, [FromBody] ServerDto.SetState request)
     {
-        return await exceptions.HandleHttpException<ServerException>(async () =>
-        {
-            var state = request.State;
+        var state = request.State;
 
-            await servers.SetServerState(id, state);
-            return NoContent();
-        });
+        await servers.SetServerState(id, state);
+        return NoContent();
     }
 }

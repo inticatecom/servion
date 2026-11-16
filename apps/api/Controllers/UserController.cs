@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.DTO;
 using API.Models;
 using API.Services;
@@ -27,7 +28,7 @@ public sealed class UserController(UserService users, UserManager<UserModel> use
         var success = await users.AuthenticateUserAsync(request.Email, request.Password);
         if (!success) return Unauthorized();
 
-        return Ok();
+        return Empty;
     }
 
     [HttpGet]

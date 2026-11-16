@@ -118,9 +118,6 @@ public static class Program
             ).CreateClient()
         );
 
-        // Make exception utility accessible as a service.
-        builder.Services.AddSingleton<ExceptionUtility>();
-
         // Load Services
         builder.Services.AddScoped<ServerService>();
         builder.Services.AddScoped<UserService>();

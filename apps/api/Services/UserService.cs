@@ -59,7 +59,7 @@ public sealed class UserService(
         var user = await userManager.FindByEmailAsync(email);
         if (user is null) return false;
 
-        signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
+        signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
         var result = await signInManager.PasswordSignInAsync(user, password, true, true);
 
         return result.Succeeded;
