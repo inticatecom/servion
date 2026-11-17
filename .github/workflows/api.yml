@@ -19,19 +19,24 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
+      # Checkout
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Initialize .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
 
+      # Restore Project
       - name: Restore
         run: dotnet restore apps/api
 
+      # Validate Format
       - name: Verify Formatting
         run: dotnet format apps/api --verify-no-changes --no-restore
 
+      # Build
       - name: Build
         run: dotnet build apps/api --configuration Release --no-restore
