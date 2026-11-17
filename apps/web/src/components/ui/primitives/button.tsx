@@ -8,7 +8,7 @@ const buttonVariants = cva(
   {
     defaultVariants: {
       size: "default",
-      variant: "default"
+      variant: "default",
     },
     variants: {
       size: {
@@ -19,7 +19,7 @@ const buttonVariants = cva(
         "icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
-        xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
+        xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
       },
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -29,10 +29,10 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-      }
-    }
-  }
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      },
+    },
+  },
 );
 
 const Button = ({

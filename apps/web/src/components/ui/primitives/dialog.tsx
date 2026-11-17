@@ -8,16 +8,24 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 
 import { Button } from "@/components/ui/primitives/button";
 
-const Dialog = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>): React.JSX.Element => (
+const Dialog = ({
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Root>): React.JSX.Element => (
   <DialogPrimitive.Root data-slot={"dialog"} {...props} />
 );
-const DialogTrigger = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>): React.JSX.Element => (
+const DialogTrigger = ({
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Trigger>): React.JSX.Element => (
   <DialogPrimitive.Trigger data-slot={"dialog-trigger"} {...props} />
 );
-const DialogPortal = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>): React.JSX.Element => (
+const DialogPortal = ({
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Portal>): React.JSX.Element => (
   <DialogPrimitive.Portal data-slot={"dialog-portal"} {...props} />
 );
-const DialogClose = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>): React.JSX.Element => (
+const DialogClose = ({
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Close>): React.JSX.Element => (
   <DialogPrimitive.Close data-slot={"dialog-close"} {...props} />
 );
 const DialogOverlay = ({
@@ -28,7 +36,7 @@ const DialogOverlay = ({
     data-slot={"dialog-overlay"}
     className={cn(
       "fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
-      className
+      className,
     )}
     {...props}
   />
@@ -47,7 +55,7 @@ const DialogContent = ({
       data-slot={"dialog-content"}
       className={cn(
         "fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
-        className
+        className,
       )}
       {...props}
     >
@@ -124,5 +132,5 @@ export {
   DialogOverlay,
   DialogPortal,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 };

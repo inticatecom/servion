@@ -5,7 +5,7 @@ import { environment } from "@servion/config";
 const configuration = defineConfig({
   api: {
     input: {
-      target: `http://localhost:${environment.SERVER_PORT}/openapi/v1.json`
+      target: `http://localhost:${environment.SERVER_PORT}/openapi/v1.json`,
     },
     output: {
       clean: true,
@@ -15,16 +15,16 @@ const configuration = defineConfig({
       override: {
         query: {
           options: {
-            staleTime: 10_000
+            staleTime: 10_000,
           },
           signal: true,
-          usePrefetch: true
-        }
+          usePrefetch: true,
+        },
       },
       schemas: "./src/generated/api/models",
-      target: "./src/generated/api/endpoints.ts"
-    }
-  }
+      target: "./src/generated/api/endpoints.ts",
+    },
+  },
 });
 
 export default configuration;

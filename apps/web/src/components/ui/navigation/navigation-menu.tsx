@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/primitives/dropdown-menu";
 import { Button } from "@/components/ui/primitives/button";
 
@@ -28,12 +28,17 @@ export interface NavigationMenuProps {
 const NavigationMenu = ({ label, children, items }: NavigationMenuProps): JSX.Element => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant={"ghost"} size={"icon"} aria-label={label} className={"size-9 text-neutral-400 hover:text-white"}>
+      <Button
+        variant={"ghost"}
+        size={"icon"}
+        aria-label={label}
+        className={"size-9 text-neutral-400 hover:text-white"}
+      >
         {children}
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align={"end"} sideOffset={8} className={"min-w-44 rounded-lg"}>
-      {items.map(item =>
+      {items.map((item) =>
         item.href ? (
           <DropdownMenuItem key={item.label} asChild>
             <a href={item.href}>{item.label}</a>
@@ -49,7 +54,7 @@ const NavigationMenu = ({ label, children, items }: NavigationMenuProps): JSX.El
           >
             {item.label}
           </DropdownMenuItem>
-        )
+        ),
       )}
     </DropdownMenuContent>
   </DropdownMenu>
