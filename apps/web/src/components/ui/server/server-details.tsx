@@ -4,7 +4,12 @@ import type { GameServer } from "@/components/ui/server/server-card";
 
 // Components
 import ServerStatus from "@/components/ui/server/server-status";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/primitives/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/primitives/dialog";
 import { Button } from "@/components/ui/primitives/button";
 
 /** The properties of the server details dialog. */
@@ -18,14 +23,18 @@ interface ServerDetailsProps {
 const ServerDetails = ({ server, handleClose, onCopy }: ServerDetailsProps): JSX.Element => (
   <Dialog
     open
-    onOpenChange={open => {
+    onOpenChange={(open) => {
       if (!open) {
         handleClose();
       }
     }}
   >
-    <DialogContent className={"sm:max-w-md rounded-lg border-neutral-700 bg-[#181818] text-neutral-200"}>
-      <DialogTitle className={"pr-8 text-xl font-semibold tracking-tight text-white"}>{server.name}</DialogTitle>
+    <DialogContent
+      className={"sm:max-w-md rounded-lg border-neutral-700 bg-[#181818] text-neutral-200"}
+    >
+      <DialogTitle className={"pr-8 text-xl font-semibold tracking-tight text-white"}>
+        {server.name}
+      </DialogTitle>
       <DialogDescription>
         {server.game}
         {" · "}
@@ -44,7 +53,11 @@ const ServerDetails = ({ server, handleClose, onCopy }: ServerDetailsProps): JSX
         </div>
         <div>
           <dt className={"mb-2 text-neutral-500"}>{"Connection address"}</dt>
-          <dd className={"break-all rounded-lg border border-neutral-800 bg-[#121212] p-3 font-mono text-xs"}>
+          <dd
+            className={
+              "break-all rounded-lg border border-neutral-800 bg-[#121212] p-3 font-mono text-xs"
+            }
+          >
             {server.address}
           </dd>
         </div>

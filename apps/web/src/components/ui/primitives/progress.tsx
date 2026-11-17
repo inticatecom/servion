@@ -6,7 +6,11 @@ import { Progress as ProgressPrimitive } from "radix-ui";
 import { cn } from "@/lib/utils";
 
 /** The shadcn progress primitive with a theme-colored indicator. */
-const Progress = ({ className, value = 0, ...props }: ComponentProps<typeof ProgressPrimitive.Root>): JSX.Element => (
+const Progress = ({
+  className,
+  value = 0,
+  ...props
+}: ComponentProps<typeof ProgressPrimitive.Root>): JSX.Element => (
   <ProgressPrimitive.Root
     data-slot={"progress"}
     value={value}

@@ -69,3 +69,25 @@ jobs:
       # Typechecking
       - name: Run Typechecking
         run: bun typecheck
+  build:
+    name: "Build"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      # Checkout
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      # Initialize Bun
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Install Dependencies
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      # Build
+      - name: Build
+        run: bun run web:build

@@ -9,7 +9,7 @@ import AccountMenu from "@/components/ui/navigation/account-menu";
 const accountItems: NavigationMenuItem[] = [
   { href: "#profile", label: "My profile" },
   { href: "#security", label: "Account security" },
-  { href: "#sign-out", label: "Sign out" }
+  { href: "#sign-out", label: "Sign out" },
 ];
 
 /** A destination displayed in the primary navigation. */
@@ -28,7 +28,7 @@ interface NavigationBarProps {
 const NavigationBar = ({ activeHref, links }: NavigationBarProps): JSX.Element => (
   <header className={"flex items-center justify-between gap-4 border-b border-neutral-800"}>
     <nav aria-label={"Main navigation"} className={"flex min-w-0 gap-4 overflow-x-auto sm:gap-6"}>
-      {links.map(link => (
+      {links.map((link) => (
         <a
           key={link.href}
           href={link.href}

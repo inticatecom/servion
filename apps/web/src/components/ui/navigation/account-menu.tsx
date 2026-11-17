@@ -4,7 +4,9 @@ import type { JSX } from "react";
 // Components
 import { UserRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/primitives/avatar";
-import NavigationMenu, { type NavigationMenuItem } from "@/components/ui/navigation/navigation-menu";
+import NavigationMenu, {
+  type NavigationMenuItem,
+} from "@/components/ui/navigation/navigation-menu";
 
 /** The properties of the account dropdown. */
 interface AccountMenuProps {

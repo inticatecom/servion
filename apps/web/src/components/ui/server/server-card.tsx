@@ -38,16 +38,16 @@ const ServerCard = ({ server, onInspect, onCopy }: ServerCardProps): JSX.Element
         label: "Server details",
         onSelect: (): void => {
           onInspect(server);
-        }
+        },
       },
       {
         label: "Copy address",
         onSelect: (): void => {
           onCopy(server);
-        }
-      }
+        },
+      },
     ],
-    [server, onInspect, onCopy]
+    [server, onInspect, onCopy],
   );
 
   return (

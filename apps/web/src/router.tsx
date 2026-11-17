@@ -19,7 +19,7 @@ export const getRouter = () => {
     defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
     routeTree,
-    scrollRestoration: true
+    scrollRestoration: true,
   });
 
   /* Provide the query client and hydrate its cache across server rendering. */

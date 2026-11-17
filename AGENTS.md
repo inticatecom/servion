@@ -8,32 +8,32 @@ This guide applies across the repository. Use the current source code and config
 
 This is a Bun workspace with a React frontend and a separate ASP.NET Core backend. Database access belongs to the backend through Entity Framework Core and PostgreSQL.
 
-| Path | Purpose |
-| --- | --- |
-| `apps/web/` | React 19, TypeScript, TanStack Start/Router, React Query, Vite, and Nitro SSR application. |
-| `apps/web/src/routes/` | File-based routes. `__root.tsx` owns the document shell, metadata, global stylesheet, and shared boundaries; `index.tsx` is the protected server dashboard; `auth/login.tsx` handles login. |
-| `apps/web/src/components/ui/` | Product components grouped under `server/` and `navigation/`; reusable shadcn/Radix primitives live under `primitives/`. |
-| `apps/web/src/lib/` | Auth requests, server functions, query-client construction, and class-name utilities. |
-| `apps/web/src/hooks/` | React hooks, including `use-auth.ts`. |
-| `apps/web/src/middlewares/` | TanStack Start server middleware, including cookie forwarding and authentication checks. |
-| `apps/web/src/utility/` | Frontend helpers such as SEO utilities. |
-| `apps/web/src/styles/app.css` | Tailwind CSS v4 imports, shared theme tokens, light/dark palettes, and base styles. |
-| `apps/web/src/generated/api/` | Orval-generated API clients, query hooks, and models. |
-| `apps/web/public/` | Static assets, icons, and web manifest. |
-| `apps/api/` | ASP.NET Core API targeting .NET 10; `Program.cs` configures services, routes, Docker, Identity, OpenAPI, and background jobs. |
-| `apps/api/Controllers/` | HTTP endpoints and request/response orchestration. |
-| `apps/api/Services/` | Domain operations for servers, users, environments, health, locations, backends, and email. |
-| `apps/api/Models/` | Persistence/domain models, including Identity users and container/server relationships. |
-| `apps/api/DTO/`, `Validators/` | Request DTOs and FluentValidation rules. |
-| `apps/api/Contexts/DatabaseContext.cs` | EF Core Identity context, entity sets, and modification timestamp handling. |
-| `apps/api/Migrations/` | EF Core migrations and model snapshot. |
-| `apps/api/Exceptions/`, `Utilities/` | Domain exceptions, ProblemDetails handling, and environment-variable validation. |
-| `apps/api/Jobs/` | Quartz cleanup and health jobs, registered in `Program.cs`. |
-| `packages/config/` | Shared app settings and validated server/client environment variables. |
-| `packages/utility/` | LogTape logging, shared TypeScript types, and application errors; errors are exported through `@servion/utility/errors`. |
-| `packages/validation/` | Shared Zod schemas; currently contains a minimal user-creation schema. |
-| `justfile` | Backend run, build, formatting, and EF migration recipes. |
-| `.github/workflows/` | Bun lint/typecheck and .NET formatting/build checks. |
+| Path                                   | Purpose                                                                                                                                                                                     |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/web/`                            | React 19, TypeScript, TanStack Start/Router, React Query, Vite, and Nitro SSR application.                                                                                                  |
+| `apps/web/src/routes/`                 | File-based routes. `__root.tsx` owns the document shell, metadata, global stylesheet, and shared boundaries; `index.tsx` is the protected server dashboard; `auth/login.tsx` handles login. |
+| `apps/web/src/components/ui/`          | Product components grouped under `server/` and `navigation/`; reusable shadcn/Radix primitives live under `primitives/`.                                                                    |
+| `apps/web/src/lib/`                    | Auth requests, server functions, query-client construction, and class-name utilities.                                                                                                       |
+| `apps/web/src/hooks/`                  | React hooks, including `use-auth.ts`.                                                                                                                                                       |
+| `apps/web/src/middlewares/`            | TanStack Start server middleware, including cookie forwarding and authentication checks.                                                                                                    |
+| `apps/web/src/utility/`                | Frontend helpers such as SEO utilities.                                                                                                                                                     |
+| `apps/web/src/styles/app.css`          | Tailwind CSS v4 imports, shared theme tokens, light/dark palettes, and base styles.                                                                                                         |
+| `apps/web/src/generated/api/`          | Orval-generated API clients, query hooks, and models.                                                                                                                                       |
+| `apps/web/public/`                     | Static assets, icons, and web manifest.                                                                                                                                                     |
+| `apps/api/`                            | ASP.NET Core API targeting .NET 10; `Program.cs` configures services, routes, Docker, Identity, OpenAPI, and background jobs.                                                               |
+| `apps/api/Controllers/`                | HTTP endpoints and request/response orchestration.                                                                                                                                          |
+| `apps/api/Services/`                   | Domain operations for servers, users, environments, health, locations, backends, and email.                                                                                                 |
+| `apps/api/Models/`                     | Persistence/domain models, including Identity users and container/server relationships.                                                                                                     |
+| `apps/api/DTO/`, `Validators/`         | Request DTOs and FluentValidation rules.                                                                                                                                                    |
+| `apps/api/Contexts/DatabaseContext.cs` | EF Core Identity context, entity sets, and modification timestamp handling.                                                                                                                 |
+| `apps/api/Migrations/`                 | EF Core migrations and model snapshot.                                                                                                                                                      |
+| `apps/api/Exceptions/`, `Utilities/`   | Domain exceptions, ProblemDetails handling, and environment-variable validation.                                                                                                            |
+| `apps/api/Jobs/`                       | Quartz cleanup and health jobs, registered in `Program.cs`.                                                                                                                                 |
+| `packages/config/`                     | Shared app settings and validated server/client environment variables.                                                                                                                      |
+| `packages/utility/`                    | LogTape logging, shared TypeScript types, and application errors; errors are exported through `@servion/utility/errors`.                                                                    |
+| `packages/validation/`                 | Shared Zod schemas; currently contains a minimal user-creation schema.                                                                                                                      |
+| `justfile`                             | Backend run, build, formatting, and EF migration recipes.                                                                                                                                   |
+| `.github/workflows/`                   | Bun lint/typecheck and .NET formatting/build checks.                                                                                                                                        |
 
 Workspace packages export TypeScript source directly; they do not have separate build scripts. Use their `@servion/*` exports instead of reaching into sibling package source paths. The web app's `@/*` alias resolves to `apps/web/src/*`.
 
@@ -53,17 +53,17 @@ The root web and Orval wrappers explicitly load root `.env`. Vite also sets its 
 
 `packages/config/src/index.ts` validates environment variables using Zod and `@t3-oss/env-core`; `apps/api/Utilities/EnvironmentVariableUtility.cs` validates the backend's required settings.
 
-| Variable | Meaning |
-| --- | --- |
-| `DATABASE_URL` | PostgreSQL connection setting passed to the API's Npgsql provider; use a connection string accepted by Npgsql. |
-| `DOCKER_PATH` | Docker daemon endpoint URI. Verify that the example socket path matches the local daemon. |
-| `SERVER_PORT` | API HTTP port; also used by the web proxy, SSR auth requests, and Orval. |
-| `PUBLIC_SERVER_URL` | Browser-facing API origin used by frontend auth requests. |
-| `SMTP_HOST`, `SMTP_PORT` | SMTP connection settings. |
-| `SMTP_USER`, `SMTP_PASSWORD` | SMTP credentials. |
-| `SMTP_FROM_ADDRESS`, `SMTP_FROM_NAME` | Sender identity. |
-| `NODE_ENV` | Shared TypeScript server environment: `development` by default, or `production`. |
-| `FORCE_COLOR` | Optional numeric setting, defaulting to `1`. |
+| Variable                              | Meaning                                                                                                        |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                        | PostgreSQL connection setting passed to the API's Npgsql provider; use a connection string accepted by Npgsql. |
+| `DOCKER_PATH`                         | Docker daemon endpoint URI. Verify that the example socket path matches the local daemon.                      |
+| `SERVER_PORT`                         | API HTTP port; also used by the web proxy, SSR auth requests, and Orval.                                       |
+| `PUBLIC_SERVER_URL`                   | Browser-facing API origin used by frontend auth requests.                                                      |
+| `SMTP_HOST`, `SMTP_PORT`              | SMTP connection settings.                                                                                      |
+| `SMTP_USER`, `SMTP_PASSWORD`          | SMTP credentials.                                                                                              |
+| `SMTP_FROM_ADDRESS`, `SMTP_FROM_NAME` | Sender identity.                                                                                               |
+| `NODE_ENV`                            | Shared TypeScript server environment: `development` by default, or `production`.                               |
+| `FORCE_COLOR`                         | Optional numeric setting, defaulting to `1`.                                                                   |
 
 Only variables prefixed `PUBLIC_` are exposed through Vite's configured client environment. Keep secrets out of public variables and client modules. Importing shared configuration can validate more settings than a command directly needs, so use the complete local environment when diagnosing startup or generation failures. Never commit `.env` or real credentials.
 
@@ -73,17 +73,17 @@ Bun is the package manager and script runner, despite these being standard `pack
 
 ### Root scripts
 
-| Command | What it does |
-| --- | --- |
-| `bun run web:dev` | Loads root `.env` and runs `@servion/web`'s `dev` script (`vite dev`). |
-| `bun run web:start` | Loads root `.env` and runs the built Nitro server using Node.js. Requires a web build first. |
-| `bun run orval:generate` | Loads root `.env` and generates the web API client from the running API's OpenAPI document. |
-| `bun run orval:watch` | Runs the same Orval generation in watch mode. Requires the OpenAPI source to remain accessible. |
-| `bun run prepare` | Runs Husky to install Git hooks; also used as the package lifecycle prepare script. |
-| `bun run format` | Runs `oxfmt .`, writing formatting changes across its configured scope. It is not a read-only check. |
-| `bun run lint` | Runs `oxlint .` with type-aware linting/type checking configured. It does not pass an automatic-fix flag. |
-| `bun run typecheck` | Runs workspace `typecheck` scripts where present. Currently only the web workspace declares one; this does not explicitly typecheck every shared package independently. |
-| `bun run stats` | Uses `bunx cloc` to count `.ts`/`.tsx` source lines, excluding the directories listed in the script. This is informational, not validation. |
+| Command                  | What it does                                                                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bun run web:dev`        | Loads root `.env` and runs `@servion/web`'s `dev` script (`vite dev`).                                                                                                  |
+| `bun run web:start`      | Loads root `.env` and runs the built Nitro server using Node.js. Requires a web build first.                                                                            |
+| `bun run orval:generate` | Loads root `.env` and generates the web API client from the running API's OpenAPI document.                                                                             |
+| `bun run orval:watch`    | Runs the same Orval generation in watch mode. Requires the OpenAPI source to remain accessible.                                                                         |
+| `bun run prepare`        | Runs Husky to install Git hooks; also used as the package lifecycle prepare script.                                                                                     |
+| `bun run format`         | Runs `oxfmt .`, writing formatting changes across its configured scope. It is not a read-only check.                                                                    |
+| `bun run lint`           | Runs `oxlint .` with type-aware linting/type checking configured. It does not pass an automatic-fix flag.                                                               |
+| `bun run typecheck`      | Runs workspace `typecheck` scripts where present. Currently only the web workspace declares one; this does not explicitly typecheck every shared package independently. |
+| `bun run stats`          | Uses `bunx cloc` to count `.ts`/`.tsx` source lines, excluding the directories listed in the script. This is informational, not validation.                             |
 
 There is no root build, preview, or test script. Use the explicit workspace commands below for web builds and previews.
 
@@ -91,30 +91,30 @@ There is no root build, preview, or test script. Use the explicit workspace comm
 
 The following commands select the web workspace from the root. Unlike the root wrappers, these commands do not explicitly pass `--env-file=.env`; ensure required environment variables are available. Vite itself reads the configured root environment directory.
 
-| Command | Underlying script and behavior |
-| --- | --- |
-| `bun run --filter '@servion/web' dev` | `vite dev`: starts the web development server. Prefer `bun run web:dev` for the root environment wrapper. |
-| `bun run --filter '@servion/web' build` | `vite build && tsc --noEmit`: builds the web app, then checks TypeScript. Production server output is expected at `apps/web/.output/server/index.mjs`. |
-| `bun run --filter '@servion/web' preview` | `vite preview`: previews a built application locally. |
-| `bun run --filter '@servion/web' start` | `node .output/server/index.mjs`: starts the built production server. Prefer `bun run web:start` for root environment loading. |
-| `bun run --filter '@servion/web' typecheck` | `tsc --noEmit`: checks the web TypeScript project without producing output. |
-| `bun run --filter '@servion/web' orval` | `orval`: generates clients using `apps/web/orval.config.ts`. Prefer the root Orval wrappers for environment loading. |
+| Command                                     | Underlying script and behavior                                                                                                                         |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `bun run --filter '@servion/web' dev`       | `vite dev`: starts the web development server. Prefer `bun run web:dev` for the root environment wrapper.                                              |
+| `bun run --filter '@servion/web' build`     | `vite build && tsc --noEmit`: builds the web app, then checks TypeScript. Production server output is expected at `apps/web/.output/server/index.mjs`. |
+| `bun run --filter '@servion/web' preview`   | `vite preview`: previews a built application locally.                                                                                                  |
+| `bun run --filter '@servion/web' start`     | `node .output/server/index.mjs`: starts the built production server. Prefer `bun run web:start` for root environment loading.                          |
+| `bun run --filter '@servion/web' typecheck` | `tsc --noEmit`: checks the web TypeScript project without producing output.                                                                            |
+| `bun run --filter '@servion/web' orval`     | `orval`: generates clients using `apps/web/orval.config.ts`. Prefer the root Orval wrappers for environment loading.                                   |
 
 For explicit environment loading with a workspace build, use `bun --env-file=.env run --filter '@servion/web' build`.
 
 ## Justfile and .NET commands
 
-| Command | What it does |
-| --- | --- |
-| `just` or `just default` | Lists available recipes using `just --list`. |
-| `just api` | `dotnet run --project apps/api`: builds and starts the API. |
-| `just build-api` | `dotnet build apps/api`: builds the backend in the default configuration. |
-| `just format-api` | `dotnet format apps/api --no-restore`: writes backend formatting changes; restore dependencies first. |
-| `just format-check-api` | Intended to check formatting, but currently passes the misspelled `--verifiy-no-changes`. Use the corrected direct command below until the recipe is fixed. |
-| `just migration-api <name>` | `dotnet ef migrations add <name> --project apps/api`: generates an EF migration for model changes. |
-| `just migrate-api` | `dotnet ef database update --project apps/api`: applies pending migrations to the configured database. |
-| `just migrations-api` | `dotnet ef migrations list --project apps/api`: lists EF migrations. |
-| `just migration-remove-api` | `dotnet ef migrations remove --project apps/api`: removes the latest migration, subject to EF's database-state checks. |
+| Command                     | What it does                                                                                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `just` or `just default`    | Lists available recipes using `just --list`.                                                                                                                |
+| `just api`                  | `dotnet run --project apps/api`: builds and starts the API.                                                                                                 |
+| `just build-api`            | `dotnet build apps/api`: builds the backend in the default configuration.                                                                                   |
+| `just format-api`           | `dotnet format apps/api --no-restore`: writes backend formatting changes; restore dependencies first.                                                       |
+| `just format-check-api`     | Intended to check formatting, but currently passes the misspelled `--verifiy-no-changes`. Use the corrected direct command below until the recipe is fixed. |
+| `just migration-api <name>` | `dotnet ef migrations add <name> --project apps/api`: generates an EF migration for model changes.                                                          |
+| `just migrate-api`          | `dotnet ef database update --project apps/api`: applies pending migrations to the configured database.                                                      |
+| `just migrations-api`       | `dotnet ef migrations list --project apps/api`: lists EF migrations.                                                                                        |
+| `just migration-remove-api` | `dotnet ef migrations remove --project apps/api`: removes the latest migration, subject to EF's database-state checks.                                      |
 
 Backend CI uses these direct commands:
 
