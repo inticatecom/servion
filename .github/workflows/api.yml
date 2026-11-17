@@ -1,4 +1,4 @@
-name: ".NET Backend Build"
+name: "API"
 
 permissions:
   contents: read
