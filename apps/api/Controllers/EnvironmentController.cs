@@ -6,17 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+/// <summary>
+///     Routes for interacting with environments.
+/// </summary>
 [ApiController]
 [Route("api/environments")]
 public sealed class EnvironmentController(EnvironmentService environments)
     : ControllerBase
 {
+    /// <summary>
+    ///     Lists all the environments that exist within the system.
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> List()
     {
         return Ok(await environments.ListEnvironments());
     }
 
+    /// <summary>
+    ///     Creates a new environment in the system.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] EnvironmentDto.Create request)
     {
@@ -24,6 +33,9 @@ public sealed class EnvironmentController(EnvironmentService environments)
         return Created();
     }
 
+    /// <summary>
+    ///     Deletes the provided environment if it exists.
+    /// </summary>
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] EnvironmentDto.Delete request)
     {

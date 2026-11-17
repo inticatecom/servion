@@ -3,10 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+/// <summary>
+///     Routes for monitoring system health. Useful for Docker health checks.
+/// </summary>
 [ApiController]
 [Route("api/health")]
 public class HealthController : ControllerBase
 {
+    /// <summary>
+    ///     Gets a list of all internal services and their statuses.
+    /// </summary>
     [HttpGet]
     public IActionResult Check()
     {
