@@ -68,6 +68,7 @@ public static class EnvironmentVariableUtility
     /// <summary>
     ///     Initializes & validates all environment variables.
     /// </summary>
+    /// 
     /// <exception cref="InvalidOperationException">If the operation fails.</exception>
     /// <exception cref="FormatException">If the format is not met.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If the value does not meet the requirements.</exception>
@@ -118,8 +119,11 @@ public static class EnvironmentVariableUtility
     /// <summary>
     ///     Gets the value of the specified environment variable.
     /// </summary>
+    /// 
     /// <param name="key">The environment variable key.</param>
+    /// 
     /// <typeparam name="T">The expected data-type of the returned value (e.g. string).</typeparam>
+    /// 
     /// <returns>The value of the environment variable.</returns>
     public static T GetEnvironmentVariable<T>(EnvironmentVariable key)
     {

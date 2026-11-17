@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Utilities;
 
+/// <summary>
+///     The exception handler to automatically catch all thrown exceptions for HTTP requests.
+/// </summary>
 public sealed class GlobalExceptionHandler(
     ILogger<GlobalExceptionHandler> logger,
     IProblemDetailsService problemDetails
