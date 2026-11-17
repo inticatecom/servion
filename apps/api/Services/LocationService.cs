@@ -12,8 +12,10 @@ public class LocationService(DatabaseContext database)
     /// <summary>
     ///     Creates a new location that can be used with servers.
     /// </summary>
+    /// 
     /// <param name="name">The name of the location.</param>
     /// <param name="description">The description for what the location will be used for.</param>
+    /// 
     /// <returns>The newly created location.</returns>
     public async Task<LocationModel> CreateLocationAsync(string name, string description)
     {
@@ -32,7 +34,9 @@ public class LocationService(DatabaseContext database)
     /// <summary>
     ///     Removes a location from the database if possible.
     /// </summary>
+    /// 
     /// <param name="id">The ID of the location to delete.</param>
+    /// 
     /// <exception cref="Exception">Throws if something fails while trying to delete the location.</exception>
     public async Task RemoveLocationAsync(Guid id)
     {

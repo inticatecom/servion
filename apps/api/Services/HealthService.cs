@@ -18,7 +18,9 @@ public sealed class HealthService(DatabaseContext database, ILogger<HealthServic
     /// <summary>
     ///     Checks the database health.
     /// </summary>
+    /// 
     /// <param name="cancellationToken">The cancellation token.</param>
+    /// 
     /// <returns>The status of the database.</returns>
     public async Task<bool> CheckDatabaseHealth(CancellationToken cancellationToken = default)
     {
