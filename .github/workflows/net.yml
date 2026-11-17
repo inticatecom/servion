@@ -1,0 +1,38 @@
+name: ".NET Backend Build"
+
+permissions:
+  contents: read
+
+on:
+  push:
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/net.yml"
+  pull_request:
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/net.yml"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore apps/api
+
+      - name: Verify Formatting
+        run: dotnet format apps/api --verify-no-changes --no-restore
+
+      - name: Build
+        run: dotnet build apps/api --configuration Release --no-restore
+

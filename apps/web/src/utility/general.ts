@@ -1,16 +1,8 @@
 // Resources
 import { createLogger } from "@servion/utility";
-import clsx, { type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 
-/**
- * Formats Tailwind class names from an array format.
- *
- * @param inputs The class names to combine.
- *
- * @returns The combined lass names.
- */
-export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
+/* Re-export the client-safe class name utility. */
+export { cn } from "@/lib/utils";
 
 /** The base logger for the website application. */
 export const logger = createLogger("web");

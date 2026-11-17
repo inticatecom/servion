@@ -2,7 +2,8 @@
   "name": "servion",
   "version": "0.0.1",
   "private": true,
-  "description": "A Docker management interface.",
+  "description": "An easy-to-use Docker container management interface.",
+  "license": "MIT",
   "author": {
     "name": "Inticate Softworks",
     "email": "contact@inticate.com"
@@ -15,9 +16,8 @@
   "scripts": {
     "web:start": "bun --env-file=.env run --filter '@servion/web' start",
     "web:dev": "bun --env-file=.env run --filter '@servion/web' dev",
-    "db:push": "bun --env-file=.env run --filter '@servion/database' push",
-    "db:generate": "bun --env-file=.env run --filter '@servion/database' generate",
-    "db:migrate": "bun --env-file=.env run --filter '@servion/database' migrate",
+    "orval:generate": "bun --env-file=.env run --filter '@servion/web' orval",
+    "orval:watch": "bun --env-file=.env run --filter '@servion/web' orval --watch",
     "prepare": "husky",
     "format": "oxfmt .",
     "lint": "oxlint .",
@@ -25,17 +25,17 @@
     "stats": "bunx cloc . --exclude-dir=node_modules,out,types,include,.husky,.vscode,.idea,.forgejo,.github,.codex,.agents,.git --match-f=\"[.]tsx?$\""
   },
   "dependencies": {
-    "dotenv": "^18.0.5",
-    "zod": "^4.6.5"
+    "dotenv": "^18.0.10",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.2.3",
-    "@commitlint/config-conventional": "^21.2.3",
-    "@types/bun": "^1.4.2",
-    "@types/node": "^26.6.4",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@types/bun": "^1.4.4",
+    "@types/node": "^26.6.6",
     "cloc": "^2.6.0-cloc",
     "husky": "^9.1.7",
-    "lint-staged": "^17.6.0",
+    "lint-staged": "^17.6.1",
     "oxfmt": "^0.71.0",
     "oxlint": "^1.86.0",
     "oxlint-tsgolint": "^7.0.2003",

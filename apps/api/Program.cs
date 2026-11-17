@@ -1,23 +1,28 @@
-using API.Contexts;
-using API.Services;
-using Docker.DotNet;
-using DotNetEnv;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using API.Contexts;
 using API.DTO;
+using API.Jobs;
+using API.Models;
+using API.Services;
 using API.Utilities;
 using API.Validators;
+using Docker.DotNet;
+using DotNetEnv;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Quartz;
+using Scalar.AspNetCore;
 
 namespace API;
 
 /// <summary>
-/// The main entrypoint of the program.
+///     The main entrypoint of the program.
 /// </summary>
 public static class Program
 {
     /// <summary>
-    /// The method that is called when the program starts.
+    ///     The method that is called when the program starts.
     /// </summary>
     public static void Main()
     {
@@ -29,6 +34,36 @@ public static class Program
 
         // Construct Application
         var builder = CreateBuilder();
+        var app = CreateApplication(builder);
+
+        // Start Application
+        app.Run();
+    }
+
+    /// <summary>
+    ///     Constructs the website application builder.
+    /// </summary>
+    /// <exception cref="Exception">An error if environment variable assets aren't present.</exception>
+    /// <returns>The website application builder.</returns>
+    private static WebApplicationBuilder CreateBuilder()
+    {
+        var builder = WebApplication.CreateBuilder();
+
+        // Ensure HTTP server starts on the configured port.
+        builder.WebHost.ConfigureKestrel(options =>
+            options.ListenLocalhost(
+                EnvironmentVariableUtility.GetEnvironmentVariable<int>(EnvironmentVariable.ServerPort)
+            )
+        );
+
+        SetupJobs(builder);
+        ConfigureServices(builder);
+
+        return builder;
+    }
+
+    private static WebApplication CreateApplication(WebApplicationBuilder builder)
+    {
         var app = builder.Build();
 
         // Register Controllers
@@ -38,32 +73,34 @@ public static class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            app.MapScalarApiReference("/docs", options =>
+                options.HideDarkModeToggle().ForceDarkMode().SortOperationsByMethod().HideDeveloperTools()
+            );
         }
 
         // HTTP Server Settings
         app.UseHttpsRedirection();
         app.UseAuthorization();
 
-        // Start Application
-        app.Run();
+        // Use Custom Exception Handler
+        app.UseExceptionHandler();
+
+        return app;
     }
 
-    /// <summary>
-    /// Constructs the website application builder.
-    /// </summary>
-    /// <exception cref="Exception">An error if environment variable assets aren't present.</exception>
-    /// <returns>The website application builder.</returns>
-    private static WebApplicationBuilder CreateBuilder()
+    private static void ConfigureServices(WebApplicationBuilder builder)
     {
-        var builder = WebApplication.CreateBuilder();
-
         // Configure Services
         builder.Services.AddControllers();
+
+        // Attach Global Exception Handler
+        builder.Services.AddProblemDetails();
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
         // Make database accessible as a service.
         builder.Services.AddDbContext<DatabaseContext>(options =>
             options.UseNpgsql(
-                EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariableKey.DatabaseUrl),
+                EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariable.DatabaseUrl),
                 npgsql => npgsql.ConfigureDataSource(datasource => datasource.EnableDynamicJson())
             )
         );
@@ -76,18 +113,18 @@ public static class Program
         builder.Services.AddSingleton(_ =>
             new DockerClientConfiguration(
                 new Uri(
-                    EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariableKey.DockerPath)
+                    EnvironmentVariableUtility.GetEnvironmentVariable<string>(EnvironmentVariable.DockerPath)
                 )
             ).CreateClient()
         );
-
-        // Make exception utility accessible as a service.
-        builder.Services.AddSingleton<ExceptionUtility>();
 
         // Load Services
         builder.Services.AddScoped<ServerService>();
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<EnvironmentService>();
+        builder.Services.AddScoped<HealthService>();
+        builder.Services.AddScoped<LocationService>();
+        builder.Services.AddScoped<BackendService>();
 
         // Configure JSON Parsing
         builder.Services.AddControllers()
@@ -98,12 +135,40 @@ public static class Program
                 );
             });
 
-        // Setup Authorization
+        builder.Services
+            .AddIdentityApiEndpoints<UserModel>()
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<DatabaseContext>();
+
         builder.Services.AddAuthorization();
-
-        // Setup OpenAPI
         builder.Services.AddOpenApi();
+    }
 
-        return builder;
+    private static void SetupJobs(WebApplicationBuilder builder)
+    {
+        builder.Services.AddQuartz(options =>
+        {
+            var cleanupJobKey = new JobKey("CleanupJob");
+            options.AddJob<CleanupJob>(job => job.WithIdentity(cleanupJobKey));
+            options.AddTrigger(trigger =>
+                trigger
+                    .ForJob(cleanupJobKey)
+                    .WithIdentity("CleanupJobTrigger")
+                    // TODO: Make time san configurable from environment options.
+                    .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromMinutes(15)).RepeatForever())
+            );
+
+            var healthJobKey = new JobKey("HealthJob");
+            options.AddJob<HealthJob>(job => job.WithIdentity(healthJobKey));
+            options.AddTrigger(trigger =>
+                trigger
+                    .ForJob(healthJobKey)
+                    .WithIdentity("HealthJobTrigger")
+                    .StartNow()
+                    .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromSeconds(30)).RepeatForever())
+            );
+        });
+
+        builder.Services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
     }
 }

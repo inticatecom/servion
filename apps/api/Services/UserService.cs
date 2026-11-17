@@ -1,82 +1,123 @@
+using System.Security.Cryptography;
+using System.Text;
 using API.Contexts;
 using API.Exceptions;
 using API.Models;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
 /// <summary>
-/// A service for managing users in the database.
+///     A service for managing users in the database.
 /// </summary>
-/// <param name="database">The database SDK.</param>
-public sealed class UserService(DatabaseContext database)
+[UsedImplicitly]
+public sealed class UserService(
+    DatabaseContext database,
+    UserManager<UserModel> userManager,
+    SignInManager<UserModel> signInManager
+)
 {
     /// <summary>
-    /// The hasher for hashing user's passwords to be stored in the database.
+    ///     Creates a new user with the provided information.
     /// </summary>
-    private readonly PasswordHasher<UserModel> _hasher = new();
-
-    /// <summary>
-    /// Creates a new user with the provided information.
-    /// </summary>
-    /// <param name="username">The name of the account.</param>
-    /// <param name="email">The email of the account.</param>
-    /// <param name="password">The raw password to be hashed once the account is created.</param>
-    public async Task CreateUser(string username, string email, string password)
+    /// <param name="username">The username for the user.</param>
+    /// <param name="email">The email for the user.</param>
+    /// <param name="password">The password to be hashed for the user.</param>
+    /// <returns>The newly created user.</returns>
+    public async Task<UserModel> CreateUserAsync(string username, string email, string password)
     {
         var user = new UserModel
         {
-            Username = username,
-            Email = email,
-            PasswordHash = ""
+            UserName = username,
+            Email = email
         };
 
-        user.PasswordHash = _hasher.HashPassword(user, password);
+        var result = await userManager.CreateAsync(user, password);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(
+                ", ",
+                result.Errors.Select(error => error.Description)
+            );
 
-        database.Users.Add(user);
-        await database.SaveChangesAsync();
+            throw new UserException(400, errors);
+        }
+
+        var roleResult = await userManager.AddToRoleAsync(user, nameof(UserRole.Client));
+        if (!roleResult.Succeeded)
+            throw new UserException(
+                500,
+                "Failed to assign default user role."
+            );
+
+        return user;
+    }
+
+    public async Task<bool> AuthenticateUserAsync(string email, string password)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user is null) return false;
+
+        signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
+        var result = await signInManager.PasswordSignInAsync(user, password, true, true);
+
+        return result.Succeeded;
     }
 
     /// <summary>
-    /// Compares a raw password by decrypting it securely.
+    ///     Validates a user's password.
     /// </summary>
-    /// <param name="id">The ID of the user.</param>
-    /// <param name="password">The raw password to compare.</param>
-    /// <returns>Whether the password is accepted for the account.</returns>
-    public async Task<bool> ValidatePassword(Guid id, string password)
+    public async Task<bool> ValidatePasswordAsync(Guid id, string password)
     {
-        var user = await database.Users.FindAsync(id);
+        var user = await userManager.FindByIdAsync(id.ToString());
         if (user is null)
+            return false;
+
+        return await userManager.CheckPasswordAsync(user, password);
+    }
+
+    /// <summary>
+    ///     Validates an authorization code.
+    /// </summary>
+    public async Task<bool> ValidateAuthorizationCodeAsync(Guid userId, string code)
+    {
+        var user = await database.Users.FindAsync(userId);
+
+        if (user?.AuthorizationCode is null)
+            return false;
+
+        var authorization = user.AuthorizationCode;
+
+        if (DateTime.UtcNow - authorization.GeneratedAt >= TimeSpan.FromMinutes(15)) return false;
+
+        var providedHash = SHA256.HashData(Encoding.UTF8.GetBytes(code));
+
+        byte[] storedHash;
+
+        try
+        {
+            storedHash = Convert.FromHexString(authorization.Code);
+        }
+        catch (FormatException)
         {
             return false;
         }
 
-        var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
-
-        return result != PasswordVerificationResult.Failed;
+        return CryptographicOperations.FixedTimeEquals(providedHash, storedHash);
     }
 
-    public async Task<bool> ValidateAuthorizationCode(Guid userId, string code)
+    /// <summary>
+    ///     Generates a new authorization code.
+    /// </summary>
+    public async Task<string> RegenerateAuthorizationCodeAsync(Guid userId)
     {
-        var user = await database.Users.Where(user => user.Id == userId).Include(user => user.AuthorizationCode)
-            .FirstAsync() ?? throw new UserException(404, "User not found.");
+        var user = await database.Users.FindAsync(userId) ?? throw new UserException(404, "User not found.");
+        var code = RandomNumberGenerator.GetInt32(100000, 1000000).ToString("D6");
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(code));
 
-        if (user.AuthorizationCode is null)
-        {
-            return false;
-        }
+        user.AuthorizationCode = new UserAuthorizationCode(Convert.ToHexString(hash), DateTime.UtcNow);
 
-        return DateTime.UtcNow - user.AuthorizationCode.GeneratedAt >= TimeSpan.FromMinutes(15);
-    }
-
-    public async Task<string> RegenerateAuthorizationCode(Guid userId)
-    {
-        var user = await database.Users.Where(user => user.Id == userId).Include(user => user.AuthorizationCode)
-            .FirstAsync() ?? throw new UserException(404, "User not found.");
-        var code = Random.Shared.Next(100000, 999999).ToString();
-
-        user.AuthorizationCode = new UserAuthorizationCode(code, DateTime.UtcNow);
         await database.SaveChangesAsync();
 
         return code;

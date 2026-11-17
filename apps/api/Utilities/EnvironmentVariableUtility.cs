@@ -2,6 +2,11 @@ using System.Text.RegularExpressions;
 
 namespace API.Utilities;
 
+/// <summary>
+///     Data-types that are accepted as environment variables. Obviously environment variables are by
+///     default a string, but they will be parsed into their respective data-types if possible or a
+///     validation error will be thrown.
+/// </summary>
 public enum EnvironmentVariableDataType
 {
     String,
@@ -9,10 +14,14 @@ public enum EnvironmentVariableDataType
     Int
 }
 
-public enum EnvironmentVariableKey
+/// <summary>
+///     An enumerator pointing towards a specific key in the environment.
+/// </summary>
+public enum EnvironmentVariable
 {
     DockerPath,
     DatabaseUrl,
+    ServerPort,
 
     SmtpHost,
     SmtpPort,
@@ -24,46 +33,60 @@ public enum EnvironmentVariableKey
     SmtpPassword
 }
 
+/// <summary>
+///     Utility functions for reading environment variables loaded into the system.
+/// </summary>
 public static class EnvironmentVariableUtility
 {
-    private static readonly Dictionary<EnvironmentVariableKey, EnvironmentVariableDataType> RequiredVariables = new()
+    /// <summary>
+    ///     The environment variables that are required by the system.
+    /// </summary>
+    private static readonly Dictionary<EnvironmentVariable, EnvironmentVariableDataType> RequiredVariables = new()
     {
         // Base Settings
-        [EnvironmentVariableKey.DockerPath] = EnvironmentVariableDataType.String,
-        [EnvironmentVariableKey.DatabaseUrl] = EnvironmentVariableDataType.String,
+        [EnvironmentVariable.DockerPath] = EnvironmentVariableDataType.String,
+        [EnvironmentVariable.DatabaseUrl] = EnvironmentVariableDataType.String,
+        [EnvironmentVariable.ServerPort] = EnvironmentVariableDataType.Int,
 
         // SMTP Connection
-        [EnvironmentVariableKey.SmtpHost] = EnvironmentVariableDataType.String,
-        [EnvironmentVariableKey.SmtpPort] = EnvironmentVariableDataType.Int,
+        [EnvironmentVariable.SmtpHost] = EnvironmentVariableDataType.String,
+        [EnvironmentVariable.SmtpPort] = EnvironmentVariableDataType.Int,
 
         // SMTP Sender Data
-        [EnvironmentVariableKey.SmtpFromAddress] = EnvironmentVariableDataType.String,
-        [EnvironmentVariableKey.SmtpFromName] = EnvironmentVariableDataType.String,
+        [EnvironmentVariable.SmtpFromAddress] = EnvironmentVariableDataType.String,
+        [EnvironmentVariable.SmtpFromName] = EnvironmentVariableDataType.String,
 
         // SMTP Authentication
-        [EnvironmentVariableKey.SmtpUser] = EnvironmentVariableDataType.String,
-        [EnvironmentVariableKey.SmtpPassword] = EnvironmentVariableDataType.String
+        [EnvironmentVariable.SmtpUser] = EnvironmentVariableDataType.String,
+        [EnvironmentVariable.SmtpPassword] = EnvironmentVariableDataType.String
     };
 
-    private static readonly Dictionary<EnvironmentVariableKey, object> Variables = new();
+    private static readonly Dictionary<EnvironmentVariable, object> Variables = new();
 
     private static bool _initialized;
 
+    /// <summary>
+    ///     Initializes & validates all environment variables.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">If the operation fails.</exception>
+    /// <exception cref="FormatException">If the format is not met.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">If the value does not meet the requirements.</exception>
     public static void Initialize()
     {
         if (_initialized) return;
 
         foreach (var (name, type) in RequiredVariables)
         {
+#pragma warning disable SYSLIB1045
             var variableName = Regex.Replace(name.ToString(), "([a-z])([A-Z])", "$1_$2").ToUpperInvariant();
+#pragma warning restore SYSLIB1045
+
             var value = Environment.GetEnvironmentVariable(variableName);
 
             if (string.IsNullOrWhiteSpace(value))
-            {
                 throw new InvalidOperationException(
                     $"Required environment variable '{variableName}' is missing."
                 );
-            }
 
             object parsed = type switch
             {
@@ -92,7 +115,13 @@ public static class EnvironmentVariableUtility
         _initialized = true;
     }
 
-    public static T GetEnvironmentVariable<T>(EnvironmentVariableKey key)
+    /// <summary>
+    ///     Gets the value of the specified environment variable.
+    /// </summary>
+    /// <param name="key">The environment variable key.</param>
+    /// <typeparam name="T">The expected data-type of the returned value (e.g. string).</typeparam>
+    /// <returns>The value of the environment variable.</returns>
+    public static T GetEnvironmentVariable<T>(EnvironmentVariable key)
     {
         return (T)Variables[key];
     }
