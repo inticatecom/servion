@@ -11,7 +11,6 @@ namespace API.Controllers;
 /// <summary>
 ///     Routes relating to servers.
 /// </summary>
-/// <param name="servers">The server service for interacting with servers.</param>
 [ApiController]
 [Route("api/servers")]
 public sealed class ServerController(ServerService servers) : ControllerBase
@@ -19,7 +18,6 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     /// <summary>
     ///     Lists all servers regardless of their owners.
     /// </summary>
-    /// <returns>The list of servers.</returns>
     [HttpGet]
     [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.SuperAdmin)}")]
     public async Task<IActionResult> ListAll()
@@ -30,8 +28,6 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     /// <summary>
     ///     Creates a new server with the provided information.
     /// </summary>
-    /// <param name="request">The request body.</param>
-    /// <returns>The request result.</returns>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
@@ -54,8 +50,6 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     /// <summary>
     ///     Deletes a server and it's data.
     /// </summary>
-    /// <param name="request">The data to include for the request.</param>
-    /// <returns>The request result.</returns>
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] ServerDto.Delete request)
     {
@@ -66,8 +60,6 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     /// <summary>
     ///     Gets a server by the provided ID.
     /// </summary>
-    /// <param name="id">The ID of the server.</param>
-    /// <returns>The request result.</returns>
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetOne(Guid id)
     {
@@ -78,9 +70,6 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     /// <summary>
     ///     Updates the state for the provided server.
     /// </summary>
-    /// <param name="id">The ID of the server.</param>
-    /// <param name="request">The request body.</param>
-    /// <returns>The request result.</returns>
     [HttpPut("{id:guid}/action")]
     public async Task<IActionResult> SetState(Guid id, [FromBody] ServerDto.SetState request)
     {

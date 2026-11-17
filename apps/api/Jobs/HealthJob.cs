@@ -1,10 +1,11 @@
 using API.Services;
-using JetBrains.Annotations;
 using Quartz;
 
 namespace API.Jobs;
 
-[UsedImplicitly]
+/// <summary>
+///     A job to be run concurrently to update service statuses used in the health check controller.
+/// </summary>
 public class HealthJob(HealthService health) : IJob
 {
     private readonly Dictionary<string, Func<CancellationToken, Task<bool>>> _checks = new()

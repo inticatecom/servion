@@ -1,4 +1,4 @@
-name: "Lint & Typecheck"
+name: "Frontend"
 
 permissions:
   contents: read
@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     paths:
-      - "apps/**"
+      - "apps/web/**"
       - "packages/**"
       - "package.json"
       - "bun.lock"
@@ -15,7 +15,7 @@ on:
       - ".github/workflows/lint.yml"
   pull_request:
     paths:
-      - "apps/**"
+      - "apps/web/**"
       - "packages/**"
       - "package.json"
       - "bun.lock"

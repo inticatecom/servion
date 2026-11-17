@@ -12,6 +12,7 @@ public static class ServerDto
     /// <summary>
     ///     The data required from the client for creating a new server.
     /// </summary>
+    /// 
     /// <param name="OwnerId">The ID of the owner to assign the server to.</param>
     /// <param name="BackendId">The ID fo the backend server to use.</param>
     /// <param name="EnvironmentId">The ID of the environment to use for the server.</param>
@@ -34,12 +35,14 @@ public static class ServerDto
     /// <summary>
     ///     Sets the state for a server.
     /// </summary>
+    /// 
     /// <param name="State">The state of the server.</param>
     public record SetState([Required] ServerState State);
 
     /// <summary>
     ///     The data required to delete a server.
     /// </summary>
+    /// 
     /// <param name="Id">The ID of the server to delete.</param>
     public record Delete([Required] Guid Id);
 }

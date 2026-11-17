@@ -9,13 +9,14 @@ namespace API.Services;
 /// <summary>
 ///     A service for interacting with the environments loaded into the system.
 /// </summary>
-/// <param name="database">The database SDK.</param>
 public sealed class EnvironmentService(DatabaseContext database)
 {
     /// <summary>
     ///     Safely creates a new environment in the database.
     /// </summary>
+    /// 
     /// <param name="environment">The environment to save.</param>
+    /// 
     /// <exception cref="EnvironmentException">Errors if any of the safety rules aren't met.</exception>
     public async Task CreateEnvironment(EnvironmentModel environment)
     {
@@ -33,6 +34,15 @@ public sealed class EnvironmentService(DatabaseContext database)
         }
     }
 
+    /// <summary>
+    ///     Fetches a specific environment.
+    /// </summary>
+    /// 
+    /// <param name="id">The ID of the environment.</param>
+    /// 
+    /// <returns>The environment.</returns>
+    /// 
+    /// <exception cref="EnvironmentException"></exception>
     public async Task<EnvironmentModel> GetEnvironmentById(Guid id)
     {
         return await database.Environments.FindAsync(id) ?? throw new EnvironmentException(404, "Could not find the environment with the provided ID.");
@@ -41,7 +51,9 @@ public sealed class EnvironmentService(DatabaseContext database)
     /// <summary>
     ///     Deletes an environment from the database.
     /// </summary>
+    /// 
     /// <param name="id">The ID of the environment to delete.</param>
+    /// 
     /// <exception cref="EnvironmentException">Errors if any of the deletion rules aren't met.</exception>
     public async Task DeleteEnvironment(Guid id)
     {
@@ -61,6 +73,14 @@ public sealed class EnvironmentService(DatabaseContext database)
         }
     }
 
+    /// <summary>
+    ///     Ensures that a server's variables meets the requirements of an environment.
+    /// </summary>
+    /// 
+    /// <param name="variables">The server's variables.</param>
+    /// <param name="environmentId">The environment ID.</param>
+    /// 
+    /// <returns>The result of the validation.</returns>
     public async Task<EnvironmentParametersValidationResult> EnsureServerMeetsEnvironmentParameters(Dictionary<string, ServerVariable> variables, Guid environmentId)
     {
         var errors = new List<string>();
@@ -108,6 +128,7 @@ public sealed class EnvironmentService(DatabaseContext database)
     /// <summary>
     ///     Lists all environments in the database regardless of the server.
     /// </summary>
+    /// 
     /// <returns>The list of environments.</returns>
     public async Task<List<EnvironmentModel>> ListEnvironments()
     {
@@ -115,4 +136,10 @@ public sealed class EnvironmentService(DatabaseContext database)
     }
 }
 
+/// <summary>
+///     The result for a server-environment validation.
+/// </summary>
+/// 
+/// <param name="Success">Whether the operation succeeded or not.</param>
+/// <param name="Errors">A list of errors.</param>
 public record EnvironmentParametersValidationResult(bool Success, List<string> Errors);
