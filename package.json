@@ -2,7 +2,7 @@
   "name": "servion",
   "version": "0.0.1",
   "private": true,
-  "description": "A Docker management interface.",
+  "description": "An easy-to-use Docker container management interface.",
   "author": {
     "name": "Inticate Softworks",
     "email": "contact@inticate.com"
