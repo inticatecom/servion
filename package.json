@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "An easy-to-use Docker container management interface.",
+  "license": "MIT",
   "author": {
     "name": "Inticate Softworks",
     "email": "contact@inticate.com"
