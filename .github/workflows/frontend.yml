@@ -90,4 +90,4 @@ jobs:
 
       # Build
       - name: Build
-        run: bun run web:build
+        run: bun --env-file=.env.example run --filter '@servion/web' build
