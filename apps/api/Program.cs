@@ -123,6 +123,8 @@ public static class Program
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<EnvironmentService>();
         builder.Services.AddScoped<HealthService>();
+        builder.Services.AddScoped<LocationService>();
+        builder.Services.AddScoped<BackendService>();
 
         // Configure JSON Parsing
         builder.Services.AddControllers()
