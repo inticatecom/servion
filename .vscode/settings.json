@@ -11,5 +11,6 @@
     "pcss",
     "servion",
     "tsgolint"
-  ]
+  ],
+  "js/ts.tsdk.path": "node_modules/typescript"
 }
