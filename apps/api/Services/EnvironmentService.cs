@@ -16,7 +16,7 @@ public sealed class EnvironmentService(DatabaseContext database)
     /// </summary>
     /// <param name="environment">The environment to save.</param>
     /// <exception cref="EnvironmentException">Errors if any of the safety rules aren't met.</exception>
-    public async Task CreateEnvironment(EnvironmentModel environment)
+    public async Task CreateEnvironmentAsync(EnvironmentModel environment)
     {
         var existingEnvironment = await database.Environments.AnyAsync(env => env.Name == environment.Name);
         if (existingEnvironment) throw new EnvironmentException(409, "There is already an environment that exists with the provided name.");
@@ -38,7 +38,7 @@ public sealed class EnvironmentService(DatabaseContext database)
     /// <param name="id">The ID of the environment.</param>
     /// <returns>The environment.</returns>
     /// <exception cref="EnvironmentException"></exception>
-    public async Task<EnvironmentModel> GetEnvironmentById(Guid id)
+    public async Task<EnvironmentModel> GetEnvironmentAsync(Guid id)
     {
         return await database.Environments.FindAsync(id) ?? throw new EnvironmentException(404, "Could not find the environment with the provided ID.");
     }
@@ -48,7 +48,7 @@ public sealed class EnvironmentService(DatabaseContext database)
     /// </summary>
     /// <param name="id">The ID of the environment to delete.</param>
     /// <exception cref="EnvironmentException">Errors if any of the deletion rules aren't met.</exception>
-    public async Task DeleteEnvironment(Guid id)
+    public async Task DeleteEnvironmentAsync(Guid id)
     {
         var environment = await database.Environments.Include(env => env.Servers).FirstAsync(env => env.Id == id);
         if (environment is null) throw new EnvironmentException(404, "Environment could not be found with the provided ID.");
@@ -72,10 +72,10 @@ public sealed class EnvironmentService(DatabaseContext database)
     /// <param name="variables">The server's variables.</param>
     /// <param name="environmentId">The environment ID.</param>
     /// <returns>The result of the validation.</returns>
-    public async Task<EnvironmentParametersValidationResult> EnsureServerMeetsEnvironmentParameters(Dictionary<string, ServerVariable> variables, Guid environmentId)
+    public async Task<EnvironmentParametersValidationResult> ValidateEnvironmentParametersAsync(Dictionary<string, ServerVariable> variables, Guid environmentId)
     {
         var errors = new List<string>();
-        var parameters = (await GetEnvironmentById(environmentId)).Parameters;
+        var parameters = (await GetEnvironmentAsync(environmentId)).Parameters;
 
         if (variables.Select(param => param.Value.Name).Distinct().Count() != variables.Count) errors.Add("Includes duplicate variables.");
 
@@ -120,7 +120,7 @@ public sealed class EnvironmentService(DatabaseContext database)
     ///     Lists all environments in the database regardless of the server.
     /// </summary>
     /// <returns>The list of environments.</returns>
-    public async Task<List<EnvironmentModel>> ListEnvironments()
+    public async Task<List<EnvironmentModel>> ListEnvironmentsAsync()
     {
         return await database.Environments.ToListAsync();
     }

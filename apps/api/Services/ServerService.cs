@@ -42,7 +42,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     ///     Lists all existing servers regardless of the owner.
     /// </summary>
     /// <returns>The list of servers.</returns>
-    public async Task<List<ServerModel>> ListServers()
+    public async Task<List<ServerModel>> ListServersAsync()
     {
         return await database.Servers.ToListAsync();
     }
@@ -52,7 +52,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// </summary>
     /// <param name="id">The identifier of the server.</param>
     /// <returns>The found server.</returns>
-    public async Task<ServerModel?> GetServer(Guid id)
+    public async Task<ServerModel?> GetServerAsync(Guid id)
     {
         return await database.Servers.FindAsync(id);
     }
@@ -62,13 +62,12 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// </summary>
     /// <param name="options">The options to apply to the newly created server.</param>
     /// <returns>The created server.</returns>
-    public async Task<ServerModel> CreateServer(ServerCreateParameters options)
+    public async Task<ServerModel> CreateServerAsync(ServerCreateParameters options)
     {
-        var environment = await database.Environments.FindAsync(options.EnvironmentId);
-        if (environment is null) throw new ServerException(400, "Invalid environment ID.");
+        var environment = await database.Environments.FindAsync(options.EnvironmentId) ?? throw new ServerException(400, "Invalid environment ID.");
 
         // TODO: Ensure provided variables match schema of environment parameters.
-        var result = await environments.EnsureServerMeetsEnvironmentParameters(options.Variables, environment.Id);
+        var result = await environments.ValidateEnvironmentParametersAsync(options.Variables, environment.Id);
 
         var image = environment.Images[options.ImageKey];
         var imageParts = image.Split(":", 2);
@@ -108,7 +107,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// <param name="id">The ID of the server to delete.</param>
     /// <param name="forcefully">Whether the operation should be carried out forcefully.</param>
     /// <exception cref="ServerException">Errors if any of the tasks fail to complete.</exception>
-    public async Task DeleteServer(Guid id, bool? forcefully)
+    public async Task DeleteServerAsync(Guid id, bool? forcefully)
     {
         var server = await database.Servers.FindAsync(id) ?? throw new ServerException(404, "Server not found.");
 
@@ -145,7 +144,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// <param name="id">The identifier of the server.</param>
     /// <param name="state">The state to set for the server.</param>
     /// <exception cref="Exception">Errors if the server can't be found by the provided identifier.</exception>
-    public async Task SetServerState(Guid id, ServerState state)
+    public async Task SetServerStateAsync(Guid id, ServerState state)
     {
         var server = await database.Servers.FindAsync(id) ?? throw new ServerException(404, "Server does not exist.");
         switch (state)

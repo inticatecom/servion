@@ -10,7 +10,7 @@ public class HealthJob(HealthService health) : IJob
 {
     private readonly Dictionary<string, Func<CancellationToken, Task<bool>>> _checks = new()
     {
-        ["database"] = health.CheckDatabaseHealth
+        ["database"] = health.CheckDatabaseHealthAsync
     };
 
     public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default)

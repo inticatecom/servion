@@ -20,7 +20,7 @@ public sealed class HealthService(DatabaseContext database)
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The status of the database.</returns>
-    public async Task<bool> CheckDatabaseHealth(CancellationToken cancellationToken = default)
+    public async Task<bool> CheckDatabaseHealthAsync(CancellationToken cancellationToken = default)
     {
         try
         {

@@ -18,7 +18,7 @@ public sealed class EnvironmentController(EnvironmentService environments)
     [HttpGet]
     public async Task<IActionResult> List()
     {
-        return Ok(await environments.ListEnvironments());
+        return Ok(await environments.ListEnvironmentsAsync());
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public sealed class EnvironmentController(EnvironmentService environments)
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] EnvironmentDto.Create request)
     {
-        await environments.CreateEnvironment(request.Data);
+        await environments.CreateEnvironmentAsync(request.Data);
         return Created();
     }
 
@@ -37,7 +37,7 @@ public sealed class EnvironmentController(EnvironmentService environments)
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] EnvironmentDto.Delete request)
     {
-        await environments.DeleteEnvironment(request.Id);
+        await environments.DeleteEnvironmentAsync(request.Id);
         return Ok();
     }
 }
