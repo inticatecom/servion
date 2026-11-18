@@ -11,7 +11,7 @@ public class EnvironmentModel : IdentityModel
     /// <summary>
     ///     The servers that use the environment.
     /// </summary>
-    public ICollection<ServerModel> Servers { get; set; } = new List<ServerModel>();
+    public ICollection<ServerModel> Servers { get; set; } = [];
 
     /// <summary>
     ///     The name of the environment.
