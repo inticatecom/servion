@@ -41,7 +41,6 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// <summary>
     ///     Lists all existing servers regardless of the owner.
     /// </summary>
-    /// 
     /// <returns>The list of servers.</returns>
     public async Task<List<ServerModel>> ListServers()
     {
@@ -51,9 +50,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// <summary>
     ///     Gets a specific server's information based on its identifier.
     /// </summary>
-    /// 
     /// <param name="id">The identifier of the server.</param>
-    /// 
     /// <returns>The found server.</returns>
     public async Task<ServerModel?> GetServer(Guid id)
     {
@@ -63,9 +60,7 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// <summary>
     ///     Creates a new server with the provided information.
     /// </summary>
-    /// 
     /// <param name="options">The options to apply to the newly created server.</param>
-    /// 
     /// <returns>The created server.</returns>
     public async Task<ServerModel> CreateServer(ServerCreateParameters options)
     {
@@ -110,10 +105,8 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// <summary>
     ///     Deletes a server and it's data.
     /// </summary>
-    /// 
     /// <param name="id">The ID of the server to delete.</param>
     /// <param name="forcefully">Whether the operation should be carried out forcefully.</param>
-    /// 
     /// <exception cref="ServerException">Errors if any of the tasks fail to complete.</exception>
     public async Task DeleteServer(Guid id, bool? forcefully)
     {
@@ -149,10 +142,8 @@ public sealed class ServerService(DockerClient docker, DatabaseContext database,
     /// <summary>
     ///     Changes the current state of the provided server.
     /// </summary>
-    /// 
     /// <param name="id">The identifier of the server.</param>
     /// <param name="state">The state to set for the server.</param>
-    /// 
     /// <exception cref="Exception">Errors if the server can't be found by the provided identifier.</exception>
     public async Task SetServerState(Guid id, ServerState state)
     {

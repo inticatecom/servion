@@ -8,7 +8,7 @@ namespace API.Services;
 ///     The service for getting the status of internal services.
 /// </summary>
 [UsedImplicitly]
-public sealed class HealthService(DatabaseContext database, ILogger<HealthService> logger)
+public sealed class HealthService(DatabaseContext database)
 {
     /// <summary>
     ///     The list of service entries and their statuses.
@@ -18,9 +18,7 @@ public sealed class HealthService(DatabaseContext database, ILogger<HealthServic
     /// <summary>
     ///     Checks the database health.
     /// </summary>
-    /// 
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// 
     /// <returns>The status of the database.</returns>
     public async Task<bool> CheckDatabaseHealth(CancellationToken cancellationToken = default)
     {
