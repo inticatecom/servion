@@ -1,1 +1,5 @@
+---
+icon: lucide/download
+---
+
 # Installation
