@@ -1,2 +1,3 @@
 [project]
 site_name = "Servion"
+docs_dir = "docs"

@@ -9,6 +9,8 @@ RUN zensical build
 
 FROM nginx:alpine as proxy
 
-COPY --from=build /app/site /ur/share/nginx/html
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY --from=build /app/site/ /usr/share/nginx/html/
 
 EXPOSE 80
