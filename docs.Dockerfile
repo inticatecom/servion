@@ -7,10 +7,10 @@ COPY docs/ ./docs/
 
 RUN zensical build
 
-FROM nginx:alpine as proxy
+FROM nginx:alpine AS proxy
 
-RUN rm -rf /usr/share/nginx/html/*
+RUN rm -rf /usr/share/nginx/html/* && mkdir -p /usr/share/nginx/html/servion
 
-COPY --from=build /app/site/ /usr/share/nginx/html/
+COPY --from=build /app/site/ /usr/share/nginx/html/servion/
 
 EXPOSE 80
