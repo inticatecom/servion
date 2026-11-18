@@ -1,7 +1,5 @@
 using API.DTO;
-using API.Exceptions;
 using API.Services;
-using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
