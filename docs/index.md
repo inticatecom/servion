@@ -2,6 +2,6 @@
 icon: lucide/house
 ---
 
-# Getting Started
+# Home
 
 Hello world!
