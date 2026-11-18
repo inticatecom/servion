@@ -3,3 +3,23 @@ site_name = "Servion"
 site_url = "https://docs.inticate.com/servion/"
 docs_dir = "docs"
 site_dir = "site"
+extra_css = ["stylesheets/inticate.css"]
+repo_url = "https://github.com/twobrake/servion"
+repo_name = "twobrake/servion"
+
+[project.theme]
+font.text = "Geist"
+font.code = "Geist Mono"
+logo = "images/logo.png"
+favicon = "images/logo.png"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.theme.palette]
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+
+[project.extra]
+generator = false

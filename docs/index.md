@@ -1,1 +1,7 @@
-# Documentation Root
+---
+icon: lucide/house
+---
+
+# Getting Started
+
+Hello world!
