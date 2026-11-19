@@ -8,6 +8,19 @@ repo_url = "https://github.com/twobrake/servion"
 repo_name = "twobrake/servion"
 edit_uri = "edit/canary/docs"
 
+[[project.nav]]
+"Home" = "index.md"
+
+[[project.nav]]
+"Getting Started" = [
+  "getting-started/installation.md"
+]
+
+[[project.nav]]
+"Credits" = [
+  "credits/index.md"
+]
+
 [project.theme]
 font.text = "Geist"
 font.code = "Geist Mono"
