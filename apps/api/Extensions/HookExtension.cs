@@ -7,7 +7,7 @@ public sealed class HookExtension(ILogger<HookExtension> logger) : IExtension, I
 {
     public Task HandleAsync(EnvironmentCreateEvent @event, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Environment created: {id}", @event.id);
+        logger.LogInformation("Environment created: {id}", @event.Id);
         return Task.CompletedTask;
     }
 
