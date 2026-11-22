@@ -5,6 +5,14 @@ import { defineConfig } from "oxlint";
 const configuration = defineConfig({
   extends: [baseConfig],
   ignorePatterns: ["routeTree.gen.ts", "**/generated/**"],
+  overrides: [
+    {
+      files: ["**/*.tsx"],
+      rules: {
+        "typescript/explicit-function-return-type": "off",
+      },
+    },
+  ],
   rules: {
     "eslint/no-console": "off",
     "eslint/no-void": "off",

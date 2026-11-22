@@ -6,7 +6,7 @@ import { environment } from "@servion/config";
 
 /**
  * Forward the incoming cookie to the API to verify authentication.
- * Redirect unauthorized requests to login and pass a recognized user to downstream context.
+ * Redirect unauthorized requests to log in and pass a recognized user to downstream context.
  */
 const authenticatedMiddleware = createMiddleware().server(async ({ next, request }) => {
   const response = await fetch(`http://localhost:${environment.SERVER_PORT}/api/users`, {
