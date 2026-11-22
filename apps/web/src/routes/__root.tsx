@@ -15,11 +15,11 @@ import NotFound from "@/components/not-found";
 // oxlint-disable-next-line react/only-export-components
 /** The root document to render content inside. */
 const RootDocument = ({ children }: Children): JSX.Element => (
-  <html className={"dark antialiased"}>
+  <html className={"dark dark-mode antialiased"}>
     <head>
       <HeadContent />
     </head>
-    <body>
+    <body className={"bg-primary"}>
       {children}
       <TanStackRouterDevtools position={"bottom-right"} />
       <Scripts />

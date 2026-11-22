@@ -4,7 +4,7 @@ import { defineConfig } from "oxlint";
 
 const configuration = defineConfig({
   extends: [baseConfig],
-  ignorePatterns: ["routeTree.gen.ts", "**/generated/**"],
+  ignorePatterns: ["routeTree.gen.ts", "**/generated/**", "src/components/base/**", "src/utils/**"],
   overrides: [
     {
       files: ["**/*.tsx"],

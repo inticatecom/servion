@@ -12,14 +12,10 @@ edit_uri = "edit/canary/docs"
 "Home" = "index.md"
 
 [[project.nav]]
-"Getting Started" = [
-  "getting-started/installation.md"
-]
+"Getting Started" = ["getting-started/installation.md"]
 
 [[project.nav]]
-"Credits" = [
-  "credits/index.md"
-]
+"Credits" = ["credits/index.md"]
 
 [project.theme]
 font.text = "Geist"
