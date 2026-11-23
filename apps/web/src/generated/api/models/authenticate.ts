@@ -5,4 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UserRole = number;
+export interface Authenticate {
+  email: string;
+  password: string;
+}

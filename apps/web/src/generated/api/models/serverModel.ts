@@ -4,6 +4,7 @@
  * API | v1
  * OpenAPI spec version: 1.0.0
  */
+import type { BackendModel } from './backendModel.ts';
 import type { EnvironmentModel } from './environmentModel.ts';
 import type { ServerModelVariables } from './serverModelVariables.ts';
 import type { UserModel } from './userModel.ts';
@@ -11,6 +12,8 @@ import type { UserModel } from './userModel.ts';
 export interface ServerModel {
   owner?: UserModel;
   ownerId: string;
+  backendInstance?: BackendModel;
+  backendInstanceId: string;
   environment?: EnvironmentModel;
   environmentId: string;
   /**

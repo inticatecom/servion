@@ -6,25 +6,33 @@
  */
 import type { ServerModel } from './serverModel.ts';
 import type { UserAuthorizationCode } from './userAuthorizationCode.ts';
-import type { UserRole } from './userRole.ts';
 
 export interface UserModel {
-  /**
-     * @minLength 3
-     * @maxLength 30
-     */
-  username: string;
-  /**
-     * @minLength 3
-     * @maxLength 30
-     */
-  email: string;
-  /** @maxLength 512 */
-  passwordHash: string;
   servers?: ServerModel[];
   authorizationCode?: null | UserAuthorizationCode;
-  role?: UserRole;
   id?: string;
-  updatedAt?: string;
-  createdAt?: string;
+  /** @nullable */
+  userName?: string | null;
+  /** @nullable */
+  normalizedUserName?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  normalizedEmail?: string | null;
+  emailConfirmed?: boolean;
+  /** @nullable */
+  passwordHash?: string | null;
+  /** @nullable */
+  securityStamp?: string | null;
+  /** @nullable */
+  concurrencyStamp?: string | null;
+  /** @nullable */
+  phoneNumber?: string | null;
+  phoneNumberConfirmed?: boolean;
+  twoFactorEnabled?: boolean;
+  /** @nullable */
+  lockoutEnd?: string | null;
+  lockoutEnabled?: boolean;
+  /** @pattern ^-?(?:0|[1-9]\d*)$ */
+  accessFailedCount?: number | string;
 }

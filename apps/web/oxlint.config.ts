@@ -16,6 +16,7 @@ const configuration = defineConfig({
       files: ["**/*.tsx"],
       rules: {
         "typescript/explicit-function-return-type": "off",
+        "typescript/explicit-module-boundary-types": "off",
       },
     },
   ],

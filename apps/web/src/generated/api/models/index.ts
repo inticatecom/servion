@@ -5,6 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './authenticate.ts';
+export * from './backendModel.ts';
 export * from './create.ts';
 export * from './delete.ts';
 export * from './environmentAuthor.ts';
@@ -18,8 +20,8 @@ export * from './environmentParameterValue.ts';
 export * from './environmentStartup.ts';
 export * from './serverModel.ts';
 export * from './serverModelVariables.ts';
+export * from './serverState.ts';
 export * from './serverVariable.ts';
 export * from './setState.ts';
 export * from './userAuthorizationCode.ts';
 export * from './userModel.ts';
-export * from './userRole.ts';

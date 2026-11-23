@@ -8,18 +8,23 @@ import { AUTHENTICATE_USER } from "@servion/validation";
 
 // Hooks
 import { useForm, Controller } from "react-hook-form";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { usePutApiUsers } from "@/generated/api/user/user";
 
 // Components
 import { Button } from "@/components/base/buttons/button";
 import { HookForm } from "@/components/base/form/hook-form";
 import { Input } from "@/components/base/input/input";
+import Callout from "@/components/ui/callout";
 
 /** The output of the validator for authenticated the user. */
 type AuthenticationValues = z.infer<typeof AUTHENTICATE_USER>;
 
 /** Placeholder for the public login page. */
 const Login = () => {
+  // States
+  const [errored, setErrored] = useState<boolean>();
+
   // Hooks
   const form = useForm<AuthenticationValues>({
     defaultValues: {
@@ -29,9 +34,25 @@ const Login = () => {
     resolver: zodResolver(AUTHENTICATE_USER),
   });
 
-  const handleAuthentication = useCallback(() => {
-    console.log("Hello world!");
-  }, []);
+  /** The query members for authenticated users. */
+  const { mutateAsync: authenticate, isPending: authenticating } =
+    usePutApiUsers();
+
+  /** Handles the authentication for the form. */
+  const handleAuthentication = useCallback(
+    async (data: AuthenticationValues) => {
+      setErrored(false);
+
+      const response = await authenticate({
+        data,
+      });
+
+      if (response.status !== 200) {
+        setErrored(true);
+      }
+    },
+    [authenticate],
+  );
 
   return (
     <div className={"w-full h-screen flex justify-center items-center"}>
@@ -42,6 +63,11 @@ const Login = () => {
           void form.handleSubmit(handleAuthentication)(event);
         }}>
         <h1>{"Login"}</h1>
+        {errored && (
+          <Callout type={"error"}>
+            {"The provided credentials were invalid."}
+          </Callout>
+        )}
         <p>
           {
             "Authenticate into your existing account using the credentials you set."
@@ -81,6 +107,7 @@ const Login = () => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 ref={field.ref}
+                type={"password"}
                 hint={
                   fieldState.error?.message ?? "The password of your account."
                 }
@@ -89,11 +116,21 @@ const Login = () => {
             )}
           />
         </section>
-        <div className={"flex gap-2 w-full justify-end"}>
-          <Button type={"button"} color={"secondary"}>
-            {"Register"}
+        <div className={"flex w-full justify-between"}>
+          <Button href={"#"} color={"link-color"}>
+            {"Forgot Password"}
           </Button>
-          <Button type={"submit"}>{"Login"}</Button>
+          <div className={"flex gap-2"}>
+            <Button
+              type={"button"}
+              color={"secondary"}
+              isDisabled={authenticating}>
+              {"Register"}
+            </Button>
+            <Button type={"submit"} isLoading={authenticating}>
+              {"Login"}
+            </Button>
+          </div>
         </div>
       </HookForm>
     </div>
