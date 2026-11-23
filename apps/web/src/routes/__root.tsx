@@ -2,7 +2,6 @@
 // Resources
 import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import type { JSX } from "react";
 import type { RouterContext } from "@/lib/query-client";
 import appCss from "@/styles/app.css?url";
 import { seo } from "@/utility/seo";
@@ -11,16 +10,17 @@ import type { Children } from "@servion/utility";
 // Components
 import DefaultCatchBoundary from "@/components/default-catch-boundary";
 import NotFound from "@/components/not-found";
+import Footer from "@/components/ui/layout/footer";
 
-// oxlint-disable-next-line react/only-export-components
 /** The root document to render content inside. */
-const RootDocument = ({ children }: Children): JSX.Element => (
+const RootDocument = ({ children }: Children) => (
   <html className={"dark dark-mode antialiased"}>
     <head>
       <HeadContent />
     </head>
-    <body className={"bg-primary"}>
-      {children}
+    <body className={"bg-primary relative min-h-screen"}>
+      <main>{children}</main>
+      <Footer />
       <TanStackRouterDevtools position={"bottom-right"} />
       <Scripts />
     </body>

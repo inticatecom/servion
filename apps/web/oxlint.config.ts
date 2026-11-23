@@ -10,6 +10,7 @@ const configuration = defineConfig({
     "src/components/base/**",
     "src/components/foundations/**",
     "src/utils/**",
+    "src/hooks/use-resize-observer.ts",
   ],
   overrides: [
     {

@@ -4,11 +4,7 @@ import { cn } from "@/utility/general";
 
 /** A basic card to containerize elements with. */
 const Card = ({ className, children }: ClassName & Children) => (
-  <div
-    className={cn(
-      "p-10 rounded-lg bg-primary border border-white/10",
-      className,
-    )}>
+  <div className={cn("p-10 rounded-lg bg-primary border border-white/10", className)}>
     {children}
   </div>
 );

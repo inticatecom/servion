@@ -42,8 +42,7 @@ const Login = () => {
   }, [locale]);
 
   /** The query members for authenticated users. */
-  const { mutateAsync: authenticate, isPending: authenticating } =
-    usePutApiUsers();
+  const { mutateAsync: authenticate, isPending: authenticating } = usePutApiUsers();
 
   /** Handles the authentication for the form. */
   const handleAuthentication = useCallback(
@@ -67,19 +66,12 @@ const Login = () => {
         form={form}
         onSubmit={(event) => {
           void form.handleSubmit(handleAuthentication)(event);
-        }}>
+        }}
+      >
         <Card className={"prose"}>
           <h1>{"Login"}</h1>
-          {errored && (
-            <Callout type={"error"}>
-              {"The provided credentials were invalid."}
-            </Callout>
-          )}
-          <p>
-            {
-              "Authenticate into your existing account using the credentials you set."
-            }
-          </p>
+          {errored && <Callout type={"error"}>{"The provided credentials were invalid."}</Callout>}
+          <p>{"Authenticate into your existing account using the credentials you set."}</p>
           <section className={"mb-3 flex flex-col gap-2"}>
             <Controller
               name={"email"}
@@ -93,10 +85,7 @@ const Login = () => {
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   ref={field.ref}
-                  hint={
-                    fieldState.error?.message ??
-                    "The email address of your account."
-                  }
+                  hint={fieldState.error?.message ?? "The email address of your account."}
                   isInvalid={fieldState.error !== undefined}
                 />
               )}
@@ -115,9 +104,7 @@ const Login = () => {
                   onBlur={field.onBlur}
                   ref={field.ref}
                   type={"password"}
-                  hint={
-                    fieldState.error?.message ?? "The password of your account."
-                  }
+                  hint={fieldState.error?.message ?? "The password of your account."}
                   isInvalid={fieldState.error !== undefined}
                 />
               )}
@@ -128,10 +115,7 @@ const Login = () => {
               {"Forgot Password"}
             </Button>
             <div className={"flex gap-2"}>
-              <Button
-                type={"button"}
-                color={"secondary"}
-                isDisabled={authenticating}>
+              <Button type={"button"} color={"secondary"} isDisabled={authenticating}>
                 {"Register"}
               </Button>
               <Button type={"submit"} isLoading={authenticating}>
