@@ -3,3 +3,5 @@
 @import "./theme.css";
 @import "./typography.css";
 @import "./globals.css";
+
+@plugin "@tailwindcss/typography";

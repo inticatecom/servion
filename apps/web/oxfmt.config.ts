@@ -10,6 +10,7 @@ const configuration = defineConfig({
     "**/routeTree.gen.ts",
     "**/generated/**",
     "src/components/base/**",
+    "src/components/foundations/**",
     "src/utils/**",
   ],
 });

@@ -4,7 +4,13 @@ import { defineConfig } from "oxlint";
 
 const configuration = defineConfig({
   extends: [baseConfig],
-  ignorePatterns: ["routeTree.gen.ts", "**/generated/**", "src/components/base/**", "src/utils/**"],
+  ignorePatterns: [
+    "routeTree.gen.ts",
+    "**/generated/**",
+    "src/components/base/**",
+    "src/components/foundations/**",
+    "src/utils/**",
+  ],
   overrides: [
     {
       files: ["**/*.tsx"],
@@ -17,6 +23,7 @@ const configuration = defineConfig({
     "eslint/no-console": "off",
     "eslint/no-void": "off",
     "eslint/sort-imports": "off",
+    "oxc/no-optional-chaining": "off",
     "typescript/no-floating-promises": "error",
     "typescript/prefer-readonly-parameter-types": "off",
     "typescript/strict-boolean-expressions": "off",
