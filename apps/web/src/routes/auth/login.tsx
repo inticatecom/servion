@@ -8,8 +8,9 @@ import { AUTHENTICATE_USER } from "@servion/validation";
 
 // Hooks
 import { useForm, Controller } from "react-hook-form";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePutApiUsers } from "@/generated/api/user/user";
+import useLocale from "@/hooks/use-locale";
 
 // Components
 import { Button } from "@/components/base/buttons/button";
@@ -26,6 +27,7 @@ const Login = () => {
   const [errored, setErrored] = useState<boolean>();
 
   // Hooks
+  const { locale } = useLocale();
   const form = useForm<AuthenticationValues>({
     defaultValues: {
       email: "",
@@ -33,6 +35,10 @@ const Login = () => {
     },
     resolver: zodResolver(AUTHENTICATE_USER),
   });
+
+  useEffect(() => {
+    console.log(locale);
+  }, [locale]);
 
   /** The query members for authenticated users. */
   const { mutateAsync: authenticate, isPending: authenticating } =
@@ -101,7 +107,7 @@ const Login = () => {
             render={({ field, fieldState }) => (
               <Input
                 label={"Password"}
-                placeholder={"****"}
+                placeholder={"********"}
                 name={field.name}
                 value={field.value}
                 onChange={field.onChange}
