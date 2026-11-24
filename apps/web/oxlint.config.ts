@@ -18,6 +18,7 @@ const configuration = defineConfig({
       rules: {
         "typescript/explicit-function-return-type": "off",
         "typescript/explicit-module-boundary-types": "off",
+        "typescript/only-throw-error": "off",
       },
     },
   ],

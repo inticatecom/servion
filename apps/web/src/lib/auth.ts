@@ -11,7 +11,9 @@ export interface User {
 
 /**
  * Check that a response is an object containing a user ID; other fields are not validated.
+ *
  * @param data - The response value to inspect.
+ *
  * @returns Whether the value is a non-null object containing an ID property.
  */
 export const isUser = (data: unknown): data is User =>
@@ -19,7 +21,9 @@ export const isUser = (data: unknown): data is User =>
 
 /**
  * Fetch the current user using the browser's authentication cookie.
- * Throws for HTTP failures other than unauthorized responses.
+ *
+ * @throws {Error} HTTP failures other than unauthorized responses.
+ *
  * @returns The current user, or undefined for unauthorized or unrecognized responses.
  */
 export const getCurrentUser = async (): Promise<Possible<User>> => {
