@@ -23,7 +23,7 @@ import { getUser } from "@/lib/user";
 /** The output of the validator for authenticated the user. */
 type AuthenticationValues = z.infer<typeof AUTHENTICATE_USER>;
 
-/** Placeholder for the public login page. */
+/** The login page allowing users to access their account. */
 const Login = () => {
   // States
   const [errored, setErrored] = useState<boolean>();
@@ -146,7 +146,7 @@ const Login = () => {
   );
 };
 
-/** Public login destination for unauthenticated visitors. */
+/** The route to serve the component. */
 export const Route = createFileRoute("/auth/login")({
   beforeLoad: async () => {
     const user = await getUser();
