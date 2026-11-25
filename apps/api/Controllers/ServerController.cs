@@ -1,8 +1,6 @@
 using API.DTO;
-using API.Exceptions;
 using API.Models;
 using API.Services;
-using API.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +20,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.SuperAdmin)}")]
     public async Task<IActionResult> ListAll()
     {
-        return Ok(await servers.ListServers());
+        return Ok(await servers.ListServersAsync());
     }
 
     /// <summary>
@@ -32,7 +30,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     public async Task<IActionResult> Create([FromBody] ServerDto.Create request)
     {
         // Create the new server.
-        var server = await servers.CreateServer(new ServerCreateParameters
+        var server = await servers.CreateServerAsync(new ServerCreateParameters
         {
             Name = request.Name,
             OwnerId = request.OwnerId,
@@ -42,7 +40,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
         });
 
         // If the request wants the server to startup, start it.
-        if (request.ShouldStart) await servers.SetServerState(server.Id, ServerState.Online);
+        if (request.ShouldStart) await servers.SetServerStateAsync(server.Id, ServerState.Online);
 
         return Created();
     }
@@ -53,7 +51,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] ServerDto.Delete request)
     {
-        await servers.DeleteServer(request.Id, false);
+        await servers.DeleteServerAsync(request.Id, false);
         return Ok();
     }
 
@@ -63,7 +61,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetOne(Guid id)
     {
-        var server = await servers.GetServer(id);
+        var server = await servers.GetServerAsync(id);
         return server is null ? NotFound() : Ok(server);
     }
 
@@ -75,7 +73,7 @@ public sealed class ServerController(ServerService servers) : ControllerBase
     {
         var state = request.State;
 
-        await servers.SetServerState(id, state);
+        await servers.SetServerStateAsync(id, state);
         return NoContent();
     }
 }

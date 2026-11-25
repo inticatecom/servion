@@ -8,7 +8,6 @@ namespace API.Contexts;
 /// <summary>
 ///     The database context made for accessing & interacting with the database in controllers & services.
 /// </summary>
-/// 
 /// <param name="options">Options for the context.</param>
 public sealed class DatabaseContext(
     DbContextOptions<DatabaseContext> options

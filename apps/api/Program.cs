@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using API.Contexts;
 using API.DTO;
+using API.Interfaces;
 using API.Jobs;
 using API.Models;
 using API.Services;
@@ -62,6 +63,11 @@ public static class Program
         return builder;
     }
 
+    /// <summary>
+    ///     Constructs the application.
+    /// </summary>
+    /// <param name="builder">The web application builder.</param>
+    /// <returns>The constructed web application.</returns>
     private static WebApplication CreateApplication(WebApplicationBuilder builder)
     {
         var app = builder.Build();
@@ -88,6 +94,23 @@ public static class Program
         return app;
     }
 
+    /// <summary>
+    ///     Initializes all extensions into the builder by adding them as singleton's. The extensions lifecycle methods
+    ///     get called in the 'ExtensionHostedService' service.
+    /// </summary>
+    /// <param name="builder">The web application builder.</param>
+    private static void InitializeExtensions(WebApplicationBuilder builder)
+    {
+        var extensions = typeof(IExtension).Assembly.GetTypes().Where(type => type is { IsClass: true, IsAbstract: false } && typeof(IExtension).IsAssignableFrom(type));
+        foreach (var extension in extensions) builder.Services.AddSingleton(typeof(IExtension), extension);
+
+        builder.Services.AddSingleton<IEventPublisher, EventContext>();
+    }
+
+    /// <summary>
+    ///     Configures all services into the system.
+    /// </summary>
+    /// <param name="builder">The web application builder.</param>
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
         // Configure Services
@@ -140,10 +163,17 @@ public static class Program
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<DatabaseContext>();
 
+        InitializeExtensions(builder);
+        builder.Services.AddHostedService<ExtensionHostedService>();
+
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
     }
 
+    /// <summary>
+    ///     Configures & initializes concurrent jobs to be run incrementally.
+    /// </summary>
+    /// <param name="builder">The web application builder.</param>
     private static void SetupJobs(WebApplicationBuilder builder)
     {
         builder.Services.AddQuartz(options =>

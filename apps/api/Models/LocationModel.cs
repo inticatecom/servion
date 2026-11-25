@@ -19,5 +19,8 @@ public class LocationModel : IdentityModel
     [StringLength(200, MinimumLength = 10)]
     public required string Description { get; set; }
 
+    /// <summary>
+    ///     The backends that the location owns.
+    /// </summary>
     public ICollection<BackendModel> Backends { get; set; } = [];
 }

@@ -1,13 +1,14 @@
 // Resources
 import { createMiddleware } from "@tanstack/react-start";
-import { redirect } from "@tanstack/react-router";
-import { isUser } from "@/lib/auth.ts";
+import { isUser, type User } from "@/lib/auth";
 import { environment } from "@servion/config";
+import type { Possible } from "@servion/utility";
 
-/**
- * Forward the incoming cookie to the API to verify authentication.
- * Redirect unauthorized requests to login and pass a recognized user to downstream context.
- */
+export interface AuthenticationContext {
+  user: Possible<User>;
+}
+
+/** Forward the incoming cookie to the API to verify authentication. */
 const authenticatedMiddleware = createMiddleware().server(async ({ next, request }) => {
   const response = await fetch(`http://localhost:${environment.SERVER_PORT}/api/users`, {
     cache: "no-store",
@@ -18,7 +19,7 @@ const authenticatedMiddleware = createMiddleware().server(async ({ next, request
   });
 
   if (response.status === 401) {
-    return redirect({ to: "/auth/login" });
+    return next<AuthenticationContext>({ context: { user: undefined } });
   }
 
   if (!response.ok) {
@@ -31,7 +32,7 @@ const authenticatedMiddleware = createMiddleware().server(async ({ next, request
     throw new Error("Invalid user response");
   }
 
-  return next({
+  return next<AuthenticationContext>({
     context: {
       user: data,
     },

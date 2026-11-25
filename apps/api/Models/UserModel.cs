@@ -21,6 +21,9 @@ public class UserModel : IdentityUser<Guid>
     public UserAuthorizationCode? AuthorizationCode { get; set; }
 }
 
+/// <summary>
+///     A role type for a user.
+/// </summary>
 public enum UserRole
 {
     Client,
@@ -28,4 +31,9 @@ public enum UserRole
     SuperAdmin
 }
 
+/// <summary>
+///     An authorization code for a sensitive action under a user's account.
+/// </summary>
+/// <param name="Code">The code.</param>
+/// <param name="GeneratedAt">The time the code was generated at.</param>
 public record UserAuthorizationCode([MaxLength(512)] string Code, DateTime GeneratedAt);

@@ -21,11 +21,9 @@ public sealed class UserService(
     /// <summary>
     ///     Creates a new user with the provided information.
     /// </summary>
-    /// 
     /// <param name="username">The username for the user.</param>
     /// <param name="email">The email for the user.</param>
     /// <param name="password">The password to be hashed for the user.</param>
-    /// 
     /// <returns>The newly created user.</returns>
     public async Task<UserModel> CreateUserAsync(string username, string email, string password)
     {
@@ -59,10 +57,8 @@ public sealed class UserService(
     /// <summary>
     ///     Authenticates a user into the system with an email & password.
     /// </summary>
-    /// 
     /// <param name="email">The user's email address.</param>
     /// <param name="password">The user's password.</param>
-    /// 
     /// <returns>Whether the operation was successful or not.</returns>
     public async Task<bool> AuthenticateUserAsync(string email, string password)
     {
@@ -78,10 +74,8 @@ public sealed class UserService(
     /// <summary>
     ///     Validates a user's password.
     /// </summary>
-    ///
     /// <param name="id">The ID of the user.</param>
     /// <param name="password">The user's password.</param>
-    ///
     /// <returns>Whether the password is valid for the user's account or not.</returns>
     public async Task<bool> ValidatePasswordAsync(Guid id, string password)
     {
@@ -95,10 +89,8 @@ public sealed class UserService(
     /// <summary>
     ///     Validates an authorization code.
     /// </summary>
-    ///
     /// <param name="userId">The ID of the user.</param>
     /// <param name="code">The authorization code.</param>
-    ///
     /// <returns>Whether the authorization code is valid or not.</returns>
     public async Task<bool> ValidateAuthorizationCodeAsync(Guid userId, string code)
     {
@@ -130,9 +122,7 @@ public sealed class UserService(
     /// <summary>
     ///     Generates a new authorization code.
     /// </summary>
-    ///
     /// <param name="userId">The user's ID.</param>
-    ///
     /// <returns>The newly generated authorization code.</returns>
     public async Task<string> RegenerateAuthorizationCodeAsync(Guid userId)
     {

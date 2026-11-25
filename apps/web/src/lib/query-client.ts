@@ -8,6 +8,7 @@ export interface RouterContext {
 
 /**
  * Create an isolated query cache for each router and server request.
+ *
  * @returns A query client with the application's default freshness window.
  */
 export const createQueryClient = (): QueryClient =>

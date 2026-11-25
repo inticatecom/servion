@@ -4,8 +4,8 @@
  * API | v1
  * OpenAPI spec version: 1.0.0
  */
+import type { ServerState } from './serverState.ts';
 
 export interface SetState {
-  /** @pattern ^-?(?:0|[1-9]\d*)$ */
-  state: number | string;
+  state: ServerState;
 }

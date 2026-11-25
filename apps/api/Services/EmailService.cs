@@ -20,11 +20,10 @@ public sealed class EmailService
     /// <summary>
     ///     Sends an email with the provided information to the client.
     /// </summary>
-    /// 
     /// <param name="recipient">The recipient.</param>
     /// <param name="subject">The subject.</param>
     /// <param name="content">The content.</param>
-    public async Task SendAsync(string recipient, string subject, string content)
+    public async Task SendEmailAsync(string recipient, string subject, string content)
     {
         var message = new MimeMessage();
 
