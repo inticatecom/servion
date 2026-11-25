@@ -76,7 +76,7 @@ const ResetPassword = () => {
   );
 };
 
-/** The route to serve the component.. */
+/** The route to serve the component. */
 export const Route = createFileRoute("/auth/reset-password")({
   component: ResetPassword,
 });

@@ -82,9 +82,11 @@ const Login = () => {
             text: "Login",
           }}
           pending={authenticating}
-          error={
-            errored ? "The provided credentials were invalid." : undefined
-          }>
+          error={errored ? "The provided credentials were invalid." : undefined}
+          notice={{
+            text: "Forgot Password",
+            url: "/auth/reset-password",
+          }}>
           <Controller
             name={"email"}
             control={form.control}
