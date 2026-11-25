@@ -1,10 +1,6 @@
 /// <reference types="vite/client" />
 // Resources
-import {
-  HeadContent,
-  Scripts,
-  createRootRouteWithContext,
-} from "@tanstack/react-router";
+import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { RouterContext } from "@/lib/query-client";
 import appCss from "@/styles/app.css?url";

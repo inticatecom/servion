@@ -38,7 +38,8 @@ const ResetPassword = () => {
         form={form}
         onSubmit={(event) => {
           void form.handleSubmit(handleResetPassword)(event);
-        }}>
+        }}
+      >
         <CardForm
           title={"Reset Password"}
           description={"Follow the instructions to reset your password."}
@@ -49,7 +50,8 @@ const ResetPassword = () => {
               </Button>
             ),
             text: "Reset",
-          }}>
+          }}
+        >
           <Controller
             name={"email"}
             control={form.control}
@@ -62,10 +64,7 @@ const ResetPassword = () => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 ref={field.ref}
-                hint={
-                  fieldState.error?.message ??
-                  "The email address of your account."
-                }
+                hint={fieldState.error?.message ?? "The email address of your account."}
                 isInvalid={fieldState.error !== undefined}
               />
             )}

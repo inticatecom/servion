@@ -38,7 +38,8 @@ const Register = () => {
           notice={{
             text: "Already have an Account",
             url: "/auth/login",
-          }}>
+          }}
+        >
           <div className={"flex gap-2"}>
             <Controller
               name={"name"}
@@ -69,10 +70,7 @@ const Register = () => {
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   ref={field.ref}
-                  hint={
-                    fieldState.error?.message ??
-                    "The email address of your account."
-                  }
+                  hint={fieldState.error?.message ?? "The email address of your account."}
                   isInvalid={fieldState.error !== undefined}
                 />
               )}
@@ -90,10 +88,7 @@ const Register = () => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 ref={field.ref}
-                hint={
-                  fieldState.error?.message ??
-                  "The password you want to set for the account."
-                }
+                hint={fieldState.error?.message ?? "The password you want to set for the account."}
                 isInvalid={fieldState.error !== undefined}
                 type={"password"}
               />

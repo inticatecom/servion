@@ -11,6 +11,7 @@ const configuration = defineConfig({
     "src/components/foundations/**",
     "src/utils/**",
     "src/hooks/use-resize-observer.ts",
+    "src/paraglide/**",
   ],
   overrides: [
     {

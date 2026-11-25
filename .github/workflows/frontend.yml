@@ -43,6 +43,10 @@ jobs:
       - name: Install Dependencies
         run: bun install --frozen-lockfile
 
+      # Initialize Paraglide Runtime
+      - name: Generate Translation
+        run: bun run --filter '@servion/web' i18n
+
       # Linting
       - name: Run Linting Framework
         run: bun run lint
@@ -66,12 +70,17 @@ jobs:
       - name: Install Dependencies
         run: bun install --frozen-lockfile
 
+      # Initialize Paraglide Runtime
+      - name: Generate Translation
+        run: bun run --filter '@servion/web' i18n
+
       # Typechecking
       - name: Run Typechecking
-        run: bun typecheck
+        run: bun run typecheck
   build:
     name: "Build"
     runs-on: "ubuntu-latest"
+    needs: [lint, typecheck]
 
     steps:
       # Checkout
