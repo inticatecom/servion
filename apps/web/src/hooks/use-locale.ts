@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 
 // Constants
 export const LOCALE_COOKIE_KEY = "locale";
-export const DEFAULT_LOCALE = "en";
+export const DEFAULT_LOCALE = "EN";
 
 /** A hook for managing the current locale in the user's browser. */
 // oxlint-disable-next-line typescript/explicit-function-return-type typescript/explicit-module-boundary-types jsdoc/require-returns
