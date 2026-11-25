@@ -11,3 +11,7 @@ export const AUTHENTICATE_USER = z.object({
 export const REGISTER_USER = AUTHENTICATE_USER.extend({
   name: z.string().min(3, "Your name must be at least 3 characters long.")
 });
+
+export const RESET_PASSWORD = z.object({
+  email: z.email("The provided email address is invalid.")
+});

@@ -2,6 +2,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { getUser } from "@/lib/user";
 
 // Schemas
 import { AUTHENTICATE_USER } from "@servion/validation";
@@ -16,9 +17,7 @@ import useLocale from "@/hooks/use-locale";
 import { Button } from "@/components/base/buttons/button";
 import { HookForm } from "@/components/base/form/hook-form";
 import { Input } from "@/components/base/input/input";
-import Callout from "@/components/ui/callout";
-import Card from "@/components/ui/card";
-import { getUser } from "@/lib/user";
+import CardForm from "@/components/ui/card-form";
 
 /** The output of the validator for authenticated the user. */
 type AuthenticationValues = z.infer<typeof AUTHENTICATE_USER>;
@@ -69,78 +68,65 @@ const Login = () => {
         onSubmit={(event) => {
           void form.handleSubmit(handleAuthentication)(event);
         }}>
-        <Card className={"prose"}>
-          <h1>{"Login"}</h1>
-          {errored && (
-            <Callout type={"error"}>
-              {"The provided credentials were invalid."}
-            </Callout>
-          )}
-          <p>
-            {
-              "Authenticate into your existing account using the credentials you set."
-            }
-          </p>
-          <section className={"mb-3 flex flex-col gap-2"}>
-            <Controller
-              name={"email"}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Input
-                  label={"Email"}
-                  placeholder={"john@doe.com"}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  ref={field.ref}
-                  hint={
-                    fieldState.error?.message ??
-                    "The email address of your account."
-                  }
-                  isInvalid={fieldState.error !== undefined}
-                />
-              )}
-            />
-
-            <Controller
-              name={"password"}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Input
-                  label={"Password"}
-                  placeholder={"********"}
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  ref={field.ref}
-                  type={"password"}
-                  hint={
-                    fieldState.error?.message ?? "The password of your account."
-                  }
-                  isInvalid={fieldState.error !== undefined}
-                />
-              )}
-            />
-          </section>
-          <div className={"flex w-full justify-between"}>
-            <Button href={"#"} color={"link-color"}>
-              {"Forgot Password"}
-            </Button>
-            <div className={"flex gap-2"}>
-              <Button
-                type={"button"}
-                color={"secondary"}
-                isDisabled={authenticating}>
+        <CardForm
+          title={"Login"}
+          description={
+            "Authenticate into your existing account using the credentials you set."
+          }
+          action={{
+            accent: (
+              <Button href={"/auth/register"} color={"secondary"}>
                 {"Register"}
               </Button>
-              <Button type={"submit"} isLoading={authenticating}>
-                {"Login"}
-              </Button>
-            </div>
-          </div>
-        </Card>
+            ),
+            text: "Login",
+          }}
+          pending={authenticating}
+          error={
+            errored ? "The provided credentials were invalid." : undefined
+          }>
+          <Controller
+            name={"email"}
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Input
+                label={"Email"}
+                placeholder={"john@doe.com"}
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
+                hint={
+                  fieldState.error?.message ??
+                  "The email address of your account."
+                }
+                isInvalid={fieldState.error !== undefined}
+              />
+            )}
+          />
+
+          <Controller
+            name={"password"}
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Input
+                label={"Password"}
+                placeholder={"********"}
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
+                type={"password"}
+                hint={
+                  fieldState.error?.message ?? "The password of your account."
+                }
+                isInvalid={fieldState.error !== undefined}
+              />
+            )}
+          />
+        </CardForm>
       </HookForm>
     </div>
   );

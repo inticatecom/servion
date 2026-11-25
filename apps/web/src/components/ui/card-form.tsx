@@ -7,6 +7,7 @@ import Card from "./card";
 import Callout from "./callout";
 import { Button } from "../base/buttons/button";
 
+/** The properties of the card form component. */
 export interface CardFormProperties extends Children {
   title: string;
   description: string;
@@ -15,11 +16,13 @@ export interface CardFormProperties extends Children {
   error?: string;
 }
 
+/** The action data of a card form. */
 export interface CardFormAction {
   text: string;
   accent?: ReactNode;
 }
 
+/** A reusable card form that contains information in a clean card for the form. */
 const CardForm = ({
   children,
   title,
@@ -34,7 +37,8 @@ const CardForm = ({
     <p>{description}</p>
     <section className={"mb-3 flex flex-col gap-2"}>{children}</section>
     <div className={"flex w-full justify-between"}>
-      <div className={"flex gap-2"}>
+      <div className={"flex gap-2 ml-auto"}>
+        {action.accent}
         <Button type={"submit"} isLoading={pending}>
           {action.text}
         </Button>
