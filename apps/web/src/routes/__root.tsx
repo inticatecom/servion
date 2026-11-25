@@ -10,27 +10,28 @@ import type { RouterContext } from "@/lib/query-client";
 import appCss from "@/styles/app.css?url";
 import { seo } from "@/utility/seo";
 import type { Children } from "@servion/utility";
+import { getRequestLocale } from "@/utility/locales";
+import { baseLocale } from "@/paraglide/runtime";
 
 // Components
 import DefaultCatchBoundary from "@/components/default-catch-boundary";
 import NotFound from "@/components/not-found";
 import Footer from "@/components/ui/layout/footer";
-import { getLocales } from "@/utility/locale";
 
 /** The root document to render content inside. */
 const RootDocument = ({ children }: Children) => {
   // Hooks
   // oxlint-disable-next-line no-use-before-define
-  const { locales } = Route.useLoaderData();
+  const locale = Route.useLoaderData()?.locale ?? baseLocale;
 
   return (
-    <html className={"dark dark-mode antialiased"}>
+    <html lang={locale} className={"dark dark-mode antialiased"}>
       <head>
         <HeadContent />
       </head>
       <body className={"bg-primary relative min-h-screen"}>
         <main>{children}</main>
-        <Footer locales={locales} />
+        <Footer locale={locale} />
         <TanStackRouterDevtools position={"bottom-right"} />
         <Scripts />
       </body>
@@ -79,7 +80,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     ],
   }),
   loader: async () => ({
-    locales: await getLocales(),
+    locale: await getRequestLocale(),
   }),
   notFoundComponent: () => <NotFound />,
   shellComponent: RootDocument,

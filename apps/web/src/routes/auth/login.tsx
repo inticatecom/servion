@@ -1,23 +1,25 @@
 // Resources
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, getRouteApi, redirect } from "@tanstack/react-router";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUser } from "@/lib/user";
+import { m } from "@/paraglide/messages";
 
 // Schemas
 import { AUTHENTICATE_USER } from "@servion/validation";
 
 // Hooks
 import { useForm, Controller } from "react-hook-form";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { usePutApiUsers } from "@/generated/api/user/user";
-import useLocale from "@/hooks/use-locale";
 
 // Components
 import { Button } from "@/components/base/buttons/button";
 import { HookForm } from "@/components/base/form/hook-form";
 import { Input } from "@/components/base/input/input";
 import CardForm from "@/components/ui/card-form";
+
+const rootRoute = getRouteApi("__root__");
 
 /** The output of the validator for authenticated the user. */
 type AuthenticationValues = z.infer<typeof AUTHENTICATE_USER>;
@@ -28,7 +30,7 @@ const Login = () => {
   const [errored, setErrored] = useState<boolean>();
 
   // Hooks
-  const { locale } = useLocale();
+  const { locale } = rootRoute.useLoaderData();
   const form = useForm<AuthenticationValues>({
     defaultValues: {
       email: "",
@@ -37,13 +39,8 @@ const Login = () => {
     resolver: zodResolver(AUTHENTICATE_USER),
   });
 
-  useEffect(() => {
-    console.log(locale);
-  }, [locale]);
-
   /** The query members for authenticated users. */
-  const { mutateAsync: authenticate, isPending: authenticating } =
-    usePutApiUsers();
+  const { mutateAsync: authenticate, isPending: authenticating } = usePutApiUsers();
 
   /** Handles the authentication for the form. */
   const handleAuthentication = useCallback(
@@ -67,12 +64,11 @@ const Login = () => {
         form={form}
         onSubmit={(event) => {
           void form.handleSubmit(handleAuthentication)(event);
-        }}>
+        }}
+      >
         <CardForm
-          title={"Login"}
-          description={
-            "Authenticate into your existing account using the credentials you set."
-          }
+          title={m["headings.login"]({}, { locale })}
+          description={"Authenticate into your existing account using the credentials you set."}
           action={{
             accent: (
               <Button href={"/auth/register"} color={"secondary"}>
@@ -86,7 +82,8 @@ const Login = () => {
           notice={{
             text: "Forgot Password",
             url: "/auth/reset-password",
-          }}>
+          }}
+        >
           <Controller
             name={"email"}
             control={form.control}
@@ -99,10 +96,7 @@ const Login = () => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 ref={field.ref}
-                hint={
-                  fieldState.error?.message ??
-                  "The email address of your account."
-                }
+                hint={fieldState.error?.message ?? "The email address of your account."}
                 isInvalid={fieldState.error !== undefined}
               />
             )}
@@ -121,9 +115,7 @@ const Login = () => {
                 onBlur={field.onBlur}
                 ref={field.ref}
                 type={"password"}
-                hint={
-                  fieldState.error?.message ?? "The password of your account."
-                }
+                hint={fieldState.error?.message ?? "The password of your account."}
                 isInvalid={fieldState.error !== undefined}
               />
             )}

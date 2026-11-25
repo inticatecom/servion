@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.9",
+    "@inlang/paraglide-js": "^3.2.2",
     "@react-stately/utils": "^3.12.1",
     "@servion/config": "workspace:*",
     "@servion/utility": "workspace:*",
