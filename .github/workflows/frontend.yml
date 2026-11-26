@@ -12,7 +12,7 @@ on:
       - "bun.lock"
       - "tsconfig.json"
       - "*.config.*"
-      - ".github/workflows/lint.yml"
+      - ".github/workflows/frontend.yml"
   pull_request:
 
 jobs:
