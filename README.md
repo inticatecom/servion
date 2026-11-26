@@ -10,4 +10,4 @@ Guides for developers & contributors who will be directly interacting with the p
 
 ### .NET Execution
 
-Commands within the .NET application are executed via Just. Similarily to Node.js, you can run commands with `just [command]`. All commands can be listed with just the name, `just`.
+Commands within the .NET application are executed via Just. Similarly to Node.js, you can run commands with `just [command]`. All commands can be listed with just the name, `just`.
