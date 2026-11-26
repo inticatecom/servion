@@ -18,8 +18,8 @@ import { Label } from "@/components/base/input/label";
 import { Popover } from "@/components/base/select/popover";
 import { SelectContext, type SelectItemType, sizes } from "@/components/base/select/select-shared";
 import { TagCloseX } from "@/components/base/tags/base-components/tag-close-x";
-import { useResizeObserver } from "@/hooks/use-resize-observer";
-import { cx } from "@/utils/cx";
+import { useResizeObserver } from "@/hooks/untitled/use-resize-observer";
+import { cx } from "@/utility/untitled/cx";
 import { SelectItem } from "./select-item";
 
 interface TagSelectValueProps extends AriaGroupProps {

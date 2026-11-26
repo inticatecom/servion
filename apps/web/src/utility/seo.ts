@@ -8,6 +8,7 @@ interface MetadataConstructor {
 
 /**
  * Constructs a set of metadata information.
+ *
  * @param param0 The data to set.
  * @param param0.title The title.
  * @param param0.description The description.
@@ -27,8 +28,8 @@ export const seo = ({
   { content: keywords, name: "keywords" },
   { content: title, name: "twitter:title" },
   { content: description, name: "twitter:description" },
-  { content: "@tannerlinsley", name: "twitter:creator" },
-  { content: "@tannerlinsley", name: "twitter:site" },
+  { content: "@inticatecom", name: "twitter:creator" },
+  { content: "@inticatecom", name: "twitter:site" },
   { content: "website", name: "og:type" },
   { content: title, name: "og:title" },
   { content: description, name: "og:description" },

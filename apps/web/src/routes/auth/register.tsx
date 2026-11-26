@@ -40,7 +40,8 @@ const Register = () => {
           notice={{
             text: m["pages.register.already_have_account"](),
             url: "/auth/login",
-          }}>
+          }}
+        >
           <div className={"flex gap-2"}>
             <Controller
               name={"name"}
@@ -54,10 +55,7 @@ const Register = () => {
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   ref={field.ref}
-                  hint={
-                    fieldState.error?.message ??
-                    m["pages.register.field_descriptions.name"]()
-                  }
+                  hint={fieldState.error?.message ?? m["pages.register.field_descriptions.name"]()}
                   isInvalid={fieldState.error !== undefined}
                 />
               )}
@@ -74,10 +72,7 @@ const Register = () => {
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   ref={field.ref}
-                  hint={
-                    fieldState.error?.message ??
-                    m["pages.register.field_descriptions.email"]()
-                  }
+                  hint={fieldState.error?.message ?? m["pages.register.field_descriptions.email"]()}
                   isInvalid={fieldState.error !== undefined}
                 />
               )}
@@ -96,8 +91,7 @@ const Register = () => {
                 onBlur={field.onBlur}
                 ref={field.ref}
                 hint={
-                  fieldState.error?.message ??
-                  m["pages.register.field_descriptions.password"]()
+                  fieldState.error?.message ?? m["pages.register.field_descriptions.password"]()
                 }
                 isInvalid={fieldState.error !== undefined}
                 type={"password"}

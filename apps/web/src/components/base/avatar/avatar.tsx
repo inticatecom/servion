@@ -1,6 +1,6 @@
 import { type FC, type ReactNode, useState } from "react";
 import { User01 } from "@untitledui/icons";
-import { cx } from "@/utils/cx";
+import { cx } from "@/utility/untitled/cx";
 import { AvatarBadgeSizeContext, AvatarCount, AvatarOnlineIndicator, VerifiedTick, badgePositions } from "./base-components";
 
 export interface AvatarProps {

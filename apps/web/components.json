@@ -1,0 +1,8 @@
+{
+  "aliases": {
+    "components": "@/components/",
+    "utils": "@/utility/untitled/",
+    "hooks": "@/hooks/untitled/",
+    "styles": "@/styles/"
+  }
+}

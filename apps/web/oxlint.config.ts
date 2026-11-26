@@ -9,8 +9,8 @@ const configuration = defineConfig({
     "**/generated/**",
     "src/components/base/**",
     "src/components/foundations/**",
-    "src/utils/**",
-    "src/hooks/use-resize-observer.ts",
+    "src/utility/untitled/**",
+    "src/hooks/untitled/**",
     "src/paraglide/**",
   ],
   overrides: [

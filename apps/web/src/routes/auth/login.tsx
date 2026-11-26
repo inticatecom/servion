@@ -37,8 +37,7 @@ const Login = () => {
   });
 
   /** The query members for authenticated users. */
-  const { mutateAsync: authenticate, isPending: authenticating } =
-    usePutApiUsers();
+  const { mutateAsync: authenticate, isPending: authenticating } = usePutApiUsers();
 
   /** Handles the authentication for the form. */
   const handleAuthentication = useCallback(
@@ -62,7 +61,8 @@ const Login = () => {
         form={form}
         onSubmit={(event) => {
           void form.handleSubmit(handleAuthentication)(event);
-        }}>
+        }}
+      >
         <CardForm
           title={m["headings.login"]()}
           description={m["pages.login.description"]()}
@@ -75,13 +75,12 @@ const Login = () => {
             text: m["headings.login"](),
           }}
           pending={authenticating}
-          error={
-            errored ? m["pages.login.errors.credentials_invalid"]() : undefined
-          }
+          error={errored ? m["pages.login.errors.credentials_invalid"]() : undefined}
           notice={{
             text: m["pages.login.forgot_password"](),
             url: "/auth/reset-password",
-          }}>
+          }}
+        >
           <Controller
             name={"email"}
             control={form.control}
@@ -94,10 +93,7 @@ const Login = () => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 ref={field.ref}
-                hint={
-                  fieldState.error?.message ??
-                  m["pages.login.field_descriptions.email"]()
-                }
+                hint={fieldState.error?.message ?? m["pages.login.field_descriptions.email"]()}
                 isInvalid={fieldState.error !== undefined}
               />
             )}
@@ -116,10 +112,7 @@ const Login = () => {
                 onBlur={field.onBlur}
                 ref={field.ref}
                 type={"password"}
-                hint={
-                  fieldState.error?.message ??
-                  m["pages.login.field_descriptions.password"]()
-                }
+                hint={fieldState.error?.message ?? m["pages.login.field_descriptions.password"]()}
                 isInvalid={fieldState.error !== undefined}
               />
             )}
