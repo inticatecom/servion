@@ -1,5 +1,5 @@
 // Resources
-import { createFileRoute, getRouteApi, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUser } from "@/lib/user";
@@ -19,8 +19,6 @@ import { HookForm } from "@/components/base/form/hook-form";
 import { Input } from "@/components/base/input/input";
 import CardForm from "@/components/ui/card-form";
 
-const rootRoute = getRouteApi("__root__");
-
 /** The output of the validator for authenticated the user. */
 type AuthenticationValues = z.infer<typeof AUTHENTICATE_USER>;
 
@@ -30,7 +28,6 @@ const Login = () => {
   const [errored, setErrored] = useState<boolean>();
 
   // Hooks
-  const { locale } = rootRoute.useLoaderData();
   const form = useForm<AuthenticationValues>({
     defaultValues: {
       email: "",
@@ -40,7 +37,8 @@ const Login = () => {
   });
 
   /** The query members for authenticated users. */
-  const { mutateAsync: authenticate, isPending: authenticating } = usePutApiUsers();
+  const { mutateAsync: authenticate, isPending: authenticating } =
+    usePutApiUsers();
 
   /** Handles the authentication for the form. */
   const handleAuthentication = useCallback(
@@ -64,39 +62,42 @@ const Login = () => {
         form={form}
         onSubmit={(event) => {
           void form.handleSubmit(handleAuthentication)(event);
-        }}
-      >
+        }}>
         <CardForm
-          title={m["headings.login"]({}, { locale })}
-          description={"Authenticate into your existing account using the credentials you set."}
+          title={m["headings.login"]()}
+          description={m["pages.login.description"]()}
           action={{
             accent: (
               <Button href={"/auth/register"} color={"secondary"}>
-                {"Register"}
+                {m["headings.register"]()}
               </Button>
             ),
-            text: "Login",
+            text: m["headings.login"](),
           }}
           pending={authenticating}
-          error={errored ? "The provided credentials were invalid." : undefined}
+          error={
+            errored ? m["pages.login.errors.credentials_invalid"]() : undefined
+          }
           notice={{
-            text: "Forgot Password",
+            text: m["pages.login.forgot_password"](),
             url: "/auth/reset-password",
-          }}
-        >
+          }}>
           <Controller
             name={"email"}
             control={form.control}
             render={({ field, fieldState }) => (
               <Input
-                label={"Email"}
+                label={m["common.email"]()}
                 placeholder={"john@doe.com"}
                 name={field.name}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 ref={field.ref}
-                hint={fieldState.error?.message ?? "The email address of your account."}
+                hint={
+                  fieldState.error?.message ??
+                  m["pages.login.field_descriptions.email"]()
+                }
                 isInvalid={fieldState.error !== undefined}
               />
             )}
@@ -107,7 +108,7 @@ const Login = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Input
-                label={"Password"}
+                label={m["common.password"]()}
                 placeholder={"********"}
                 name={field.name}
                 value={field.value}
@@ -115,7 +116,10 @@ const Login = () => {
                 onBlur={field.onBlur}
                 ref={field.ref}
                 type={"password"}
-                hint={fieldState.error?.message ?? "The password of your account."}
+                hint={
+                  fieldState.error?.message ??
+                  m["pages.login.field_descriptions.password"]()
+                }
                 isInvalid={fieldState.error !== undefined}
               />
             )}
