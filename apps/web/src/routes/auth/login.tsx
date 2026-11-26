@@ -14,9 +14,9 @@ import { useCallback, useState } from "react";
 import { usePutApiUsers } from "@/generated/api/user/user";
 
 // Components
-import { Button } from "@/components/base/buttons/button";
-import { HookForm } from "@/components/base/form/hook-form";
-import { Input } from "@/components/base/input/input";
+import { Button } from "@/components/untitled/base/buttons/button";
+import { HookForm } from "@/components/untitled/base/form/hook-form";
+import { Input } from "@/components/untitled/base/input/input";
 import CardForm from "@/components/ui/card-form";
 
 /** The output of the validator for authenticated the user. */

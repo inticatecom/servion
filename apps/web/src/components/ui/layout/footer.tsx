@@ -2,7 +2,7 @@
 import { isLocale, locales, setLocale, type Locale } from "@/paraglide/runtime";
 
 // Components
-import { Select } from "@/components/base/select/select";
+import { Select } from "@/components/untitled/base/select/select";
 
 // Constants
 const YEAR = new Date().getFullYear();

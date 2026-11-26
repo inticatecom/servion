@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 // Components
 import Card from "./card";
 import Callout from "./callout";
-import { Button } from "../base/buttons/button";
+import { Button } from "../untitled/base/buttons/button";
 
 /** The properties of the card form component. */
 export interface CardFormProperties extends Children {

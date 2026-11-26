@@ -5,7 +5,7 @@ import type { Children } from "@servion/utility";
 
 // Icons
 import { Ban } from "lucide-react";
-import { FeaturedIcon } from "../foundations/featured-icon/featured-icon";
+import { FeaturedIcon } from "../untitled/foundations/featured-icon/featured-icon";
 
 /** The properties of a callout component. */
 export interface CalloutProperties extends Children<string> {

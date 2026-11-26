@@ -10,10 +10,10 @@ import { Controller, useForm } from "react-hook-form";
 import { useCallback } from "react";
 
 // Components
-import { HookForm } from "@/components/base/form/hook-form";
+import { HookForm } from "@/components/untitled/base/form/hook-form";
 import CardForm from "@/components/ui/card-form";
-import { Input } from "@/components/base/input/input";
-import { Button } from "@/components/base/buttons/button";
+import { Input } from "@/components/untitled/base/input/input";
+import { Button } from "@/components/untitled/base/buttons/button";
 
 /** The values required for resetting a user's password. */
 export type ResetPasswordValues = z.infer<typeof RESET_PASSWORD>;

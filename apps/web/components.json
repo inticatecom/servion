@@ -1,6 +1,6 @@
 {
   "aliases": {
-    "components": "@/components/",
+    "components": "@/components/untitled",
     "utils": "@/utility/untitled/",
     "hooks": "@/hooks/untitled/",
     "styles": "@/styles/"

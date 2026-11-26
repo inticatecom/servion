@@ -9,9 +9,9 @@ import { m } from "@/paraglide/messages";
 import { useForm, Controller } from "react-hook-form";
 
 // Components
-import { HookForm } from "@/components/base/form/hook-form";
+import { HookForm } from "@/components/untitled/base/form/hook-form";
 import CardForm from "@/components/ui/card-form";
-import { Input } from "@/components/base/input/input";
+import { Input } from "@/components/untitled/base/input/input";
 
 /** The values required to register a new account. */
 export type RegistrationValues = z.infer<typeof REGISTER_USER>;

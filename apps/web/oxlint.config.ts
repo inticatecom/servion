@@ -7,8 +7,7 @@ const configuration = defineConfig({
   ignorePatterns: [
     "routeTree.gen.ts",
     "**/generated/**",
-    "src/components/base/**",
-    "src/components/foundations/**",
+    "src/components/untitled/**",
     "src/utility/untitled/**",
     "src/hooks/untitled/**",
     "src/paraglide/**",
