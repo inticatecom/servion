@@ -3,15 +3,15 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUser } from "@/lib/user";
+import { m } from "@/paraglide/messages";
 
 // Schemas
 import { AUTHENTICATE_USER } from "@servion/validation";
 
 // Hooks
 import { useForm, Controller } from "react-hook-form";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { usePutApiUsers } from "@/generated/api/user/user";
-import useLocale from "@/hooks/use-locale";
 
 // Components
 import { Button } from "@/components/base/buttons/button";
@@ -28,7 +28,6 @@ const Login = () => {
   const [errored, setErrored] = useState<boolean>();
 
   // Hooks
-  const { locale } = useLocale();
   const form = useForm<AuthenticationValues>({
     defaultValues: {
       email: "",
@@ -36,10 +35,6 @@ const Login = () => {
     },
     resolver: zodResolver(AUTHENTICATE_USER),
   });
-
-  useEffect(() => {
-    console.log(locale);
-  }, [locale]);
 
   /** The query members for authenticated users. */
   const { mutateAsync: authenticate, isPending: authenticating } =
@@ -69,22 +64,22 @@ const Login = () => {
           void form.handleSubmit(handleAuthentication)(event);
         }}>
         <CardForm
-          title={"Login"}
-          description={
-            "Authenticate into your existing account using the credentials you set."
-          }
+          title={m["headings.login"]()}
+          description={m["pages.login.description"]()}
           action={{
             accent: (
               <Button href={"/auth/register"} color={"secondary"}>
-                {"Register"}
+                {m["headings.register"]()}
               </Button>
             ),
-            text: "Login",
+            text: m["headings.login"](),
           }}
           pending={authenticating}
-          error={errored ? "The provided credentials were invalid." : undefined}
+          error={
+            errored ? m["pages.login.errors.credentials_invalid"]() : undefined
+          }
           notice={{
-            text: "Forgot Password",
+            text: m["pages.login.forgot_password"](),
             url: "/auth/reset-password",
           }}>
           <Controller
@@ -92,7 +87,7 @@ const Login = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Input
-                label={"Email"}
+                label={m["common.email"]()}
                 placeholder={"john@doe.com"}
                 name={field.name}
                 value={field.value}
@@ -101,7 +96,7 @@ const Login = () => {
                 ref={field.ref}
                 hint={
                   fieldState.error?.message ??
-                  "The email address of your account."
+                  m["pages.login.field_descriptions.email"]()
                 }
                 isInvalid={fieldState.error !== undefined}
               />
@@ -113,7 +108,7 @@ const Login = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Input
-                label={"Password"}
+                label={m["common.password"]()}
                 placeholder={"********"}
                 name={field.name}
                 value={field.value}
@@ -122,7 +117,8 @@ const Login = () => {
                 ref={field.ref}
                 type={"password"}
                 hint={
-                  fieldState.error?.message ?? "The password of your account."
+                  fieldState.error?.message ??
+                  m["pages.login.field_descriptions.password"]()
                 }
                 isInvalid={fieldState.error !== undefined}
               />

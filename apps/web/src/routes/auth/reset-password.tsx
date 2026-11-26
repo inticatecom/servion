@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RESET_PASSWORD } from "@servion/validation";
 import type { z } from "zod";
+import { m } from "@/paraglide/messages";
 
 // Hooks
 import { Controller, useForm } from "react-hook-form";
@@ -40,22 +41,22 @@ const ResetPassword = () => {
           void form.handleSubmit(handleResetPassword)(event);
         }}>
         <CardForm
-          title={"Reset Password"}
-          description={"Follow the instructions to reset your password."}
+          title={m["headings.reset_password"]()}
+          description={m["pages.reset_password.description"]()}
           action={{
             accent: (
               <Button href={"/auth/login"} color={"secondary"}>
-                {"Cancel"}
+                {m["common.cancel"]()}
               </Button>
             ),
-            text: "Reset",
+            text: m["common.reset"](),
           }}>
           <Controller
             name={"email"}
             control={form.control}
             render={({ field, fieldState }) => (
               <Input
-                label={"Email"}
+                label={m["common.email"]()}
                 placeholder={"john@doe.com"}
                 name={field.name}
                 value={field.value}
@@ -64,7 +65,7 @@ const ResetPassword = () => {
                 ref={field.ref}
                 hint={
                   fieldState.error?.message ??
-                  "The email address of your account."
+                  m["pages.login.field_descriptions.email"]()
                 }
                 isInvalid={fieldState.error !== undefined}
               />

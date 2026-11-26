@@ -1,5 +1,45 @@
 {
+  "common": {
+    "email": "Email",
+    "password": "Password",
+    "full_name": "Full Name",
+    "reset": "Reset",
+    "cancel": "Cancel",
+    "home": "Home",
+    "back": "Back"
+  },
   "headings": {
-    "login": "Login"
+    "login": "Login",
+    "register": "Register",
+    "reset_password": "Reset Password",
+    "not_found": "Not Found"
+  },
+  "pages": {
+    "login": {
+      "description": "Authenticate into your existing account using the credentials you set.",
+      "field_descriptions": {
+        "email": "The email address of your account.",
+        "password": "The password of your account."
+      },
+      "forgot_password": "Forgot Password",
+      "errors": {
+        "credentials_invalid": "The provided credentials were invalid."
+      }
+    },
+    "register": {
+      "description": "Register for a new account into the system.",
+      "already_have_account": "Already have an Account",
+      "field_descriptions": {
+        "name": "Your full name.",
+        "email": "Your email address.",
+        "password": "The password you will use to access the account."
+      }
+    },
+    "reset_password": {
+      "description": "Follow the instructions to reset your password."
+    },
+    "not_found": {
+      "description": "The following page either does not exist or has been moved. Either return home or check the URL you entered."
+    }
   }
 }

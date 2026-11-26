@@ -8,10 +8,13 @@
     "fontawesome",
     "forgejo",
     "giget",
+    "inlang",
     "logtape",
+    "paraglide",
     "pcss",
     "servion",
-    "tsgolint"
+    "tsgolint",
+    "untitledui"
   ],
   "js/ts.tsdk.path": "node_modules/typescript"
 }

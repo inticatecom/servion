@@ -15,7 +15,7 @@
   "type": "module",
   "scripts": {
     "web:start": "bun --env-file=.env run --filter '@servion/web' start",
-    "web:dev": "bun --env-file=.env run --filter '@servion/web' dev",
+    "web:dev": "bun --env-file=.env run --filter '@servion/web' --elide-lines 0 dev",
     "web:build": "bun --env-file=.env run --filter '@servion/web' build",
     "orval:generate": "bun --env-file=.env run --filter '@servion/web' orval",
     "orval:watch": "bun --env-file=.env run --filter '@servion/web' orval --watch",

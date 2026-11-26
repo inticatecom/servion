@@ -1,0 +1,44 @@
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
+categories:
+  - title: "Breaking Changes"
+    semver-increment: major
+    when:
+      label: breaking
+
+  - title: "Features"
+    semver-increment: minor
+    when:
+      labels:
+        - feature
+        - enhancement
+
+  - title: "Bug Fixes"
+    when:
+      labels:
+        - fix
+        - bug
+
+  - title: "Documentation"
+    when:
+      label: documentation
+
+  - title: "Maintenance"
+    when:
+      label: chore
+
+  - title: "Dependencies"
+    when:
+      label: dependencies
+
+  - title: "Other Changes"
+
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+  ## Contributors
+
+  $CONTRIBUTORS

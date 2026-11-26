@@ -9,10 +9,12 @@
     "build": "vite build && tsc --noEmit",
     "preview": "vite preview",
     "start": "node .output/server/index.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "i18n": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.9",
+    "@inlang/paraglide-js": "^3.2.2",
     "@react-stately/utils": "^3.12.1",
     "@servion/config": "workspace:*",
     "@servion/utility": "workspace:*",
