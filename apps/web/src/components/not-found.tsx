@@ -1,36 +1,30 @@
-// Resources
-import { type JSX, type ReactNode, useCallback } from "react";
-import type { Children } from "@servion/utility";
-
 // Components
-import { Link } from "@tanstack/react-router";
+import { useCallback } from "react";
+import { Button } from "./base/buttons/button";
 
-/** A page representing a state of a missing page. */
-const NotFound = ({ children }: Children<ReactNode, true>): JSX.Element => {
-  const handleGoBack = useCallback(() => {
+/** A page representing the state of a missing page. */
+const NotFound = () => {
+  /** Brings the client to the previous page. */
+  const handleBack = useCallback(() => {
     window.history.back();
   }, []);
 
   return (
-    <div className={"space-y-2 p-2"}>
-      <div className={"text-gray-600 dark:text-gray-400"}>
-        {children ?? <p>{"The page you are looking for does not exist."}</p>}
+    <div className={"w-full h-screen flex justify-center items-center"}>
+      <div className={"prose text-center"}>
+        <h1>{"Page not Found"}</h1>
+        <p>
+          {
+            "The following page either does not exist or has been moved. Either return home or check the URL you entered."
+          }
+        </p>
+        <div className={"flex justify-center items-center gap-2"}>
+          <Button color={"secondary"} onClick={handleBack}>
+            {"Back"}
+          </Button>
+          <Button href={"/"}>{"Home"}</Button>
+        </div>
       </div>
-      <p className={"flex items-center gap-2 flex-wrap"}>
-        <button
-          type={"button"}
-          onClick={handleGoBack}
-          className={"bg-emerald-500 text-white px-2 py-1 rounded-sm uppercase font-black text-sm"}
-        >
-          {"Go back"}
-        </button>
-        <Link
-          to={"/"}
-          className={"bg-cyan-600 text-white px-2 py-1 rounded-sm uppercase font-black text-sm"}
-        >
-          {"Start Over"}
-        </Link>
-      </p>
     </div>
   );
 };
