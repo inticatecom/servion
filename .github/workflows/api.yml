@@ -9,9 +9,6 @@ on:
       - "apps/api/**"
       - ".github/workflows/net.yml"
   pull_request:
-    paths:
-      - "apps/api/**"
-      - ".github/workflows/net.yml"
 
 jobs:
   build:
