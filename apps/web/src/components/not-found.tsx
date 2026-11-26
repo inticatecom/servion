@@ -1,5 +1,8 @@
-// Components
+// Resources
 import { useCallback } from "react";
+import { m } from "@/paraglide/messages";
+
+// Components
 import { Button } from "./base/buttons/button";
 
 /** A page representing the state of a missing page. */
@@ -12,17 +15,13 @@ const NotFound = () => {
   return (
     <div className={"w-full h-screen flex justify-center items-center"}>
       <div className={"prose text-center"}>
-        <h1>{"Page not Found"}</h1>
-        <p>
-          {
-            "The following page either does not exist or has been moved. Either return home or check the URL you entered."
-          }
-        </p>
+        <h1>{m["headings.not_found"]()}</h1>
+        <p>{m["pages.not_found.description"]()}</p>
         <div className={"flex justify-center items-center gap-2"}>
           <Button color={"secondary"} onClick={handleBack}>
-            {"Back"}
+            {m["common.back"]()}
           </Button>
-          <Button href={"/"}>{"Home"}</Button>
+          <Button href={"/"}>{m["common.home"]()}</Button>
         </div>
       </div>
     </div>
