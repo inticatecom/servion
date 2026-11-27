@@ -5,7 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface Authenticate {
-  email: string;
-  password: string;
+export interface EnvironmentDtoDelete {
+  id: string;
 }

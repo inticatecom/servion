@@ -4,8 +4,8 @@
  * API | v1
  * OpenAPI spec version: 1.0.0
  */
-import type { ServerState } from './serverState.ts';
 
-export interface SetState {
-  state: ServerState;
+export interface UserDtoAuthenticate {
+  email: string;
+  password: string;
 }

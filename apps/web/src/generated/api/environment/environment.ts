@@ -24,8 +24,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  Create,
-  Delete
+  EnvironmentDtoCreate,
+  EnvironmentDtoDelete
 } from '../models';
 
 
@@ -57,8 +57,6 @@ export type getApiEnvironmentsResponseSuccess = (getApiEnvironmentsResponse200) 
 };
 ;
 
-export type getApiEnvironmentsResponse = (getApiEnvironmentsResponseSuccess)
-
 export const getGetApiEnvironmentsUrl = () => {
 
 
@@ -67,7 +65,7 @@ export const getGetApiEnvironmentsUrl = () => {
   return `/api/environments`
 }
 
-export const getApiEnvironments = async ( options?: RequestInit): Promise<getApiEnvironmentsResponse> => {
+export const getApiEnvironments = async ( options?: RequestInit): Promise<getApiEnvironmentsResponseSuccess> => {
 
   const res = await fetch(getGetApiEnvironmentsUrl(),
   {
@@ -80,9 +78,16 @@ export const getApiEnvironments = async ( options?: RequestInit): Promise<getApi
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: getApiEnvironmentsResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as getApiEnvironmentsResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: getApiEnvironmentsResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as getApiEnvironmentsResponseSuccess
 }
 
 
@@ -96,7 +101,7 @@ export const getGetApiEnvironmentsQueryKey = () => {
     }
 
 
-export const getGetApiEnvironmentsQueryOptions = <TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiEnvironments>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiEnvironmentsQueryOptions = <TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = globalThis.Error & { info?: unknown; status?: number }>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiEnvironments>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -115,10 +120,10 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetApiEnvironmentsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiEnvironments>>>
-export type GetApiEnvironmentsQueryError = unknown
+export type GetApiEnvironmentsQueryError = globalThis.Error & { info?: unknown; status?: number }
 
 
-export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = unknown>(
+export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiEnvironments>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiEnvironments>>,
@@ -128,7 +133,7 @@ export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEn
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = unknown>(
+export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiEnvironments>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiEnvironments>>,
@@ -138,12 +143,12 @@ export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEn
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = unknown>(
+export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiEnvironments>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = unknown>(
+export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiEnvironments>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -155,7 +160,7 @@ export function useGetApiEnvironments<TData = Awaited<ReturnType<typeof getApiEn
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const prefetchGetApiEnvironmentsQuery = async <TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = unknown>(
+export const prefetchGetApiEnvironmentsQuery = async <TData = Awaited<ReturnType<typeof getApiEnvironments>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  queryClient: QueryClient,  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiEnvironments>>, TError, TData>>, fetch?: RequestInit}
 
   ): Promise<QueryClient> => {
@@ -181,8 +186,6 @@ export type postApiEnvironmentsResponseSuccess = (postApiEnvironmentsResponse200
 };
 ;
 
-export type postApiEnvironmentsResponse = (postApiEnvironmentsResponseSuccess)
-
 export const getPostApiEnvironmentsUrl = () => {
 
 
@@ -191,7 +194,7 @@ export const getPostApiEnvironmentsUrl = () => {
   return `/api/environments`
 }
 
-export const postApiEnvironments = async (create: Create, options?: RequestInit): Promise<postApiEnvironmentsResponse> => {
+export const postApiEnvironments = async (environmentDtoCreate: EnvironmentDtoCreate, options?: RequestInit): Promise<postApiEnvironmentsResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -212,15 +215,22 @@ const res = await fetch(getPostApiEnvironmentsUrl(),
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(create)
+    body: JSON.stringify(environmentDtoCreate)
   }
 )
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: postApiEnvironmentsResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as postApiEnvironmentsResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: postApiEnvironmentsResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as postApiEnvironmentsResponseSuccess
 }
 
 
@@ -229,7 +239,7 @@ const res = await fetch(getPostApiEnvironmentsUrl(),
 
 export const getPostApiEnvironmentsMutationKey = () => ['postApiEnvironments'] as const;
 
-export const getPostApiEnvironmentsMutationOptions = <TError = unknown,
+export const getPostApiEnvironmentsMutationOptions = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiEnvironments>>, TError,PostApiEnvironmentsMutationVariables, TContext>, fetch?: RequestInit}
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiEnvironments>>, TError,PostApiEnvironmentsMutationVariables, TContext> => {
 
@@ -257,11 +267,11 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiEnvironmentsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiEnvironments>>>
-    export type PostApiEnvironmentsMutationBody = Create
-    export type PostApiEnvironmentsMutationError = unknown
-    export type PostApiEnvironmentsMutationVariables = {data: Create}
+    export type PostApiEnvironmentsMutationBody = EnvironmentDtoCreate
+    export type PostApiEnvironmentsMutationError = globalThis.Error & { info?: unknown; status?: number }
+    export type PostApiEnvironmentsMutationVariables = {data: EnvironmentDtoCreate}
 
-    export const usePostApiEnvironments = <TError = unknown,
+    export const usePostApiEnvironments = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiEnvironments>>, TError,PostApiEnvironmentsMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiEnvironments>>,
@@ -281,8 +291,6 @@ export type deleteApiEnvironmentsResponseSuccess = (deleteApiEnvironmentsRespons
 };
 ;
 
-export type deleteApiEnvironmentsResponse = (deleteApiEnvironmentsResponseSuccess)
-
 export const getDeleteApiEnvironmentsUrl = () => {
 
 
@@ -291,7 +299,7 @@ export const getDeleteApiEnvironmentsUrl = () => {
   return `/api/environments`
 }
 
-export const deleteApiEnvironments = async (_delete: Delete, options?: RequestInit): Promise<deleteApiEnvironmentsResponse> => {
+export const deleteApiEnvironments = async (environmentDtoDelete: EnvironmentDtoDelete, options?: RequestInit): Promise<deleteApiEnvironmentsResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -312,15 +320,22 @@ const res = await fetch(getDeleteApiEnvironmentsUrl(),
     ...options,
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(_delete)
+    body: JSON.stringify(environmentDtoDelete)
   }
 )
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: deleteApiEnvironmentsResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as deleteApiEnvironmentsResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: deleteApiEnvironmentsResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as deleteApiEnvironmentsResponseSuccess
 }
 
 
@@ -329,7 +344,7 @@ const res = await fetch(getDeleteApiEnvironmentsUrl(),
 
 export const getDeleteApiEnvironmentsMutationKey = () => ['deleteApiEnvironments'] as const;
 
-export const getDeleteApiEnvironmentsMutationOptions = <TError = unknown,
+export const getDeleteApiEnvironmentsMutationOptions = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiEnvironments>>, TError,DeleteApiEnvironmentsMutationVariables, TContext>, fetch?: RequestInit}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiEnvironments>>, TError,DeleteApiEnvironmentsMutationVariables, TContext> => {
 
@@ -357,11 +372,11 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type DeleteApiEnvironmentsMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiEnvironments>>>
-    export type DeleteApiEnvironmentsMutationBody = Delete
-    export type DeleteApiEnvironmentsMutationError = unknown
-    export type DeleteApiEnvironmentsMutationVariables = {data: Delete}
+    export type DeleteApiEnvironmentsMutationBody = EnvironmentDtoDelete
+    export type DeleteApiEnvironmentsMutationError = globalThis.Error & { info?: unknown; status?: number }
+    export type DeleteApiEnvironmentsMutationVariables = {data: EnvironmentDtoDelete}
 
-    export const useDeleteApiEnvironments = <TError = unknown,
+    export const useDeleteApiEnvironments = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiEnvironments>>, TError,DeleteApiEnvironmentsMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiEnvironments>>,

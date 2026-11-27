@@ -48,8 +48,6 @@ export type getApiHealthResponseSuccess = (getApiHealthResponse200) & {
 };
 ;
 
-export type getApiHealthResponse = (getApiHealthResponseSuccess)
-
 export const getGetApiHealthUrl = () => {
 
 
@@ -58,7 +56,7 @@ export const getGetApiHealthUrl = () => {
   return `/api/health`
 }
 
-export const getApiHealth = async ( options?: RequestInit): Promise<getApiHealthResponse> => {
+export const getApiHealth = async ( options?: RequestInit): Promise<getApiHealthResponseSuccess> => {
 
   const res = await fetch(getGetApiHealthUrl(),
   {
@@ -71,9 +69,16 @@ export const getApiHealth = async ( options?: RequestInit): Promise<getApiHealth
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: getApiHealthResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as getApiHealthResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: getApiHealthResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as getApiHealthResponseSuccess
 }
 
 
@@ -87,7 +92,7 @@ export const getGetApiHealthQueryKey = () => {
     }
 
 
-export const getGetApiHealthQueryOptions = <TData = Awaited<ReturnType<typeof getApiHealth>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiHealthQueryOptions = <TData = Awaited<ReturnType<typeof getApiHealth>>, TError = globalThis.Error & { info?: unknown; status?: number }>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -106,10 +111,10 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetApiHealthQueryResult = NonNullable<Awaited<ReturnType<typeof getApiHealth>>>
-export type GetApiHealthQueryError = unknown
+export type GetApiHealthQueryError = globalThis.Error & { info?: unknown; status?: number }
 
 
-export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = unknown>(
+export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiHealth>>,
@@ -119,7 +124,7 @@ export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = unknown>(
+export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiHealth>>,
@@ -129,12 +134,12 @@ export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = unknown>(
+export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = unknown>(
+export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -146,7 +151,7 @@ export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const prefetchGetApiHealthQuery = async <TData = Awaited<ReturnType<typeof getApiHealth>>, TError = unknown>(
+export const prefetchGetApiHealthQuery = async <TData = Awaited<ReturnType<typeof getApiHealth>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  queryClient: QueryClient,  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>>, fetch?: RequestInit}
 
   ): Promise<QueryClient> => {

@@ -11,6 +11,7 @@ using Docker.DotNet;
 using DotNetEnv;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using Scalar.AspNetCore;
@@ -167,7 +168,13 @@ public static class Program
         builder.Services.AddHostedService<ExtensionHostedService>();
 
         builder.Services.AddAuthorization();
-        builder.Services.AddOpenApi();
+        builder.Services.AddOpenApi(options =>
+        {
+            options.CreateSchemaReferenceId = type =>
+                type.Type is { IsNested: true, DeclaringType: { } declaringType }
+                    ? $"{declaringType.Name}{type.Type.Name}"
+                    : OpenApiOptions.CreateDefaultSchemaReferenceId(type);
+        });
     }
 
     /// <summary>

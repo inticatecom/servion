@@ -6,6 +6,6 @@
  */
 import type { EnvironmentModel } from './environmentModel.ts';
 
-export interface Create {
+export interface EnvironmentDtoCreate {
   data: EnvironmentModel;
 }

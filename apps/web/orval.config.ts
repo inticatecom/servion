@@ -13,6 +13,9 @@ const configuration = defineConfig({
       httpClient: "fetch",
       mode: "tags-split",
       override: {
+        fetch: {
+          forceSuccessResponse: true,
+        },
         query: {
           options: {
             staleTime: 10_000,
