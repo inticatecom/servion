@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 // Resources
 import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { RouterContext } from "@/lib/query-client";
 import appCss from "@/styles/app.css?url";
 import { seo } from "@/utility/seo";
@@ -13,6 +12,7 @@ import { baseLocale } from "@/paraglide/runtime";
 import DefaultCatchBoundary from "@/components/default-catch-boundary";
 import NotFound from "@/components/not-found";
 import Footer from "@/components/ui/layout/footer";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 /** The root document to render content inside. */
 const RootDocument = ({ children }: Children) => {
@@ -58,7 +58,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         sizes: "16x16",
         type: "image/png",
       },
-      { color: "#fffff", href: "/site.webmanifest", rel: "manifest" },
+      { color: "#121212", href: "/site.webmanifest", rel: "manifest" },
       { href: "/favicon.ico", rel: "icon" },
     ],
     meta: [
