@@ -24,8 +24,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  Authenticate,
-  Create
+  UserDtoAuthenticate,
+  UserDtoCreate
 } from '../models';
 
 
@@ -57,8 +57,6 @@ export type postApiUsersResponseSuccess = (postApiUsersResponse200) & {
 };
 ;
 
-export type postApiUsersResponse = (postApiUsersResponseSuccess)
-
 export const getPostApiUsersUrl = () => {
 
 
@@ -67,7 +65,7 @@ export const getPostApiUsersUrl = () => {
   return `/api/users`
 }
 
-export const postApiUsers = async (create: Create, options?: RequestInit): Promise<postApiUsersResponse> => {
+export const postApiUsers = async (userDtoCreate: UserDtoCreate, options?: RequestInit): Promise<postApiUsersResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -88,15 +86,22 @@ const res = await fetch(getPostApiUsersUrl(),
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(create)
+    body: JSON.stringify(userDtoCreate)
   }
 )
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: postApiUsersResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as postApiUsersResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: postApiUsersResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as postApiUsersResponseSuccess
 }
 
 
@@ -105,7 +110,7 @@ const res = await fetch(getPostApiUsersUrl(),
 
 export const getPostApiUsersMutationKey = () => ['postApiUsers'] as const;
 
-export const getPostApiUsersMutationOptions = <TError = unknown,
+export const getPostApiUsersMutationOptions = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiUsers>>, TError,PostApiUsersMutationVariables, TContext>, fetch?: RequestInit}
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiUsers>>, TError,PostApiUsersMutationVariables, TContext> => {
 
@@ -133,11 +138,11 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiUsersMutationResult = NonNullable<Awaited<ReturnType<typeof postApiUsers>>>
-    export type PostApiUsersMutationBody = Create
-    export type PostApiUsersMutationError = unknown
-    export type PostApiUsersMutationVariables = {data: Create}
+    export type PostApiUsersMutationBody = UserDtoCreate
+    export type PostApiUsersMutationError = globalThis.Error & { info?: unknown; status?: number }
+    export type PostApiUsersMutationVariables = {data: UserDtoCreate}
 
-    export const usePostApiUsers = <TError = unknown,
+    export const usePostApiUsers = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiUsers>>, TError,PostApiUsersMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiUsers>>,
@@ -157,8 +162,6 @@ export type putApiUsersResponseSuccess = (putApiUsersResponse200) & {
 };
 ;
 
-export type putApiUsersResponse = (putApiUsersResponseSuccess)
-
 export const getPutApiUsersUrl = () => {
 
 
@@ -167,7 +170,7 @@ export const getPutApiUsersUrl = () => {
   return `/api/users`
 }
 
-export const putApiUsers = async (authenticate: Authenticate, options?: RequestInit): Promise<putApiUsersResponse> => {
+export const putApiUsers = async (userDtoAuthenticate: UserDtoAuthenticate, options?: RequestInit): Promise<putApiUsersResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -188,15 +191,22 @@ const res = await fetch(getPutApiUsersUrl(),
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(authenticate)
+    body: JSON.stringify(userDtoAuthenticate)
   }
 )
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: putApiUsersResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as putApiUsersResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: putApiUsersResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as putApiUsersResponseSuccess
 }
 
 
@@ -205,7 +215,7 @@ const res = await fetch(getPutApiUsersUrl(),
 
 export const getPutApiUsersMutationKey = () => ['putApiUsers'] as const;
 
-export const getPutApiUsersMutationOptions = <TError = unknown,
+export const getPutApiUsersMutationOptions = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiUsers>>, TError,PutApiUsersMutationVariables, TContext>, fetch?: RequestInit}
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiUsers>>, TError,PutApiUsersMutationVariables, TContext> => {
 
@@ -233,11 +243,11 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PutApiUsersMutationResult = NonNullable<Awaited<ReturnType<typeof putApiUsers>>>
-    export type PutApiUsersMutationBody = Authenticate
-    export type PutApiUsersMutationError = unknown
-    export type PutApiUsersMutationVariables = {data: Authenticate}
+    export type PutApiUsersMutationBody = UserDtoAuthenticate
+    export type PutApiUsersMutationError = globalThis.Error & { info?: unknown; status?: number }
+    export type PutApiUsersMutationVariables = {data: UserDtoAuthenticate}
 
-    export const usePutApiUsers = <TError = unknown,
+    export const usePutApiUsers = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiUsers>>, TError,PutApiUsersMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiUsers>>,
@@ -257,8 +267,6 @@ export type getApiUsersResponseSuccess = (getApiUsersResponse200) & {
 };
 ;
 
-export type getApiUsersResponse = (getApiUsersResponseSuccess)
-
 export const getGetApiUsersUrl = () => {
 
 
@@ -267,7 +275,7 @@ export const getGetApiUsersUrl = () => {
   return `/api/users`
 }
 
-export const getApiUsers = async ( options?: RequestInit): Promise<getApiUsersResponse> => {
+export const getApiUsers = async ( options?: RequestInit): Promise<getApiUsersResponseSuccess> => {
 
   const res = await fetch(getGetApiUsersUrl(),
   {
@@ -280,9 +288,16 @@ export const getApiUsers = async ( options?: RequestInit): Promise<getApiUsersRe
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: getApiUsersResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as getApiUsersResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: getApiUsersResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as getApiUsersResponseSuccess
 }
 
 
@@ -296,7 +311,7 @@ export const getGetApiUsersQueryKey = () => {
     }
 
 
-export const getGetApiUsersQueryOptions = <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiUsersQueryOptions = <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = globalThis.Error & { info?: unknown; status?: number }>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -315,10 +330,10 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetApiUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsers>>>
-export type GetApiUsersQueryError = unknown
+export type GetApiUsersQueryError = globalThis.Error & { info?: unknown; status?: number }
 
 
-export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiUsers>>,
@@ -328,7 +343,7 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiUsers>>,
@@ -338,12 +353,12 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -355,7 +370,7 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const prefetchGetApiUsersQuery = async <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+export const prefetchGetApiUsersQuery = async <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  queryClient: QueryClient,  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, fetch?: RequestInit}
 
   ): Promise<QueryClient> => {

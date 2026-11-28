@@ -24,9 +24,9 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  Create,
-  Delete,
-  SetState
+  ServerDtoCreate,
+  ServerDtoDelete,
+  ServerDtoSetState
 } from '../models';
 
 
@@ -58,8 +58,6 @@ export type getApiServersResponseSuccess = (getApiServersResponse200) & {
 };
 ;
 
-export type getApiServersResponse = (getApiServersResponseSuccess)
-
 export const getGetApiServersUrl = () => {
 
 
@@ -68,7 +66,7 @@ export const getGetApiServersUrl = () => {
   return `/api/servers`
 }
 
-export const getApiServers = async ( options?: RequestInit): Promise<getApiServersResponse> => {
+export const getApiServers = async ( options?: RequestInit): Promise<getApiServersResponseSuccess> => {
 
   const res = await fetch(getGetApiServersUrl(),
   {
@@ -81,9 +79,16 @@ export const getApiServers = async ( options?: RequestInit): Promise<getApiServe
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: getApiServersResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as getApiServersResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: getApiServersResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as getApiServersResponseSuccess
 }
 
 
@@ -97,7 +102,7 @@ export const getGetApiServersQueryKey = () => {
     }
 
 
-export const getGetApiServersQueryOptions = <TData = Awaited<ReturnType<typeof getApiServers>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServers>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiServersQueryOptions = <TData = Awaited<ReturnType<typeof getApiServers>>, TError = globalThis.Error & { info?: unknown; status?: number }>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServers>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -116,10 +121,10 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetApiServersQueryResult = NonNullable<Awaited<ReturnType<typeof getApiServers>>>
-export type GetApiServersQueryError = unknown
+export type GetApiServersQueryError = globalThis.Error & { info?: unknown; status?: number }
 
 
-export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers>>, TError = unknown>(
+export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServers>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiServers>>,
@@ -129,7 +134,7 @@ export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers>>, TError = unknown>(
+export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServers>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiServers>>,
@@ -139,12 +144,12 @@ export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers>>, TError = unknown>(
+export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServers>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers>>, TError = unknown>(
+export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServers>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -156,7 +161,7 @@ export function useGetApiServers<TData = Awaited<ReturnType<typeof getApiServers
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const prefetchGetApiServersQuery = async <TData = Awaited<ReturnType<typeof getApiServers>>, TError = unknown>(
+export const prefetchGetApiServersQuery = async <TData = Awaited<ReturnType<typeof getApiServers>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  queryClient: QueryClient,  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServers>>, TError, TData>>, fetch?: RequestInit}
 
   ): Promise<QueryClient> => {
@@ -182,8 +187,6 @@ export type postApiServersResponseSuccess = (postApiServersResponse200) & {
 };
 ;
 
-export type postApiServersResponse = (postApiServersResponseSuccess)
-
 export const getPostApiServersUrl = () => {
 
 
@@ -192,7 +195,7 @@ export const getPostApiServersUrl = () => {
   return `/api/servers`
 }
 
-export const postApiServers = async (create: Create, options?: RequestInit): Promise<postApiServersResponse> => {
+export const postApiServers = async (serverDtoCreate: ServerDtoCreate, options?: RequestInit): Promise<postApiServersResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -213,15 +216,22 @@ const res = await fetch(getPostApiServersUrl(),
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(create)
+    body: JSON.stringify(serverDtoCreate)
   }
 )
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: postApiServersResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as postApiServersResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: postApiServersResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as postApiServersResponseSuccess
 }
 
 
@@ -230,7 +240,7 @@ const res = await fetch(getPostApiServersUrl(),
 
 export const getPostApiServersMutationKey = () => ['postApiServers'] as const;
 
-export const getPostApiServersMutationOptions = <TError = unknown,
+export const getPostApiServersMutationOptions = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiServers>>, TError,PostApiServersMutationVariables, TContext>, fetch?: RequestInit}
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiServers>>, TError,PostApiServersMutationVariables, TContext> => {
 
@@ -258,11 +268,11 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiServersMutationResult = NonNullable<Awaited<ReturnType<typeof postApiServers>>>
-    export type PostApiServersMutationBody = Create
-    export type PostApiServersMutationError = unknown
-    export type PostApiServersMutationVariables = {data: Create}
+    export type PostApiServersMutationBody = ServerDtoCreate
+    export type PostApiServersMutationError = globalThis.Error & { info?: unknown; status?: number }
+    export type PostApiServersMutationVariables = {data: ServerDtoCreate}
 
-    export const usePostApiServers = <TError = unknown,
+    export const usePostApiServers = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiServers>>, TError,PostApiServersMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiServers>>,
@@ -282,8 +292,6 @@ export type deleteApiServersResponseSuccess = (deleteApiServersResponse200) & {
 };
 ;
 
-export type deleteApiServersResponse = (deleteApiServersResponseSuccess)
-
 export const getDeleteApiServersUrl = () => {
 
 
@@ -292,7 +300,7 @@ export const getDeleteApiServersUrl = () => {
   return `/api/servers`
 }
 
-export const deleteApiServers = async (_delete: Delete, options?: RequestInit): Promise<deleteApiServersResponse> => {
+export const deleteApiServers = async (serverDtoDelete: ServerDtoDelete, options?: RequestInit): Promise<deleteApiServersResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -313,15 +321,22 @@ const res = await fetch(getDeleteApiServersUrl(),
     ...options,
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(_delete)
+    body: JSON.stringify(serverDtoDelete)
   }
 )
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: deleteApiServersResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as deleteApiServersResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: deleteApiServersResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as deleteApiServersResponseSuccess
 }
 
 
@@ -330,7 +345,7 @@ const res = await fetch(getDeleteApiServersUrl(),
 
 export const getDeleteApiServersMutationKey = () => ['deleteApiServers'] as const;
 
-export const getDeleteApiServersMutationOptions = <TError = unknown,
+export const getDeleteApiServersMutationOptions = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiServers>>, TError,DeleteApiServersMutationVariables, TContext>, fetch?: RequestInit}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiServers>>, TError,DeleteApiServersMutationVariables, TContext> => {
 
@@ -358,11 +373,11 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type DeleteApiServersMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiServers>>>
-    export type DeleteApiServersMutationBody = Delete
-    export type DeleteApiServersMutationError = unknown
-    export type DeleteApiServersMutationVariables = {data: Delete}
+    export type DeleteApiServersMutationBody = ServerDtoDelete
+    export type DeleteApiServersMutationError = globalThis.Error & { info?: unknown; status?: number }
+    export type DeleteApiServersMutationVariables = {data: ServerDtoDelete}
 
-    export const useDeleteApiServers = <TError = unknown,
+    export const useDeleteApiServers = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiServers>>, TError,DeleteApiServersMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiServers>>,
@@ -382,8 +397,6 @@ export type getApiServersIdResponseSuccess = (getApiServersIdResponse200) & {
 };
 ;
 
-export type getApiServersIdResponse = (getApiServersIdResponseSuccess)
-
 export const getGetApiServersIdUrl = (id: string,) => {
 
 
@@ -392,7 +405,7 @@ export const getGetApiServersIdUrl = (id: string,) => {
   return `/api/servers/${id}`
 }
 
-export const getApiServersId = async (id: string, options?: RequestInit): Promise<getApiServersIdResponse> => {
+export const getApiServersId = async (id: string, options?: RequestInit): Promise<getApiServersIdResponseSuccess> => {
 
   const res = await fetch(getGetApiServersIdUrl(id),
   {
@@ -405,9 +418,16 @@ export const getApiServersId = async (id: string, options?: RequestInit): Promis
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: getApiServersIdResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as getApiServersIdResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: getApiServersIdResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as getApiServersIdResponseSuccess
 }
 
 
@@ -421,7 +441,7 @@ export const getGetApiServersIdQueryKey = (id: string,) => {
     }
 
 
-export const getGetApiServersIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiServersId>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServersId>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiServersIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiServersId>>, TError = globalThis.Error & { info?: unknown; status?: number }>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServersId>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -440,10 +460,10 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetApiServersIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiServersId>>>
-export type GetApiServersIdQueryError = unknown
+export type GetApiServersIdQueryError = globalThis.Error & { info?: unknown; status?: number }
 
 
-export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServersId>>, TError = unknown>(
+export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServersId>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServersId>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiServersId>>,
@@ -453,7 +473,7 @@ export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServe
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServersId>>, TError = unknown>(
+export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServersId>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServersId>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiServersId>>,
@@ -463,12 +483,12 @@ export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServe
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServersId>>, TError = unknown>(
+export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServersId>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServersId>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServersId>>, TError = unknown>(
+export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServersId>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServersId>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -480,7 +500,7 @@ export function useGetApiServersId<TData = Awaited<ReturnType<typeof getApiServe
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const prefetchGetApiServersIdQuery = async <TData = Awaited<ReturnType<typeof getApiServersId>>, TError = unknown>(
+export const prefetchGetApiServersIdQuery = async <TData = Awaited<ReturnType<typeof getApiServersId>>, TError = globalThis.Error & { info?: unknown; status?: number }>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiServersId>>, TError, TData>>, fetch?: RequestInit}
 
   ): Promise<QueryClient> => {
@@ -506,8 +526,6 @@ export type putApiServersIdActionResponseSuccess = (putApiServersIdActionRespons
 };
 ;
 
-export type putApiServersIdActionResponse = (putApiServersIdActionResponseSuccess)
-
 export const getPutApiServersIdActionUrl = (id: string,) => {
 
 
@@ -517,7 +535,7 @@ export const getPutApiServersIdActionUrl = (id: string,) => {
 }
 
 export const putApiServersIdAction = async (id: string,
-    setState: SetState, options?: RequestInit): Promise<putApiServersIdActionResponse> => {
+    serverDtoSetState: ServerDtoSetState, options?: RequestInit): Promise<putApiServersIdActionResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -538,15 +556,22 @@ const res = await fetch(getPutApiServersIdActionUrl(id),
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(setState)
+    body: JSON.stringify(serverDtoSetState)
   }
 )
 
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-  const data: putApiServersIdActionResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as putApiServersIdActionResponse
+    const err: globalThis.Error & {info?: any, status?: number} = new globalThis.Error();
+    const data  = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: putApiServersIdActionResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as putApiServersIdActionResponseSuccess
 }
 
 
@@ -555,7 +580,7 @@ const res = await fetch(getPutApiServersIdActionUrl(id),
 
 export const getPutApiServersIdActionMutationKey = () => ['putApiServersIdAction'] as const;
 
-export const getPutApiServersIdActionMutationOptions = <TError = unknown,
+export const getPutApiServersIdActionMutationOptions = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiServersIdAction>>, TError,PutApiServersIdActionMutationVariables, TContext>, fetch?: RequestInit}
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiServersIdAction>>, TError,PutApiServersIdActionMutationVariables, TContext> => {
 
@@ -583,11 +608,11 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PutApiServersIdActionMutationResult = NonNullable<Awaited<ReturnType<typeof putApiServersIdAction>>>
-    export type PutApiServersIdActionMutationBody = SetState
-    export type PutApiServersIdActionMutationError = unknown
-    export type PutApiServersIdActionMutationVariables = {id: string;data: SetState}
+    export type PutApiServersIdActionMutationBody = ServerDtoSetState
+    export type PutApiServersIdActionMutationError = globalThis.Error & { info?: unknown; status?: number }
+    export type PutApiServersIdActionMutationVariables = {id: string;data: ServerDtoSetState}
 
-    export const usePutApiServersIdAction = <TError = unknown,
+    export const usePutApiServersIdAction = <TError = globalThis.Error & { info?: unknown; status?: number },
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiServersIdAction>>, TError,PutApiServersIdActionMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiServersIdAction>>,

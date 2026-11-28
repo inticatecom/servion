@@ -23,3 +23,14 @@ export interface Package {
 
 /** A possibly undefined value. */
 export type Possible<TType> = TType | undefined;
+
+export interface ProblemDetails {
+  title: string;
+  status: number;
+  detail: string;
+}
+
+export interface APIError {
+  info?: ProblemDetails;
+  status?: number;
+}

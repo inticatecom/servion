@@ -9,10 +9,9 @@ const configuration = defineConfig({
     "**/build/**",
     "**/routeTree.gen.ts",
     "**/generated/**",
-    "src/components/base/**",
-    "src/components/foundations/**",
-    "src/utils/**",
-    "src/hooks/use-resize-observer.ts",
+    "src/components/untitled/**",
+    "src/utility/untitled/**",
+    "src/hooks/untitled/**",
     "src/paraglide/**",
   ],
 });

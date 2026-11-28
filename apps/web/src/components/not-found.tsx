@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { m } from "@/paraglide/messages";
 
 // Components
-import { Button } from "./base/buttons/button";
+import { Button } from "./untitled/base/buttons/button";
 
 /** A page representing the state of a missing page. */
 const NotFound = () => {

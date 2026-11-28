@@ -4,19 +4,20 @@ import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUser } from "@/lib/user";
 import { m } from "@/paraglide/messages";
+import type { APIError } from "@servion/utility";
 
 // Schemas
 import { AUTHENTICATE_USER } from "@servion/validation";
 
 // Hooks
 import { useForm, Controller } from "react-hook-form";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { usePutApiUsers } from "@/generated/api/user/user";
 
 // Components
-import { Button } from "@/components/base/buttons/button";
-import { HookForm } from "@/components/base/form/hook-form";
-import { Input } from "@/components/base/input/input";
+import { Button } from "@/components/untitled/base/buttons/button";
+import { HookForm } from "@/components/untitled/base/form/hook-form";
+import { Input } from "@/components/untitled/base/input/input";
 import CardForm from "@/components/ui/card-form";
 
 /** The output of the validator for authenticated the user. */
@@ -24,9 +25,6 @@ type AuthenticationValues = z.infer<typeof AUTHENTICATE_USER>;
 
 /** The login page allowing users to access their account. */
 const Login = () => {
-  // States
-  const [errored, setErrored] = useState<boolean>();
-
   // Hooks
   const form = useForm<AuthenticationValues>({
     defaultValues: {
@@ -36,22 +34,19 @@ const Login = () => {
     resolver: zodResolver(AUTHENTICATE_USER),
   });
 
-  /** The query members for authenticated users. */
-  const { mutateAsync: authenticate, isPending: authenticating } =
-    usePutApiUsers();
+  /** The query members for authenticating users. */
+  const {
+    mutateAsync: authenticate,
+    isPending: authenticating,
+    error,
+  } = usePutApiUsers<APIError>();
 
   /** Handles the authentication for the form. */
   const handleAuthentication = useCallback(
     async (data: AuthenticationValues) => {
-      setErrored(false);
-
-      const response = await authenticate({
+      await authenticate({
         data,
       });
-
-      if (response.status !== 200) {
-        setErrored(true);
-      }
     },
     [authenticate],
   );
@@ -75,9 +70,7 @@ const Login = () => {
             text: m["headings.login"](),
           }}
           pending={authenticating}
-          error={
-            errored ? m["pages.login.errors.credentials_invalid"]() : undefined
-          }
+          error={error?.info?.detail}
           notice={{
             text: m["pages.login.forgot_password"](),
             url: "/auth/reset-password",

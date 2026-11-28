@@ -12,16 +12,8 @@ on:
       - "bun.lock"
       - "tsconfig.json"
       - "*.config.*"
-      - ".github/workflows/lint.yml"
+      - ".github/workflows/frontend.yml"
   pull_request:
-    paths:
-      - "apps/web/**"
-      - "packages/**"
-      - "package.json"
-      - "bun.lock"
-      - "tsconfig.json"
-      - "*.config.*"
-      - ".github/workflows/lint.yml"
 
 jobs:
   lint:

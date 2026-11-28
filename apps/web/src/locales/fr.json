@@ -1,39 +1,39 @@
 {
-    "headings": {
-        "login": "Connexion",
-        "register": "Registre",
-        "reset_password": "Réinitialiser le mot de passe"
+  "headings": {
+    "login": "Connexion",
+    "register": "Registre",
+    "reset_password": "Réinitialiser le mot de passe"
+  },
+  "common": {
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "full_name": "Nom et prénom",
+    "reset": "Réinitialiser",
+    "cancel": "Annuler"
+  },
+  "pages": {
+    "login": {
+      "description": "Connectez-vous à votre compte existant à l’aide des identifiants que vous avez définis.",
+      "field_descriptions": {
+        "email": "L’adresse e-mail de votre compte.",
+        "password": "Le mot de passe de votre compte."
+      },
+      "forgot_password": "Mot de passe oublié",
+      "errors": {
+        "credentials_invalid": "Les identifiants fournis étaient invalides."
+      }
     },
-    "common": {
-        "email": "E-mail",
-        "password": "Mot de passe",
-        "full_name": "Nom et prénom",
-        "reset": "Réinitialiser",
-        "cancel": "Annuler"
+    "register": {
+      "description": "Créez un nouveau compte dans le système.",
+      "already_have_account": "Vous avez déjà un compte",
+      "field_descriptions": {
+        "name": "Votre nom complet.",
+        "email": "Votre adresse e-mail.",
+        "password": "Le mot de passe que vous utiliserez pour accéder au compte."
+      }
     },
-    "pages": {
-        "login": {
-            "description": "Connectez-vous à votre compte existant à l’aide des identifiants que vous avez définis.",
-            "field_descriptions": {
-                "email": "L’adresse e-mail de votre compte.",
-                "password": "Le mot de passe de votre compte."
-            },
-            "forgot_password": "Mot de passe oublié",
-            "errors": {
-                "credentials_invalid": "Les identifiants fournis étaient invalides."
-            }
-        },
-        "register": {
-            "description": "Créez un nouveau compte dans le système.",
-            "already_have_account": "Vous avez déjà un compte",
-            "field_descriptions": {
-                "name": "Votre nom complet.",
-                "email": "Votre adresse e-mail.",
-                "password": "Le mot de passe que vous utiliserez pour accéder au compte."
-            }
-        },
-        "reset_password": {
-            "description": "Suivez les instructions pour réinitialiser votre mot de passe."
-        }
+    "reset_password": {
+      "description": "Suivez les instructions pour réinitialiser votre mot de passe."
     }
+  }
 }

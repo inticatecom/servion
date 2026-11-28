@@ -10,10 +10,10 @@ import { Controller, useForm } from "react-hook-form";
 import { useCallback } from "react";
 
 // Components
-import { HookForm } from "@/components/base/form/hook-form";
+import { HookForm } from "@/components/untitled/base/form/hook-form";
 import CardForm from "@/components/ui/card-form";
-import { Input } from "@/components/base/input/input";
-import { Button } from "@/components/base/buttons/button";
+import { Input } from "@/components/untitled/base/input/input";
+import { Button } from "@/components/untitled/base/buttons/button";
 
 /** The values required for resetting a user's password. */
 export type ResetPasswordValues = z.infer<typeof RESET_PASSWORD>;
@@ -39,7 +39,8 @@ const ResetPassword = () => {
         form={form}
         onSubmit={(event) => {
           void form.handleSubmit(handleResetPassword)(event);
-        }}>
+        }}
+      >
         <CardForm
           title={m["headings.reset_password"]()}
           description={m["pages.reset_password.description"]()}
@@ -50,7 +51,8 @@ const ResetPassword = () => {
               </Button>
             ),
             text: m["common.reset"](),
-          }}>
+          }}
+        >
           <Controller
             name={"email"}
             control={form.control}
@@ -63,10 +65,7 @@ const ResetPassword = () => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 ref={field.ref}
-                hint={
-                  fieldState.error?.message ??
-                  m["pages.login.field_descriptions.email"]()
-                }
+                hint={fieldState.error?.message ?? m["pages.login.field_descriptions.email"]()}
                 isInvalid={fieldState.error !== undefined}
               />
             )}

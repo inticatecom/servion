@@ -7,11 +7,8 @@ on:
   push:
     paths:
       - "apps/api/**"
-      - ".github/workflows/net.yml"
+      - ".github/workflows/api.yml"
   pull_request:
-    paths:
-      - "apps/api/**"
-      - ".github/workflows/net.yml"
 
 jobs:
   build:
