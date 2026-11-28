@@ -13,7 +13,7 @@
         "@commitlint/config-conventional": "^21.2.4",
         "@types/bun": "^1.4.5",
         "@types/node": "^26.6.9",
-        "cloc": "^2.6.0-cloc",
+        "cloc": "^2.11.0",
         "husky": "^9.1.7",
         "lint-staged": "^17.6.2",
         "oxfmt": "^0.78.0",
@@ -699,7 +699,7 @@
 
     "cliui": ["cliui@9.0.1", "", { "dependencies": { "string-width": "^7.2.0", "strip-ansi": "^7.1.0", "wrap-ansi": "^9.0.0" } }, "sha512-k7ndgKhwoQveBL+/1tqGJYNz097I7WOvwbmmU2AR5+magtbjPWQTS1C5vzGkBC8Ym8UWRzfKUzUUqFLypY4Q+w=="],
 
-    "cloc": ["cloc@2.6.0-cloc", "", { "bin": { "cloc": "lib/cloc" } }, "sha512-fCHPvFN6I7WmC005u99WqLxqWnWhEra0YCppc2k8lpRZrPFIEaHaNxgJ+funlSRIZMSIOqxwpt7pmEKDPFCz2g=="],
+    "cloc": ["cloc@2.11.0", "", { "bin": { "cloc": "lib/cloc" } }, "sha512-+mxuCHo7ESOQadlsyMjmPZ4hGBtvQzmNGHfLdBNvXKbnRhtmOTslU4XF2cyFSaOCHaaF26ba2CGjU6lpeIFB0w=="],
 
     "clsx": ["clsx@2.1.1", "", {}, "sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA=="],
 
